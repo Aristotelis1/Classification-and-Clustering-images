@@ -1,6 +1,9 @@
 #include <cmath>
+#include <vector>
 
 #include "structs.h"
+
+using namespace std;
 
 
 // Manhattan distance
@@ -17,11 +20,14 @@ int manhattan_dist(Image x, Image y,int rows,int  columns)
             sum += (abs(x_matrix[i][j] - y_matrix[i][j]));
 
     return sum; 
-} 
+}
+
+
 
 
 // LSH function
-void lsh(int k, int L, int N, double R)
+void lsh(int k, int L, int N, double R, vector<Image> q)
 {
+    // NN
 
 }

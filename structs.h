@@ -2,11 +2,13 @@
 #define STRUCTS_H
 
 
+// https://www.geeksforgeeks.org/unordered_map-in-cpp-stl/
+
 class Image {
     private:
         char** matrix;
     public:
-        Image();
+        Image(char **);
 
         char ** get_matrix();
 

@@ -1,9 +1,9 @@
 
 #include "structs.h"
 
-Image :: Image()
+Image :: Image(char** m)
 {
-
+    matrix = m;
 }
 
 char ** Image :: get_matrix()
