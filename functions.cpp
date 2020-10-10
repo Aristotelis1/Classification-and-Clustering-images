@@ -14,11 +14,13 @@ int manhattan_dist(Image x, Image y,int rows,int  columns)
   
     // for each point, finding distance to 
     // rest of the point
-    string x_s = x.get_image();
-    string y_s = y.get_image(); 
+    // string x_s = x.get_image();
+    // string y_s = y.get_image(); 
+    vector<unsigned char> x_s = x.get_image();
+    vector<unsigned char> y_s = y.get_image();
     for (int i = 0; i < rows; i++) 
         for (int j = i + 1; j < columns; j++) 
-            sum += (abs(atoi(&x_s[i]) - atoi(&y_s[i])));
+            sum += (abs(x_s[i] - y_s[i]));
 
     return sum; 
 }

@@ -1,18 +1,21 @@
 
 #include "image.h"
 #include <string>
+#include <vector>
 
-Image :: Image(std::string m)
+using namespace std;
+
+Image :: Image(vector<unsigned char> m)
 {
     image = m;
 }
 
-std::string Image :: get_image()
+vector<unsigned char> Image :: get_image()
 {
     return image;
 }
 
-char Image :: get_pixel(int i)
+unsigned char Image :: get_pixel(int i)
 {
     return image[i];
 }

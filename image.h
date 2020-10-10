@@ -3,19 +3,26 @@
 
 #include <string>
 #include <list>
+#include <vector>
+
+//typedef std::basic_string<unsigned char> ustring;
+
+using namespace std;
 
 
 class Image {
     private:
-        std::string image;
+        //string image;
+        vector<unsigned char> image;
     public:
-        Image(std::string);
+        //Image(string);
+        Image(vector<unsigned char>);
 
         ~Image();
 
-        std::string get_image();
+        vector<unsigned char> get_image();
 
-        char get_pixel(int i);
+        unsigned char get_pixel(int i);
 
         
 };

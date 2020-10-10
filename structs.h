@@ -12,14 +12,14 @@ using namespace std;
 class Hash {
     private:
         int bucket;
-        list<Image*> *table;
+        list< vector<unsigned char> > *table;
     public:
         Hash(int v); // Constructor
 
         ~Hash();
 
         // insert
-        void insertItem(Image i);
+        void insertItem(vector<unsigned char> i);
 
         void displayHash();
 
