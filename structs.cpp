@@ -31,7 +31,7 @@ void Hash::displayHash()
     for(int i =0; i < bucket; i++)
     {
         cout << i;
-        for (auto x : table[i])
+        for (Image* x : table[i])
         {
             cout << " --> " << x->get_image();
         }
