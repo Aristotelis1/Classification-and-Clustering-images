@@ -1,7 +1,8 @@
 #include <cmath>
 #include <vector>
+#include <string>
 
-#include "structs.h"
+#include "image.h"
 
 using namespace std;
 
@@ -13,11 +14,11 @@ int manhattan_dist(Image x, Image y,int rows,int  columns)
   
     // for each point, finding distance to 
     // rest of the point
-    char** x_matrix = x.get_matrix();
-    char** y_matrix = y.get_matrix(); 
+    string x_s = x.get_image();
+    string y_s = y.get_image(); 
     for (int i = 0; i < rows; i++) 
         for (int j = i + 1; j < columns; j++) 
-            sum += (abs(x_matrix[i][j] - y_matrix[i][j]));
+            sum += (abs(atoi(&x_s[i]) - atoi(&y_s[i])));
 
     return sum; 
 }

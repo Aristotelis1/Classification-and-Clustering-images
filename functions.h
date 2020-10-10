@@ -1,7 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include "structs.h"
+#include "image.h"
 #include <vector>
 
 int manhattan_dist(Image x, Image y, int rows, int columns);

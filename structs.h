@@ -1,18 +1,33 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include <string>
+#include <list>
+#include "image.h"
 
-// https://www.geeksforgeeks.org/unordered_map-in-cpp-stl/
+using namespace std;
 
-class Image {
+
+
+class Hash {
     private:
-        char** matrix;
+        int bucket;
+        list<Image*> *table;
     public:
-        Image(char **);
+        Hash(int v); // Constructor
 
-        char ** get_matrix();
+        // insert
+        void insertItem(Image i);
 
-        char get_pixel(int i , int j);
+        void displayHash();
+
 };
+
+
+class ImageTable {
+    private:
+        string image;
+};
+
 
 #endif

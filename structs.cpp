@@ -1,17 +1,38 @@
 
 #include "structs.h"
+#include <string>
+#include <iostream>
+#include <list>
+#include "image.h"
 
-Image :: Image(char** m)
+using namespace std;
+
+
+Hash::Hash(int b)
 {
-    matrix = m;
+    this->bucket = b; //size of the hash table
+    table = new list<Image*>[bucket];
+
 }
 
-char ** Image :: get_matrix()
+void Hash::insertItem(Image key)
 {
-    return matrix;
+    int index = 2; // we call the hash function
+    table[index].push_back(&key);
 }
 
-char Image :: get_pixel(int i, int j)
+void Hash::displayHash()
 {
-    return matrix[i][j];
+    for(int i =0; i < bucket; i++)
+    {
+        cout << i;
+        for (auto x : table[i])
+        {
+            cout << " --> " << x->get_image();
+        }
+        cout << endl;
+
+    }
 }
+
+
