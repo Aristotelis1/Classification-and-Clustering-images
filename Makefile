@@ -1,23 +1,26 @@
-OBJS  =	main.o
-SOURCE  =	main.cpp
-HEADER  =	image.h	functions.h	struct.h
-OUT   =	test
-CXX =	g++
-FLAGS	=	-std=c++0x	-Wall
+OBJS	= functions.o image.o man.o structs.o
+SOURCE	= functions.cpp image.cpp man.cpp structs.cpp
+HEADER	= functions.h image.h structs.h 
+OUT	= test
+CC	 = g++
+FLAGS	 = -g -c -Wall
+LFLAGS	 = 
 
-all:	$(OBJS)
-	$(CXX)	$(OBJS)	-o	$(OUT)	$(FLAGS)
-	make	-f	Makefile	clean
-  
-# create/compile the individual files >>separately<< 
-main.o:	main.cpp
-	$(CXX)	-c	main.cpp	$(FLAGS)
-    
-.PHONY:	all
-# clean house
+all: $(OBJS)
+	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
+
+function.o: function.cpp function.h
+	$(CC) $(FLAGS) function.cpp
+
+image.o: image.cpp image.h
+	$(CC) $(FLAGS) image.cpp 
+
+structs.o: structs.cpp structs.h
+	$(CC) $(FLAGS) structs.cpp 
+
+man.o: man.cpp
+	$(CC) $(FLAGS) man.cpp 
+
+
 clean:
-	rm -f $(OBJS)
-
-# do a bit of accounting
-count:
-	wc $(SOURCE) $(HEADER)
+	rm -f $(OBJS) $(OUT)
