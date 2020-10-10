@@ -16,3 +16,8 @@ char Image :: get_pixel(int i)
 {
     return image[i];
 }
+
+Image :: ~Image()
+{
+
+}

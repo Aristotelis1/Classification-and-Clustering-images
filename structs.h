@@ -16,6 +16,8 @@ class Hash {
     public:
         Hash(int v); // Constructor
 
+        ~Hash();
+
         // insert
         void insertItem(Image i);
 

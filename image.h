@@ -11,9 +11,13 @@ class Image {
     public:
         Image(std::string);
 
+        ~Image();
+
         std::string get_image();
 
         char get_pixel(int i);
+
+        
 };
 
 

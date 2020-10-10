@@ -15,6 +15,11 @@ Hash::Hash(int b)
 
 }
 
+Hash::~Hash()
+{
+    delete[] table;
+}
+
 void Hash::insertItem(Image key)
 {
     int index = 2; // we call the hash function
