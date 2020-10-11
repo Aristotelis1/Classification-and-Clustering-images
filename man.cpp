@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 
-#include "image.h"
+#include "hash_functions.h"
 
 using namespace std;
 
@@ -57,6 +57,7 @@ int main(int argc, char* argv[])
 
     }
 
+
     //Reading data from binary 
 
 
@@ -83,9 +84,9 @@ int main(int argc, char* argv[])
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
-        int s=0;
+        int sum=0;
         for(i = 0; i < number_of_images; ++i){
-            s=0;
+            sum=0;
             images[i].resize(dimension);
             for(y=0; y<dimension; ++y){
                 file.read((char*)&temp,sizeof(temp));
@@ -93,14 +94,29 @@ int main(int argc, char* argv[])
                 // kathisterei poly me th class image
                 //im = new Image(temp_str);
                 //images.push_back(*im);
-                s+=images[i][y];
+//                sum+=images[i][y];
 //              std::cout << (int)temp <<"|";
             }
-            cout<<i<<" -->"<< s << "\tLength of vector is:"<< images[i].size()<<"-->"<<(int)images[i][10] <<(int)images[i][50] <<(int)images[i][100] << endl;
+//            cout<<i<<" -->"<< s << "\tLength of vector is:"<< images[i].size()<<"-->"<<(int)images[i][100] <<(int)images[i][200] <<(int)images[i][300] << endl;
 
         }
+        cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
+        cout << "Mean distance (r) is: " << get_mean_range(50, images) << endl;
+
+        //create a vector for s (normally distributed L*k*d doubles in range [0,w])
+        vector<double>s(L*k*dimension);
+        double s_range = (double) get_w(get_mean_range(number_of_images/30, images)) / (double) (L * k * dimension);
+        for (int i=0; i<L*k*dimension ; i++){
+            s[i]= i*s_range;
+        }
+
+        Hash_Function hf(dimension, s, 1);
+        int w=get_w(get_mean_range(number_of_images/30, images));
+        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
+
+
+
     }
-    std::cout << "Read IDX formatted file, with number_of_images = " << number_of_images << " and dimension (n_rows x n_cols) = " << (rows * columns) << std::endl;
 
     return 0; 
 } 
