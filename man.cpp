@@ -26,6 +26,7 @@ int change_endianess (int big_end)
   
 int main(int argc, char* argv[]) 
 { 
+        srand(time(NULL));
     int i,y,z, k=3, L=5, N=1, M=10;
     float R=1.0;
     char input_file[128], query_file[128], output_file[128];
@@ -110,12 +111,22 @@ int main(int argc, char* argv[])
             s[i]= i*s_range;
         }
 
-        Hash_Function hf(dimension, s, 1);
+        vector<Hash_Function>hfunctions;
+        // hfunctions.resize(k);
         int w=get_w(get_mean_range(number_of_images/30, images));
-        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
+        for (i=0; i<k; i++){
+            Hash_Function *temp = new Hash_Function(dimension, s, k);
+            hfunctions.push_back(*temp);
+        }
 
-
-
+        // Hash_Function hf(dimension, s, 2);
+        // int w=get_w(get_mean_range(number_of_images/30, images));
+//        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
+        unsigned long int testg;
+        for (i=1; i<100; i++){
+            testg=concatenate_h(hfunctions, images[i], w);
+            cout<< testg<<endl<<endl;
+        }
     }
 
     return 0; 
