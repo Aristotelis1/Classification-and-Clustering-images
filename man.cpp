@@ -5,7 +5,6 @@
 
 #include "image.h"
 
-
 using namespace std;
 
 int change_endianess (int big_end) 
@@ -64,11 +63,13 @@ int main(int argc, char* argv[])
 //    int magic_number, number_of_images, rows, columns;
 //    ifstream infile (input_file, ios::binary);
 
-  std::ifstream file (input_file);
+    cout << input_file << endl;
 
-    int magic_number, number_of_images, rows, columns;
+    std::ifstream file (input_file);
+
+    int magic_number, number_of_images, rows, columns, dimension;
     unsigned char temp = -1;
-    string temp_str;
+
     if (file.is_open()){
         file.read((char*)&magic_number,sizeof(magic_number)); 
         magic_number= change_endianess(magic_number);
@@ -78,25 +79,24 @@ int main(int argc, char* argv[])
         rows= change_endianess(rows);
         file.read((char*)&columns,sizeof(columns));
         columns= change_endianess(columns);
+        dimension=rows*columns;
 
         //declare vector of images
-        vector<Image> images;
-        Image* im;
+        vector<vector<unsigned char>> images(number_of_images);
         int s=0;
         for(i = 0; i < number_of_images; ++i){
             s=0;
-            temp_str.clear();
-            for(y=0;y<rows;++y){
-                for(z=0;z<columns;++z){
-                    file.read((char*)&temp,sizeof(temp));
-                    temp_str.push_back(temp);
-                    im = new Image(temp_str);
-                    images.push_back(*im);
-                    s+=temp;
-    //              std::cout << (int)temp <<"|";
-                }
+            images[i].resize(dimension);
+            for(y=0; y<dimension; ++y){
+                file.read((char*)&temp,sizeof(temp));
+                images[i][y]=temp;
+                // kathisterei poly me th class image
+                //im = new Image(temp_str);
+                //images.push_back(*im);
+                s+=images[i][y];
+//              std::cout << (int)temp <<"|";
             }
-            cout<<i<<" -->"<< s << "\tLength of string is:"<< temp_str.length() << endl;
+            cout<<i<<" -->"<< s << "\tLength of vector is:"<< images[i].size()<<"-->"<<(int)images[i][10] <<(int)images[i][50] <<(int)images[i][100] << endl;
 
         }
     }
