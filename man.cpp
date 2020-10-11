@@ -5,6 +5,7 @@
 
 #include "image.h"
 
+
 using namespace std;
 
 int change_endianess (int big_end) 
@@ -63,15 +64,11 @@ int main(int argc, char* argv[])
 //    int magic_number, number_of_images, rows, columns;
 //    ifstream infile (input_file, ios::binary);
 
-    cout << input_file << endl;
-
-    std::ifstream file (input_file);
+  std::ifstream file (input_file);
 
     int magic_number, number_of_images, rows, columns;
     unsigned char temp = -1;
-    //string temp_str;
-    vector<unsigned char> temp_str;
-
+    string temp_str;
     if (file.is_open()){
         file.read((char*)&magic_number,sizeof(magic_number)); 
         magic_number= change_endianess(magic_number);
@@ -93,14 +90,13 @@ int main(int argc, char* argv[])
                 for(z=0;z<columns;++z){
                     file.read((char*)&temp,sizeof(temp));
                     temp_str.push_back(temp);
-                    // kathisterei poly me th class image
-                    //im = new Image(temp_str);
-                    //images.push_back(*im);
+                    im = new Image(temp_str);
+                    images.push_back(*im);
                     s+=temp;
     //              std::cout << (int)temp <<"|";
                 }
             }
-            cout<<i<<" -->"<< s << "\tLength of string is:"<< temp_str.size() << endl;
+            cout<<i<<" -->"<< s << "\tLength of string is:"<< temp_str.length() << endl;
 
         }
     }
