@@ -87,12 +87,13 @@ int get_a(unsigned char x, double s, int w){
 
 unsigned long int concatenate_h(vector<Hash_Function>hfs, vector<unsigned char> image, int w){
     int k, bits_shift;
-    unsigned long int g, temp;
+    unsigned long int g=0, temp;
 
     k=hfs.size();
     bits_shift=32/k;
     for (int i=0; i<k ; i++){
-        temp= (hfs[i].get_hash_key(image, w)<< i*bits_shift);
+        temp= hfs[i].get_hash_key(image, w);
+        temp= temp<< (i*bits_shift);
         g = g | temp;
     }
 
