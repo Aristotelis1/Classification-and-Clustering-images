@@ -1,5 +1,5 @@
 #include "hash_functions.h"
-#include "functions.h"
+
 
 
 
@@ -7,7 +7,7 @@ Hash_Function::Hash_Function(int dim, vector<double>s, unsigned int k_out){
     int r;
     dimension=dim;
     k=k_out;
-    m=pow(2,32)-5;
+    m=pow(2,29)-5;
     int temp=32/k;
     mod=pow(2,temp);
     s_h.resize(dimension);
@@ -55,7 +55,7 @@ double get_mean_range(int samples, vector<vector<unsigned char>> images){
 }
 
 int get_w(int r){
-        return 50;
+        return 20;
 //    return r*4;
 }
 

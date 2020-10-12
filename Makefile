@@ -9,9 +9,6 @@ LFLAGS	 =
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-function.o: function.cpp function.h
-	$(CC) $(FLAGS) function.cpp
-
 image.o: image.cpp image.h
 	$(CC) $(FLAGS) image.cpp 
 
@@ -20,6 +17,9 @@ structs.o: structs.cpp structs.h
 
 hash_functions.o: hash_functions.cpp hash_functions.h
 	$(CC) $(FLAGS) hash_functions.cpp 
+
+functions.o: functions.cpp functions.h
+	$(CC) $(FLAGS) functions.cpp 
 
 man.o: man.cpp
 	$(CC) $(FLAGS) man.cpp 

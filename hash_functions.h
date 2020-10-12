@@ -4,6 +4,8 @@
 #include <ctime>
 #include <math.h>
 
+#include "functions.h"
+
 
 using namespace std;
 
