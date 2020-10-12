@@ -95,10 +95,10 @@ Hash::~Hash()
     delete[] hash_table;
 }
 
-void Hash::insertItem(vector<unsigned char> &image)
+void Hash::insertItem(vector<unsigned char> &image, int key)
 {
-    int index = 2; // we call the hash function
-    hash_table[index].add_image(image);
+    //int index = 2; // we call the hash function
+    hash_table[key].add_image(image);
     //table[index].push_back(image);
 }
 

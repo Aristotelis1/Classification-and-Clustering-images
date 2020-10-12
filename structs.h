@@ -43,7 +43,7 @@ class Hash {
         ~Hash();
 
         // insert
-        void insertItem(vector<unsigned char> &i);
+        void insertItem(vector<unsigned char> &i, int key);
 
         void displayHash();
 

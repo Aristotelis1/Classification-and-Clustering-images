@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "hash_functions.h"
+#include "structs.h"
 
 using namespace std;
 
@@ -122,12 +123,18 @@ int main(int argc, char* argv[])
         // Hash_Function hf(dimension, s, 2);
         // int w=get_w(get_mean_range(number_of_images/30, images));
 //        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
+
+        Hash h(number_of_images/8);
         unsigned long int testg;
         for (i=1; i<100; i++){
             testg=concatenate_h(hfunctions, images[i], w);
+            int key = testg % (number_of_images/8);
+            h.insertItem(images[i], key);
             cout<< testg<<endl<<endl;
         }
+        h.displayHash();
+        // cout << "search by key 7487" << endl;
+        // h.searchByKey(7487);
     }
-
     return 0; 
 } 
