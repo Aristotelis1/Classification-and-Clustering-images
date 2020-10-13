@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include "image.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ void Hash_list::display_list()
         //cout << "->" <<  (unsigned int)l->at(0) << endl;
 
         cout << "-->" ;
-        for(int i = 0; i < l->size(); i++)
+        for(int i = 0; i < l->size()-3; i++)
         {
             cout << "-" << (unsigned int)l->at(i);
         }
@@ -68,7 +69,7 @@ void Hash_list::searchByKey()
         //cout << "->" <<  (unsigned int)l->at(0) << endl;
 
         cout << "-->" ;
-        for(int i = 0; i < l->size(); i++)
+        for(int i = 0; i < l->size()-3; i++)
         {
             cout << "-" << (unsigned int)l->at(i);
         }
@@ -139,7 +140,7 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
     //images = &imgs;
     maxDistance = 0;
     int dist, i, dimension, number_of_images;
-    dimension=imgs[0].size();
+    dimension=imgs[0].size()-3;
     number_of_images = imgs.size();
 
     for (i=0; i<N ; i++){
@@ -182,6 +183,59 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
     //         }
     //     }        
     // }
+}
+
+
+// For hash table
+PQ::PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N)
+{
+    maxDistance = 0;
+    int dist, i, dimension, number_of_images;
+    vector<unsigned char>* t = b.front();
+    dimension = t->size()-3;
+    number_of_images = b.size();
+
+    // auto end = next(b.begin(), min(N, b.size()));
+    // list<vector<unsigned char>*> first();
+
+    int count = 0;
+    for (auto &l : b)
+    {
+        dist= manhattan_dist(query, *l, dimension);
+        if(pq.size() < N)
+        {
+            image temp(dist, *l);
+            pq.push(temp);
+        }
+        else if(count == N)
+        {
+            image temp2=pq.top();            //we may need copy constructor
+            maxDistance=temp2.get_distance();
+
+            dist= manhattan_dist(query, *l, dimension);
+            image temp3 = pq.top();
+            if(temp3.get_distance() > dist)
+            {
+                pq.pop();
+                pq.push(temp3);
+                temp2=pq.top();
+                maxDistance=temp2.get_distance();
+            }
+        }
+        else
+        {
+            dist= manhattan_dist(query, *l, dimension);
+            image temp3 = pq.top();
+            if(temp3.get_distance() > dist)
+            {
+                pq.pop();
+                pq.push(temp3);
+                image temp2=pq.top();
+                maxDistance=temp2.get_distance();
+            }
+        }
+        count++;
+    }
 }
 
 

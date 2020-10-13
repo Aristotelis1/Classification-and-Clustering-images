@@ -57,12 +57,13 @@ class image
         int distance;
         image(int dist, vector<unsigned char> &i);
         int get_distance();
+
+        friend bool operator<(const image& i1, const image& i2) 
+        { 
+            return i1.distance < i2.distance; 
+        } 
 };
 
-bool operator<(const image& i1, const image& i2) 
-{ 
-    return i1.distance < i2.distance; 
-} 
 
 class PQ{
     private:
