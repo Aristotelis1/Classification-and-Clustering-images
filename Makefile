@@ -2,8 +2,8 @@ OBJS	= functions.o image.o man.o structs.o hash_functions.o
 SOURCE	= functions.cpp image.cpp man.cpp structs.cpp hash_functions.cpp
 HEADER	= functions.h image.h structs.h hash_functions.h
 OUT	= test
-CC	 = g++
-FLAGS	 = -g -c -Wall
+CC	 = g++ --std=c++11
+FLAGS	 = -g -c -Wall 
 LFLAGS	 = 
 
 all: $(OBJS)

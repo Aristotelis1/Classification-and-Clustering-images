@@ -23,6 +23,24 @@ int change_endianess (int big_end)
     return little_end;
 }
 
+int set_int_from_bytes (unsigned char byte1, unsigned char byte2, unsigned char byte3){
+    int b1 = byte1, b2 = byte2, b3 = byte3;
+    b1 = (b1 << 16);
+    b2 = (b2 << 8);
+    return (b1 | b2 | b3);
+}
+
+void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2, unsigned char &byte3){
+    byte1 = 0xFF;
+    byte2 = 0xFF;
+    byte3 = 0xFF;
+    byte3 = (byte3 & source);
+    source = (source>>8);   
+    byte2 = (byte2 & source);
+    source = (source>>8);   
+    byte1 = (byte1 & source);
+}
+
 
   
 int main(int argc, char* argv[]) 
@@ -129,6 +147,7 @@ int main(int argc, char* argv[])
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
         int sum=0;
+        unsigned char byte1, byte2, byte3;
         for(i = 0; i < number_of_images; ++i){
             sum=0;
             images[i].resize(dimension);
@@ -137,6 +156,10 @@ int main(int argc, char* argv[])
                 images[i][y]=temp;
 
             }
+            get_bytes_from_int (i, byte1, byte2, byte3);        //split int (pos) to 3 bytes and push them at the end of the image vertex
+            images[i].push_back(byte1);
+            images[i].push_back(byte2);
+            images[i].push_back(byte3);
 
         }
         cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
@@ -223,5 +246,16 @@ int main(int argc, char* argv[])
     }else{
         cout<<"Cannot open input file: "<<input_file<<endl;
     }
+    // unsigned char b1, b2, b3;
+    // get_bytes_from_int(125555, b1, b2, b3);
+    // cout<<(int)b1<<"-"<<(int)b2<<"-"<<(int)b3<<endl;
+
+    // int target;
+    // target= set_int_from_bytes(1 , 234, 115);
+    // cout<<target<<endl;
+
     return 0; 
+
+
+
 } 
