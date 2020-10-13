@@ -185,6 +185,8 @@ int main(int argc, char* argv[])
 //        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
 
         Hash h(number_of_images/8);
+
+        //vector<Hash> 
         unsigned long int testg;
         for (i=1; i<100; i++){
             testg=concatenate_h(hfunctions, images[i], w);

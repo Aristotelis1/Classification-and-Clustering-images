@@ -1,3 +1,9 @@
 main.cpp
 main
 project1.code-workspace
+functions.o
+hash_functions.o
+image.o
+man.o
+structs.o
+test
