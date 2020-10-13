@@ -122,7 +122,7 @@ void Hash::searchByKey(int index)
 
 /* FUNCTIONS FOR PQ */
 
-image::image(int dist, vector<unsigned char> i)
+image::image(int dist, vector<unsigned char> &i)
 {
     distance = dist;
     img = &i;
@@ -131,6 +131,36 @@ image::image(int dist, vector<unsigned char> i)
 int image::get_distance()
 {
     return distance;
+}
+
+
+PQ::PQ(vector<vector<unsigned char>> &imgs, vector<unsigned char> query, int N)
+{
+    //images = &imgs;
+    maxDistance = 0;
+    int dist;
+
+    for (int i = 0; i < images->size(); i++)
+    {
+        // calculate distance (query, image[i])
+        // LEIPEI
+        dist = 0;
+        
+        if(pq.size() < N)
+        {
+            image temp(dist, imgs[i]);
+            pq.push(temp);
+        }
+        else
+        {
+            image temp2 = pq.top();
+            if(temp2.get_distance() > dist)
+            {
+                pq.pop();
+                pq.push(temp2);
+            }
+        }        
+    }
 }
 
 

@@ -53,7 +53,7 @@ class image
         int distance;
 
     public:
-        image(int dist, vector<unsigned char> i);
+        image(int dist, vector<unsigned char> &i);
         int get_distance();
 };
 
@@ -66,10 +66,15 @@ class PQ{
     private:
         priority_queue<image> pq;
         int maxDistance;
+        list<vector<unsigned char>*> *bucket;
+        vector<vector<unsigned char>> *images;
 
     public:
-        PQ(list<vector<unsigned char>*> bucket);
-        PQ(vector<vector<unsigned char>> images);
+        PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N);
+        PQ(vector<vector<unsigned char>> &imgs, vector<unsigned char> query, int N);
+
+        image getNN(); //gurnaei th prwth thesi tou pq
+        image get_k_NN(); //gurnaei th thesi k
 
 };
 
