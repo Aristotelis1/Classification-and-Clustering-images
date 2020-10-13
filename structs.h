@@ -76,6 +76,7 @@ class PQ{
         PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N);
         PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
 
+        void displayN();
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k
 

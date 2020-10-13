@@ -238,4 +238,14 @@ PQ::PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N)
     }
 }
 
+void PQ::displayN()
+{
+    while(!pq.empty())
+    {
+        image temp = pq.top();
+        cout << "distance: " << temp.get_distance() << endl;
+        pq.pop();
+    }
+}
+
 
