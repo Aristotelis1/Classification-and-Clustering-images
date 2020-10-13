@@ -37,26 +37,26 @@ unsigned long int Hash_Function::get_hash_key(vector<unsigned char> image, int w
 
 
 double get_mean_range(int samples, vector<vector<unsigned char>> images){
-//    srand(time(NULL));
-    int i, image1, image2, dimension;
-    double distance, mean=0.0;
+//     int i, image1, image2, dimension;
+//     double distance, mean=0.0;
 
-    dimension=images[1].size();
-    for (i=0; i<samples ; i++){
-        image1=rand()%images.size();
-        image2=rand()%images.size();
-//        cout<< "image1: " << image1 << "--image2: "<< image2;
-        distance=manhattan_dist(images[image1], images[image2], dimension);
-//        cout<<"-->man dist: "<< distance;
-        mean+=(distance/(double)samples);
-//        cout<<"--> mean dist: " << mean << endl;
-    }
-    return mean;
+//     dimension=images[1].size();
+//     for (i=0; i<samples ; i++){
+//         image1=rand()%images.size();
+//         image2=rand()%images.size();
+// //        cout<< "image1: " << image1 << "--image2: "<< image2;
+//         distance=manhattan_dist(images[image1], images[image2], dimension);
+// //        cout<<"-->man dist: "<< distance;
+//         mean+=(distance/(double)samples);
+// //        cout<<"--> mean dist: " << mean << endl;
+//     }
+//     return mean;
+    return (MAX/50);
+
 }
 
 int get_w(int r){
-        return 20;
-//    return r*4;
+    return r*4;
 }
 
 

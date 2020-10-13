@@ -6,6 +6,7 @@
 #include <array>
 #include <queue>
 #include "image.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -50,16 +51,17 @@ class image
 {
     private:
         vector<unsigned char>* img;
-        int distance;
+
 
     public:
+        int distance;
         image(int dist, vector<unsigned char> &i);
         int get_distance();
 };
 
-bool operator<(image& i1, image& i2) 
+bool operator<(const image& i1, const image& i2) 
 { 
-    return i1.get_distance() < i2.get_distance(); 
+    return i1.distance < i2.distance; 
 } 
 
 class PQ{
@@ -71,7 +73,7 @@ class PQ{
 
     public:
         PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N);
-        PQ(vector<vector<unsigned char>> &imgs, vector<unsigned char> query, int N);
+        PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
 
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k

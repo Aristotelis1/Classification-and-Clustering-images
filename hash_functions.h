@@ -6,6 +6,7 @@
 
 #include "functions.h"
 
+#define MAX 255
 
 using namespace std;
 

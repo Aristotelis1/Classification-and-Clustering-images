@@ -134,33 +134,54 @@ int image::get_distance()
 }
 
 
-PQ::PQ(vector<vector<unsigned char>> &imgs, vector<unsigned char> query, int N)
+PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 {
     //images = &imgs;
     maxDistance = 0;
-    int dist;
+    int dist, i, dimension, number_of_images;
+    dimension=imgs[0].size();
+    number_of_images = imgs.size();
 
-    for (int i = 0; i < images->size(); i++)
-    {
-        // calculate distance (query, image[i])
-        // LEIPEI
-        dist = 0;
-        
-        if(pq.size() < N)
-        {
-            image temp(dist, imgs[i]);
-            pq.push(temp);
-        }
-        else
-        {
-            image temp2 = pq.top();
-            if(temp2.get_distance() > dist)
-            {
-                pq.pop();
-                pq.push(temp2);
-            }
-        }        
+    for (i=0; i<N ; i++){
+        dist= manhattan_dist(query, imgs[i], dimension);
+        image temp(dist, imgs[i]);
+        pq.push(temp);
     }
+    image temp2=pq.top();            //we may need copy constructor
+    maxDistance=temp2.get_distance();
+    for(i=N; i<number_of_images ; i++){
+        dist= manhattan_dist(query, imgs[i], dimension);
+        image temp3 = pq.top();
+        if (temp3.get_distance() > dist){
+            pq.pop();
+            pq.push(temp3);
+            image temp2=pq.top();            //we may need copy constructor
+            maxDistance=temp2.get_distance();
+        }
+    }
+
+
+    // for (int i = 0; i < imgs.size(); i++)
+    // {
+    //     // calculate distance (query, image[i])
+    //     // LEIPEI
+    //     dist = 
+        
+    //     if(pq.size() < N)
+    //     {
+    //         image temp(dist, imgs[i]);
+    //         pq.push(temp);
+    //     }
+    //     else
+    //     {
+    //         image temp2 = pq.top();
+    //         if(temp2.get_distance() > dist)
+    //         {
+    //             pq.pop();
+    //             pq.push(temp2);
+    //         }
+    //     }        
+    // }
 }
 
 
