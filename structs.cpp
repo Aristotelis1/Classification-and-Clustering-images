@@ -119,3 +119,18 @@ void Hash::searchByKey(int index)
 }
 
 
+
+/* FUNCTIONS FOR PQ */
+
+image::image(int dist, vector<unsigned char> i)
+{
+    distance = dist;
+    img = &i;
+}
+
+int image::get_distance()
+{
+    return distance;
+}
+
+

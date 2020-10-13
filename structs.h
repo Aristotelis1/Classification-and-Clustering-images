@@ -4,18 +4,12 @@
 #include <string>
 #include <list>
 #include <array>
+#include <queue>
 #include "image.h"
 
 using namespace std;
 
-// class image
-// {
-//     private:
-//         vector<unsigned char>* img;
-//     public:
-//         image(vector<unsigned char> i);
 
-// };
 
 class Hash_list
 {
@@ -52,10 +46,31 @@ class Hash {
 };
 
 
-class ImageTable {
+class image
+{
     private:
-        string image;
+        vector<unsigned char>* img;
+        int distance;
+
+    public:
+        image(int dist, vector<unsigned char> i);
+        int get_distance();
 };
 
+bool operator<(image& i1, image& i2) 
+{ 
+    return i1.get_distance() < i2.get_distance(); 
+} 
+
+class PQ{
+    private:
+        priority_queue<image> pq;
+        int maxDistance;
+
+    public:
+        PQ(list<vector<unsigned char>*> bucket);
+        PQ(vector<vector<unsigned char>> images);
+
+};
 
 #endif
