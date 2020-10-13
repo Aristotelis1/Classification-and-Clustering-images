@@ -193,6 +193,8 @@ int main(int argc, char* argv[])
             cout<< testg<<endl<<endl;
         }
         h.displayHash();
+
+        
         // cout << "search by key 7487" << endl;
         // h.searchByKey(7487);
 
@@ -211,8 +213,9 @@ int main(int argc, char* argv[])
                     query[y]=temp;
                     // cout<<(int)query[y]<<"-";
                 }
-
-
+                PQ pr(images,query,N);
+                pr.displayN();
+          
 
 
 
@@ -241,6 +244,7 @@ int main(int argc, char* argv[])
         }else{
             cout<<"Cannot open query file: "<<query_file<<endl;
         }
+
 
 
     }else{

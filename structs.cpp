@@ -150,10 +150,13 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
     }
     image temp2=pq.top();            //we may need copy constructor
     maxDistance=temp2.get_distance();
+    cout << temp2.get_distance() << "temp2" << endl;
     for(i=N; i<number_of_images ; i++){
         dist= manhattan_dist(query, imgs[i], dimension);
-        image temp3 = pq.top();
-        if (temp3.get_distance() > dist){
+        image temp3(dist, imgs[i]);
+        //cout << "temp3:" << temp3.get_distance() << endl;
+        //cout << "dist: " << dist << endl;
+        if (maxDistance > dist){
             pq.pop();
             pq.push(temp3);
             image temp2=pq.top();            //we may need copy constructor
@@ -187,56 +190,56 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 
 
 // For hash table
-PQ::PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N)
-{
-    maxDistance = 0;
-    int dist, i, dimension, number_of_images;
-    vector<unsigned char>* t = b.front();
-    dimension = t->size()-3;
-    number_of_images = b.size();
+// PQ::PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N)
+// {
+//     maxDistance = 0;
+//     int dist, i, dimension, number_of_images;
+//     vector<unsigned char>* t = b.front();
+//     dimension = t->size()-3;
+//     number_of_images = b.size();
 
-    // auto end = next(b.begin(), min(N, b.size()));
-    // list<vector<unsigned char>*> first();
+//     // auto end = next(b.begin(), min(N, b.size()));
+//     // list<vector<unsigned char>*> first();
 
-    int count = 0;
-    for (auto &l : b)
-    {
-        dist= manhattan_dist(query, *l, dimension);
-        if(pq.size() < N)
-        {
-            image temp(dist, *l);
-            pq.push(temp);
-        }
-        else if(count == N)
-        {
-            image temp2=pq.top();            //we may need copy constructor
-            maxDistance=temp2.get_distance();
+//     int count = 0;
+//     for (auto &l : b)
+//     {
+//         dist= manhattan_dist(query, *l, dimension);
+//         if(pq.size() < N)
+//         {
+//             image temp(dist, *l);
+//             pq.push(temp);
+//         }
+//         else if(count == N)
+//         {
+//             image temp2=pq.top();            //we may need copy constructor
+//             maxDistance=temp2.get_distance();
 
-            dist= manhattan_dist(query, *l, dimension);
-            image temp3 = pq.top();
-            if(temp3.get_distance() > dist)
-            {
-                pq.pop();
-                pq.push(temp3);
-                temp2=pq.top();
-                maxDistance=temp2.get_distance();
-            }
-        }
-        else
-        {
-            dist= manhattan_dist(query, *l, dimension);
-            image temp3 = pq.top();
-            if(temp3.get_distance() > dist)
-            {
-                pq.pop();
-                pq.push(temp3);
-                image temp2=pq.top();
-                maxDistance=temp2.get_distance();
-            }
-        }
-        count++;
-    }
-}
+//             dist= manhattan_dist(query, *l, dimension);
+//             image temp3 = pq.top();
+//             if(temp3.get_distance() > dist)
+//             {
+//                 pq.pop();
+//                 pq.push(temp3);
+//                 temp2=pq.top();
+//                 maxDistance=temp2.get_distance();
+//             }
+//         }
+//         else
+//         {
+//             dist= manhattan_dist(query, *l, dimension);
+//             image temp3 = pq.top();
+//             if(temp3.get_distance() > dist)
+//             {
+//                 pq.pop();
+//                 pq.push(temp3);
+//                 image temp2=pq.top();
+//                 maxDistance=temp2.get_distance();
+//             }
+//         }
+//         count++;
+//     }
+// }
 
 void PQ::displayN()
 {
