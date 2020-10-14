@@ -281,7 +281,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
     for(int i = 0; i < hash_tables.size(); i++)
     {
         list_of_images = hash_tables[i].get_list_of_images();
-        int dist, i, dimension, number_of_images;
+        int dist, dimension, number_of_images;
         vector<unsigned char>* t = list_of_images.front();
         dimension = t->size()-3;
         number_of_images = list_of_images.size();

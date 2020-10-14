@@ -271,6 +271,7 @@ int main(int argc, char* argv[])
                 // cout<<R<<"-near neighbors:"
                 // //cout all neighbors in range R
             }
+            PQ pq_hash(query,N,hash_tables);
         }else{
             cout<<"Cannot open query file: "<<query_file<<endl;
         }
