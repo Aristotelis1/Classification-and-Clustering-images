@@ -7,6 +7,7 @@
 #include <queue>
 #include "image.h"
 #include "functions.h"
+#include "hash_functions.h"
 
 using namespace std;
 
@@ -28,21 +29,24 @@ class Hash_list
 
 class Hash {
     private:
-        int bucket;
-        // array< list< vector<unsigned char>*>> *table;
+        int bucket, w;
+        unsigned long int testg;
+        vector<Hash_Function> hfunctions;
         Hash_list* hash_table;
         
     public:
-        Hash(int v); // Constructor
+        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s); // Constructor
 
         ~Hash();
 
         // insert
-        void insertItem(vector<unsigned char> &i, int key);
+        void insertItem(vector<unsigned char> i);
 
         void displayHash();
 
         void searchByKey(int index);
+
+        int calculate_g(vector<unsigned char> img);
 
 };
 

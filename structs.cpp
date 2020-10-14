@@ -6,6 +6,7 @@
 #include <list>
 #include "image.h"
 #include "functions.h"
+#include "hash_functions.h"
 
 using namespace std;
 
@@ -77,28 +78,52 @@ void Hash_list::searchByKey()
     cout << endl;
 }
 
-Hash::Hash(int b)
+Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s)
 {
-    this->bucket = b; //size of the hash table
+    this->bucket = number_of_images/8; //size of the hash table
     // table = new array<list< vector<unsigned char>>,bucket>;
     hash_table = new Hash_list[bucket];
-
-    for(int i = 0; i < bucket; i++)
-    {
-        //cout << i << endl;;
-        
-        hash_table[i].clear();
+    w=get_w(get_mean_range(number_of_images/30, images));
+    for (int i=0; i<k; i++){
+        Hash_Function *temp = new Hash_Function(dimension, s, k);
+        hfunctions.push_back(*temp);
     }
+
+    // calculate g
+
+
+    // for(int i = 0; i < bucket; i++)
+    // {
+    //     //cout << i << endl;;
+        
+    //     hash_table[i].clear();
+    // }
+
+    cout <<"Hash table created " << endl;
 }
 
 Hash::~Hash()
 {
-    delete[] hash_table;
+    //delete[] hash_table;
 }
 
-void Hash::insertItem(vector<unsigned char> &image, int key)
+int Hash::calculate_g(vector<unsigned char> img)
+{
+    testg=concatenate_h(hfunctions, img, w);
+    int key = testg % (bucket);
+
+    cout << "keyy: " << key << endl;
+
+    return key;
+
+}
+
+void Hash::insertItem(vector<unsigned char> image)
 {
     //int index = 2; // we call the hash function
+    int key = calculate_g(image);
+    cout << "pixel 2: " << image.at(2) << endl;
+    //cout << "inserting item in: " << key << endl;
     hash_table[key].add_image(image);
     //table[index].push_back(image);
 }

@@ -1,3 +1,7 @@
+#ifndef HASH_FUNCTIONS_H
+#define HASH_FUNCTIONS_H
+
+
 #include <iostream> 
 #include <vector>
 #include <cstdlib>
@@ -29,3 +33,5 @@ int get_w(int r);
 int mod_exp(unsigned long int base, unsigned long int exp, unsigned long int mod);
 int get_a(unsigned char x, double s, int w);
 unsigned long int concatenate_h(vector<Hash_Function>hfs, vector<unsigned char> image, int w);
+
+#endif

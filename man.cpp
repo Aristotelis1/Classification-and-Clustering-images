@@ -45,7 +45,7 @@ void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2,
   
 int main(int argc, char* argv[]) 
 { 
-        srand(time(NULL));
+    srand(time(NULL));
     int i,y,z, k=-1, L=-1, N=-1;
     float R=-1.0;
     char input_file[128], query_file[128], output_file[128];
@@ -172,33 +172,53 @@ int main(int argc, char* argv[])
             s[i]= i*s_range;
         }
 
-        vector<Hash_Function>hfunctions;
-        // hfunctions.resize(k);
-        int w=get_w(get_mean_range(number_of_images/30, images));
-        for (i=0; i<k; i++){
-            Hash_Function *temp = new Hash_Function(dimension, s, k);
-            hfunctions.push_back(*temp);
-        }
+        // vector<Hash_Function>hfunctions;
+        // // hfunctions.resize(k);
+        // int w=get_w(get_mean_range(number_of_images/30, images));
+        // for (i=0; i<k; i++){
+        //     Hash_Function *temp = new Hash_Function(dimension, s, k);
+        //     hfunctions.push_back(*temp);
+        // }
 
         // Hash_Function hf(dimension, s, 2);
         // int w=get_w(get_mean_range(number_of_images/30, images));
 //        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
 
-        Hash h(number_of_images/8);
+        //Hash h(number_of_images);
 
         //vector<Hash> 
-        unsigned long int testg;
-        for (i=1; i<100; i++){
-            testg=concatenate_h(hfunctions, images[i], w);
-            int key = testg % (number_of_images/8);
-            h.insertItem(images[i], key);
-            cout<< testg<<endl<<endl;
-        }
-        h.displayHash();
+        // unsigned long int testg;
+        // for (i=1; i<100; i++){
+        //     testg=concatenate_h(hfunctions, images[i], w);
+        //     int key = testg % (number_of_images/8);
+        //     h.insertItem(images[i], key);
+        //     cout<< testg<<endl<<endl;
+        // }
+        // h.displayHash();
+
+
 
         
         // cout << "search by key 7487" << endl;
         // h.searchByKey(7487);
+
+
+        // CREATING HASH TABLES
+
+        vector<Hash> hash_tables;
+        for(int j = 0; j < L; j++)
+        {
+            Hash h(number_of_images,images,dimension,k,s);
+            hash_tables.push_back(h);
+        }
+        for(int j = 0; j < 1000; j++)
+        {
+            for(int i=0;i<L;i++)
+            {
+                hash_tables[i].insertItem(images[i]);
+            }
+        }
+        //hash_tables[1].displayHash();
 
 
 
