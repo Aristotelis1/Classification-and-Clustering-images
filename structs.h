@@ -16,14 +16,14 @@ using namespace std;
 class Hash_list
 {
     private:
-        list<vector<unsigned char>*> list_of_images;
+        vector<vector<unsigned char>*> list_of_images;
     public:
         Hash_list();
         void add_image(vector<unsigned char> &i);
         void display_list();
         void clear();
         void searchByKey();
-        list<vector<unsigned char>*> get_list_of_images();
+        vector<vector<unsigned char>*> get_list_of_images();
 
 };
 
@@ -50,7 +50,7 @@ class Hash {
 
         int calculate_g(vector<unsigned char> img);
 
-        list<vector<unsigned char>*> get_list_of_images();
+        vector<vector<unsigned char>*> get_list_of_images();
 
 
 };

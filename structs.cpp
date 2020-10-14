@@ -21,7 +21,7 @@ using namespace std;
 //     img = &i;
 // }
 
-list<vector<unsigned char>*> Hash_list::get_list_of_images()
+vector<vector<unsigned char>*> Hash_list::get_list_of_images()
 {
     return list_of_images;
 }
@@ -29,13 +29,13 @@ list<vector<unsigned char>*> Hash_list::get_list_of_images()
 void Hash_list::display_list()
 {
 
-    for (auto const&l : list_of_images)
+    for (int i = 0; i < list_of_images.size(); i++)
     {
         //cout << "list of images size: " << list_of_images.size();
         //cout << "->" <<  (unsigned int)l->at(0) << endl;
 
         cout << "-->" ;
-        cout << l->at(0) << endl;
+        //cout << l->at(0) << endl;
         // for(int i = 0; i < (l->size()-3); i++)
         // {
         //     cout << "-" << (unsigned int)l->at(i);
@@ -46,10 +46,7 @@ void Hash_list::display_list()
 
 Hash_list::Hash_list()
 {
-    for (auto &l : list_of_images)
-    {
-        cout << l->empty();
-    }
+    list_of_images.clear();
 }
 
 void Hash_list::add_image(vector<unsigned char> &i)
@@ -123,7 +120,7 @@ int Hash::calculate_g(vector<unsigned char> img)
 
 }
 
-list<vector<unsigned char>*> Hash::get_list_of_images()
+vector<vector<unsigned char>*> Hash::get_list_of_images()
 {
     return hash_table->get_list_of_images();
 }
@@ -140,7 +137,7 @@ void Hash::insertItem(vector<unsigned char> image)
 
 void Hash::displayHash()
 {
-    list<vector<unsigned char>*>::iterator it;
+    //list<vector<unsigned char>*>::iterator it;
     for(int i = 0; i < bucket; i++)
     {
         cout << i ;
@@ -229,7 +226,7 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 {
     maxDistance = 0;
-    list<vector<unsigned char>*> list_of_images = hash_tables[0].get_list_of_images();
+    vector<vector<unsigned char>*> list_of_images;
 
 
     // auto end = next(b.begin(), min(N, b.size()));
