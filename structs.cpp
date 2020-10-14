@@ -120,9 +120,9 @@ int Hash::calculate_g(vector<unsigned char> img)
 
 }
 
-vector<vector<unsigned char>*> Hash::get_list_of_images()
+vector<vector<unsigned char>*> Hash::get_list_of_images(int key)
 {
-    return hash_table->get_list_of_images();
+    return hash_table[key].get_list_of_images();
 }
 
 void Hash::insertItem(vector<unsigned char> image)
@@ -239,18 +239,18 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
     for(int i = 0; i < hash_tables.size(); i++)
     {
         key=hash_tables[i].calculate_g(query);
-        list_of_images = hash_tables[i].get_list_of_images();
+        list_of_images = hash_tables[i].get_list_of_images(key);
         int dist, dimension, number_of_images;
         vector<unsigned char>* t = list_of_images[key];
 //        dimension = t->size()-3;
         number_of_images = list_of_images[key]->size();
         count = 0;
 
-        for(int j=0; j<number_of_images ; j++)
+        for(int j = 0; j<list_of_images.size(); j++)
         {
             cout << " checkkk :" << endl;
 //            cout << "check:" << (int)l->at(0) << endl;
-            dist = manhattan_dist(query, t[j], t[j].size()-3);
+            dist = manhattan_dist(query, *list_of_images[j], list_of_images[j].size()-3);
             if(count < N)
             {
                 image temp(dist,t[j]);

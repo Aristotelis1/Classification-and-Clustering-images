@@ -50,7 +50,7 @@ class Hash {
 
         int calculate_g(vector<unsigned char> img);
 
-        vector<vector<unsigned char>*> get_list_of_images();
+        vector<vector<unsigned char>*> get_list_of_images(int key);
 
 
 };
