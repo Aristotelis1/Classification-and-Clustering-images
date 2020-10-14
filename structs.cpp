@@ -240,67 +240,81 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 
     int count = 0;
     
-    for (auto&l : list_of_images)
-    {
-        dist = manhattan_dist(query,*l, dimension);
-        if(count < N)
-        {
-            image temp(dist, *l);
-            pq.push(temp);
-        }else if(count == N)
-        {
-            image temp2 = pq.top();
-            maxDistance = temp2.get_distance();
+    // for (auto&l : list_of_images)
+    // {
+    //     cout << " lala " << endl;
+    //     dist = manhattan_dist(query,*l, dimension);
+    //     if(count < N)
+    //     {
+    //         image temp(dist, *l);
+    //         pq.push(temp);
+    //     }else if(count == N)
+    //     {
+    //         image temp2 = pq.top();
+    //         maxDistance = temp2.get_distance();
 
-            dist = manhattan_dist(query, *l, dimension);
-            if(maxDistance > dist)
-            {
-                image temp3(dist,*l);
-                pq.pop();
-                pq.push(temp3);
+    //         dist = manhattan_dist(query, *l, dimension);
+    //         if(maxDistance > dist)
+    //         {
+    //             image temp3(dist,*l);
+    //             pq.pop();
+    //             pq.push(temp3);
 
-                image temp4 = pq.top();
-                maxDistance = temp4.get_distance();
-            }
-        }
-        else
-        {
-            dist= manhattan_dist(query, *l, dimension);
-            if(maxDistance > dist)
-            {
-                image temp3(dist,*l);
-                pq.pop();
-                pq.push(temp3);
+    //             image temp4 = pq.top();
+    //             maxDistance = temp4.get_distance();
+    //         }
+    //     }
+    //     else
+    //     {
+    //         dist= manhattan_dist(query, *l, dimension);
+    //         if(maxDistance > dist)
+    //         {
+    //             image temp3(dist,*l);
+    //             pq.pop();
+    //             pq.push(temp3);
 
-                image temp4 = pq.top();
-                maxDistance = temp4.get_distance();
-            }
-        }
+    //             image temp4 = pq.top();
+    //             maxDistance = temp4.get_distance();
+    //         }
+    //     }
 
-        count++;
-        
-    }
+    //     count++;  
+    // }
 
-    for(int i = 1; i < hash_tables.size(); i++)
+    for(int i = 0; i < hash_tables.size(); i++)
     {
         list_of_images = hash_tables[i].get_list_of_images();
+        count = 0;
 
         for(auto &l : list_of_images)
         {
+            cout << " checkkk :" << endl;
+            cout << "check:" << (int)l->at(0) << endl;
             dist = manhattan_dist(query, *l, dimension);
-            if(maxDistance > dist)
+            if(count < N)
             {
-                image temp3(dist,*l);
-                pq.pop();
-                pq.push(temp3);
-
-                image temp4 = pq.top();
-                maxDistance = temp4.get_distance();
+                image temp(dist,*l);
+                pq.push(temp);
+                image temp2 = pq.top();
+                maxDistance = temp2.get_distance();
             }
+            else{
+                if(maxDistance > dist)
+                {
+                    image temp3(dist,*l);
+                    pq.pop();
+                    pq.push(temp3);
 
+                    image temp4 = pq.top();
+                    maxDistance = temp4.get_distance();
+                }
+            }
+            count++;
         }
 
     }
+
+    cout << "pq created " << endl;
 
 
 
