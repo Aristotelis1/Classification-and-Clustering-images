@@ -13,7 +13,7 @@ using namespace std;
 
 // vector<unsigned char>* hash_list::get_image()
 // {
-    
+
 // }
 
 // image::image(vector<unsigned char> i)
@@ -21,7 +21,7 @@ using namespace std;
 //     img = &i;
 // }
 
-vector<vector<unsigned char>*> Hash_list::get_list_of_images()
+vector<vector<unsigned char>> Hash_list::get_list_of_images()
 {
     return list_of_images;
 }
@@ -52,32 +52,32 @@ Hash_list::Hash_list()
 void Hash_list::add_image(vector<unsigned char> &i)
 {
     //image im(i);
-    list_of_images.push_back(&i);
+    list_of_images.push_back(i);
 }
 
 void Hash_list::clear()
 {
-    for (auto &l : list_of_images)
-    {
-        l->clear();
-        cout << "clear" << endl;
-        cout << l->empty();
-    }
+    // for (auto &l : list_of_images)
+    // {
+    //     l->clear();
+    //     cout << "clear" << endl;
+    //     cout << l->empty();
+    // }
 }
 
 void Hash_list::searchByKey()
 {
-    for (auto &l : list_of_images)
-    {
-        //cout << "list of images size: " << list_of_images.size();
-        //cout << "->" <<  (unsigned int)l->at(0) << endl;
-        cout << "-->" ;
-        for(int i = 0; i < l->size()-3; i++)
-        {
-            cout << "-" << (unsigned int)l->at(i);
-        }
-    }
-    cout << endl;
+    // for (auto &l : list_of_images)
+    // {
+    //     //cout << "list of images size: " << list_of_images.size();
+    //     //cout << "->" <<  (unsigned int)l->at(0) << endl;
+    //     cout << "-->" ;
+    //     for(int i = 0; i < l->size()-3; i++)
+    //     {
+    //         cout << "-" << (unsigned int)l->at(i);
+    //     }
+    // }
+    // cout << endl;
 }
 
 Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s)
@@ -97,11 +97,12 @@ Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimen
     // for(int i = 0; i < bucket; i++)
     // {
     //     //cout << i << endl;;
-        
+
     //     hash_table[i].clear();
     // }
 
     cout <<"Hash table created " << endl;
+
 }
 
 Hash::~Hash()
@@ -114,13 +115,13 @@ int Hash::calculate_g(vector<unsigned char> img)
     testg=concatenate_h(hfunctions, img, w);
     int key = testg % (bucket);
 
-    cout << "keyy: " << key << endl;
+//    cout << "keyy: " << key << endl;
 
     return key;
 
 }
 
-vector<vector<unsigned char>*> Hash::get_list_of_images(int key)
+vector<vector<unsigned char>> Hash::get_list_of_images(int key)
 {
     return hash_table[key].get_list_of_images();
 }
@@ -159,7 +160,13 @@ void Hash::searchByKey(int index)
 image::image(int dist, vector<unsigned char> &i)
 {
     distance = dist;
-    img = &i;
+    img = i;
+}
+
+image::image(const image &im2){
+    distance = im2.distance;
+    img = im2.img;
+
 }
 
 int image::get_distance()
@@ -167,6 +174,9 @@ int image::get_distance()
     return distance;
 }
 
+vector<unsigned char> image::get_image(){
+    return img;
+}
 
 PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 {
@@ -183,7 +193,6 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
     }
     image temp2=pq.top();            //we may need copy constructor
     maxDistance=temp2.get_distance();
-    cout << temp2.get_distance() << "temp2" << endl;
     for(i=N; i<number_of_images ; i++){
         dist= manhattan_dist(query, imgs[i], dimension);
         image temp3(dist, imgs[i]);
@@ -198,73 +207,42 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
     }
 
 
-    // for (int i = 0; i < imgs.size(); i++)
-    // {
-    //     // calculate distance (query, image[i])
-    //     // LEIPEI
-    //     dist = 
-        
-    //     if(pq.size() < N)
-    //     {
-    //         image temp(dist, imgs[i]);
-    //         pq.push(temp);
-    //     }
-    //     else
-    //     {
-    //         image temp2 = pq.top();
-    //         if(temp2.get_distance() > dist)
-    //         {
-    //             pq.pop();
-    //             pq.push(temp2);
-    //         }
-    //     }        
-    // }
 }
 
 
 // For hash table
 PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 {
-    maxDistance = 0;
-    vector<vector<unsigned char>*> list_of_images;
-
-
-    // auto end = next(b.begin(), min(N, b.size()));
-    // list<vector<unsigned char>*> first();
-
     int count = 0;
     int key;
-    
+    maxDistance = 0;
+    vector<vector<unsigned char>> list_of_images;
+
 
     for(int i = 0; i < hash_tables.size(); i++)
     {
         key=hash_tables[i].calculate_g(query);
         list_of_images = hash_tables[i].get_list_of_images(key);
         int dist, dimension, number_of_images;
-        vector<unsigned char>* t = list_of_images[key];
-//        dimension = t->size()-3;
-        number_of_images = list_of_images[key]->size();
-        count = 0;
+        number_of_images = list_of_images.size();
 
-        for(int j = 0; j<list_of_images.size(); j++)
+        for(int j = 0; j<number_of_images ; j++)
         {
-            cout << " checkkk :" << endl;
 //            cout << "check:" << (int)l->at(0) << endl;
-            dist = manhattan_dist(query, *list_of_images[j], list_of_images[j].size()-3);
+            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
             if(count < N)
             {
-                image temp(dist,t[j]);
+                image temp(dist,list_of_images[j]);
                 pq.push(temp);
+            }else if (count==N){
                 image temp2 = pq.top();
                 maxDistance = temp2.get_distance();
-            }
-            else{
+            }else{
                 if(maxDistance > dist)
                 {
-                    image temp3(dist,t[j]);
+                    image temp3(dist,list_of_images[j]);
                     pq.pop();
                     pq.push(temp3);
-
                     image temp4 = pq.top();
                     maxDistance = temp4.get_distance();
                 }
@@ -278,43 +256,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 
 
 
-    // for (auto &l : b)
-    // {
-    //     dist= manhattan_dist(query, *l, dimension);
-    //     if(pq.size() < N)
-    //     {
-    //         image temp(dist, *l);
-    //         pq.push(temp);
-    //     }
-    //     else if(count == N)
-    //     {
-    //         image temp2=pq.top();            //we may need copy constructor
-    //         maxDistance=temp2.get_distance();
 
-    //         dist= manhattan_dist(query, *l, dimension);
-    //         image temp3 = pq.top();
-    //         if(temp3.get_distance() > dist)
-    //         {
-    //             pq.pop();
-    //             pq.push(temp3);
-    //             temp2=pq.top();
-    //             maxDistance=temp2.get_distance();
-    //         }
-    //     }
-    //     else
-    //     {
-    //         dist= manhattan_dist(query, *l, dimension);
-    //         image temp3 = pq.top();
-    //         if(temp3.get_distance() > dist)
-    //         {
-    //             pq.pop();
-    //             pq.push(temp3);
-    //             image temp2=pq.top();
-    //             maxDistance=temp2.get_distance();
-    //         }
-    //     }
-    //     count++;
-    // }
 }
 
 void PQ::displayN()
@@ -322,9 +264,10 @@ void PQ::displayN()
     while(!pq.empty())
     {
         image temp = pq.top();
-        cout << "distance: " << temp.get_distance() << endl;
+        cout << "distance: " << temp.get_distance() << "\tin image position:"<< get_image_pos(temp.get_image()) << endl;
         pq.pop();
     }
+    cout<<endl;
 }
 
 priority_queue<image> PQ::get_pq()
@@ -332,4 +275,44 @@ priority_queue<image> PQ::get_pq()
     return pq;
 }
 
+void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
+    int  i, lsh_size, n_size;
+    priority_queue<image> lsh = pq_lsh.get_pq();
+    priority_queue<image> exhaust = pq_exhaust.get_pq();
+    
+    // vector<image> vlsh(lsh.size());
+    // vector<image> vexhaust(exhaust.size());
+
+    vector<image> vlsh;
+    vector<image> vexhaust;
+
+    while(!lsh.empty()){
+        image temp = (lsh.top());
+        auto it = vlsh.insert(vlsh.begin(), temp);
+        lsh.pop();
+    }
+    while (!exhaust.empty()){
+        image temp = (exhaust.top());
+        auto it = vexhaust.insert(vexhaust.begin(), temp);
+        exhaust.pop();
+    }
+    n_size=vexhaust.size();
+    lsh_size=vlsh.size();
+    cout<<"n_size is: "<<n_size<<" and lsh_size is: "<<lsh_size<<endl;
+    for (i=0; i<n_size ; i++){
+        cout<<"Nearest neighbor-"<<i+1<<": ";
+        cout<<get_image_pos(vexhaust[i].get_image())<<endl;
+
+        cout<<"distanceLSH: ";
+        //lsh distance
+        if(i>=lsh_size)
+            cout<<"neighboor not found"<<endl;
+        else{
+            cout<<vlsh[i].get_distance()<<endl;
+        }
+
+        cout<<"distanceTrue: ";
+        cout<<vexhaust[i].get_distance()<<endl<<endl;
+    }
+}
 

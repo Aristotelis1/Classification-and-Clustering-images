@@ -16,14 +16,14 @@ using namespace std;
 class Hash_list
 {
     private:
-        vector<vector<unsigned char>*> list_of_images;
+        vector<vector<unsigned char>> list_of_images;
     public:
         Hash_list();
         void add_image(vector<unsigned char> &i);
         void display_list();
         void clear();
         void searchByKey();
-        vector<vector<unsigned char>*> get_list_of_images();
+        vector<vector<unsigned char>> get_list_of_images();
 
 };
 
@@ -50,7 +50,7 @@ class Hash {
 
         int calculate_g(vector<unsigned char> img);
 
-        vector<vector<unsigned char>*> get_list_of_images(int key);
+        vector<vector<unsigned char>> get_list_of_images(int key);
 
 
 };
@@ -59,14 +59,15 @@ class Hash {
 class image
 {
     private:
-        vector<unsigned char>* img;
+        vector<unsigned char> img;
 
 
     public:
         int distance;
         image(int dist, vector<unsigned char> &i);
+        image(const image &im2);
         int get_distance();
-
+        vector<unsigned char> get_image();
         friend bool operator<(const image& i1, const image& i2) 
         { 
             return i1.distance < i2.distance; 
@@ -91,5 +92,7 @@ class PQ{
         priority_queue<image> get_pq();
 
 };
+
+void display_prqueues(PQ pq_lsh, PQ pq_exhaust);
 
 #endif

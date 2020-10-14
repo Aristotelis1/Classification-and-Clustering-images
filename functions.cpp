@@ -41,3 +41,48 @@ void lsh(int k, int L, int N, double R, vector<Image> q)
     // NN
 
 }
+
+
+int get_image_pos (vector<unsigned char>image){
+    int size=image.size();
+    int pos;
+    unsigned char byte3=image[size-1];
+    unsigned char byte2=image[size-2];
+    unsigned char byte1=image[size-3];
+    pos= set_int_from_bytes(byte1, byte2, byte3);
+    return pos+1;
+}
+
+int change_endianess (int big_end) 
+{
+    unsigned char byte1, byte2, byte3, byte4;
+    int little_end;
+    
+    byte1 = big_end & 255;
+    byte2 = (big_end >> 8) & 255;
+    byte3 = (big_end >> 16) & 255;
+    byte4 = (big_end >> 24) & 255;
+    little_end = ((int)byte1 << 24) + ((int)byte2 << 16) + ((int)byte3 << 8) + byte4;
+
+
+    return little_end;
+}
+
+int set_int_from_bytes (unsigned char byte1, unsigned char byte2, unsigned char byte3){
+    int b1 = byte1, b2 = byte2, b3 = byte3, r;
+    b1 = (b1 << 16);
+    b2 = (b2 << 8);
+    r=(b1 | b2 | b3);
+    return r;
+}
+
+void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2, unsigned char &byte3){
+    byte1 = 0xFF;
+    byte2 = 0xFF;
+    byte3 = 0xFF;
+    byte3 = (byte3 & source);
+    source = (source>>8);   
+    byte2 = (byte2 & source);
+    source = (source>>8);   
+    byte1 = (byte1 & source);
+}

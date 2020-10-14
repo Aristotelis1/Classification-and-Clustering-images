@@ -8,4 +8,9 @@ int manhattan_dist(vector<unsigned char> image1, vector<unsigned char> image2 ,i
 
 void lsh(int k, int L, int N, double R, std::vector<Image> q);
 
+int get_image_pos (vector<unsigned char>image);
+int change_endianess (int big_end);
+int set_int_from_bytes (unsigned char byte1, unsigned char byte2, unsigned char byte3);
+void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2, unsigned char &byte3);
+
 #endif

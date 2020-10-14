@@ -18,7 +18,7 @@ Hash_Function::Hash_Function(int dim, vector<double>s, unsigned int k_out){
         s_h[i]=s[r];    //random pick of s
     }
 
-    cout<<dimension<<" k:"<<k<<" m:"<<m<<" mod:"<<mod<<" r is:" << r<<endl;
+//    cout<<dimension<<" k:"<<k<<" m:"<<m<<" mod:"<<mod<<" r is:" << r<<endl;
 }
 
 unsigned long int Hash_Function::get_hash_key(vector<unsigned char> image, int w){
@@ -31,7 +31,7 @@ unsigned long int Hash_Function::get_hash_key(vector<unsigned char> image, int w
         sum=(x*a)%mod;
         h= (h+sum)%mod;
     }
-    cout<<"Hash key is:"<<h<<endl;
+//    cout<<"Hash key is:"<<h<<endl;
     return h;
 }
 

@@ -8,49 +8,7 @@
 
 using namespace std;
 
-int change_endianess (int big_end) 
-{
-    unsigned char byte1, byte2, byte3, byte4;
-    int little_end;
-    
-    byte1 = big_end & 255;
-    byte2 = (big_end >> 8) & 255;
-    byte3 = (big_end >> 16) & 255;
-    byte4 = (big_end >> 24) & 255;
-    little_end = ((int)byte1 << 24) + ((int)byte2 << 16) + ((int)byte3 << 8) + byte4;
 
-
-    return little_end;
-}
-
-int set_int_from_bytes (unsigned char byte1, unsigned char byte2, unsigned char byte3){
-    int b1 = byte1, b2 = byte2, b3 = byte3;
-    b1 = (b1 << 16);
-    b2 = (b2 << 8);
-    return (b1 | b2 | b3);
-}
-
-void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2, unsigned char &byte3){
-    byte1 = 0xFF;
-    byte2 = 0xFF;
-    byte3 = 0xFF;
-    byte3 = (byte3 & source);
-    source = (source>>8);   
-    byte2 = (byte2 & source);
-    source = (source>>8);   
-    byte1 = (byte1 & source);
-}
-
-int get_image_pos (vector<unsigned char>image){
-    int size=image.size();
-    unsigned char byte3=image[size];
-    unsigned char byte2=image[size-1];
-    unsigned char byte1=image[size-2];
-    return set_int_from_bytes(byte1, byte2, byte3);
-}
-
-
-  
 int main(int argc, char* argv[]) 
 { 
     srand(time(NULL));
@@ -219,14 +177,14 @@ int main(int argc, char* argv[])
             Hash h(number_of_images,images,dimension,k,s);
             hash_tables.push_back(h);
         }
-        for(int j = 0; j < 1000; j++)
+        for(int j = 0; j < number_of_images; j++)
         {
             for(int i=0;i<L;i++)
             {
                 hash_tables[i].insertItem(images[j]);
             }
+            cout<<j<<endl;
         }
-        hash_tables[1].displayHash();
 
 
 
@@ -236,18 +194,22 @@ int main(int argc, char* argv[])
         temp = -1;
         vector<unsigned char> query(dimension);
         if (q_file.is_open()){
-            for (i=1; i<10 ; i++){          //read 10 queries now -> TODO until EOF
+            for (i=1; i<3 ; i++){          //read 10 queries now -> TODO until EOF
                 // cout<<endl;
                 for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
                     q_file.read((char*)&temp,sizeof(temp));
                     query[y]=temp;
                     // cout<<(int)query[y]<<"-";
                 }
-                PQ pr(images,query,N);
-                pr.displayN();
-          
+                // cout<<"Going to display exhaust..."<<endl;
+                 PQ pr(images,query,N);
+                // pr.displayN();
+                // cout<<"Going to display lsh..."<<endl;
+                 PQ pq_hash(query,N,hash_tables);          
+                // pq_hash.displayN();
 
 
+                display_prqueues(pq_hash, pr);
 
                 //ASTO ETSI EINAI OI EKTYPWSEIS GIA META
                 
@@ -271,7 +233,7 @@ int main(int argc, char* argv[])
                 // cout<<R<<"-near neighbors:"
                 // //cout all neighbors in range R
             }
-            PQ pq_hash(query,N,hash_tables);
+
         }else{
             cout<<"Cannot open query file: "<<query_file<<endl;
         }
