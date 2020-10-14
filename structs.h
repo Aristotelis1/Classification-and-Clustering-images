@@ -23,6 +23,8 @@ class Hash_list
         void display_list();
         void clear();
         void searchByKey();
+        list<vector<unsigned char>*> get_list_of_images();
+
 };
 
 
@@ -47,6 +49,9 @@ class Hash {
         void searchByKey(int index);
 
         int calculate_g(vector<unsigned char> img);
+
+        list<vector<unsigned char>*> get_list_of_images();
+
 
 };
 
@@ -77,12 +82,13 @@ class PQ{
         // vector<vector<unsigned char>> *images;
 
     public:
-        PQ(list<vector<unsigned char>*> b, vector<unsigned char> query, int N);
+        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
         PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
 
         void displayN();
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k
+        priority_queue<image> get_pq();
 
 };
 
