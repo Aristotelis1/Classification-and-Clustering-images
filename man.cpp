@@ -41,6 +41,14 @@ void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2,
     byte1 = (byte1 & source);
 }
 
+int get_image_pos (vector<unsigned char>image){
+    int size=image.size();
+    unsigned char byte3=image[size];
+    unsigned char byte2=image[size-1];
+    unsigned char byte1=image[size-2];
+    return set_int_from_bytes(byte1, byte2, byte3);
+}
+
 
   
 int main(int argc, char* argv[]) 
@@ -215,10 +223,10 @@ int main(int argc, char* argv[])
         {
             for(int i=0;i<L;i++)
             {
-                hash_tables[i].insertItem(images[i]);
+                hash_tables[i].insertItem(images[j]);
             }
         }
-        //hash_tables[1].displayHash();
+        hash_tables[1].displayHash();
 
 
 
