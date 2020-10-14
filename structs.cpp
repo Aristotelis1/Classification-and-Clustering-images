@@ -233,65 +233,27 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
     // list<vector<unsigned char>*> first();
 
     int count = 0;
+    int key;
     
-    // for (auto&l : list_of_images)
-    // {
-    //     cout << " lala " << endl;
-    //     dist = manhattan_dist(query,*l, dimension);
-    //     if(count < N)
-    //     {
-    //         image temp(dist, *l);
-    //         pq.push(temp);
-    //     }else if(count == N)
-    //     {
-    //         image temp2 = pq.top();
-    //         maxDistance = temp2.get_distance();
-
-    //         dist = manhattan_dist(query, *l, dimension);
-    //         if(maxDistance > dist)
-    //         {
-    //             image temp3(dist,*l);
-    //             pq.pop();
-    //             pq.push(temp3);
-
-    //             image temp4 = pq.top();
-    //             maxDistance = temp4.get_distance();
-    //         }
-    //     }
-    //     else
-    //     {
-    //         dist= manhattan_dist(query, *l, dimension);
-    //         if(maxDistance > dist)
-    //         {
-    //             image temp3(dist,*l);
-    //             pq.pop();
-    //             pq.push(temp3);
-
-    //             image temp4 = pq.top();
-    //             maxDistance = temp4.get_distance();
-    //         }
-    //     }
-
-    //     count++;  
-    // }
 
     for(int i = 0; i < hash_tables.size(); i++)
     {
+        key=hash_tables[i].calculate_g(query);
         list_of_images = hash_tables[i].get_list_of_images();
         int dist, dimension, number_of_images;
-        vector<unsigned char>* t = list_of_images.front();
-        dimension = t->size()-3;
-        number_of_images = list_of_images.size();
+        vector<unsigned char>* t = list_of_images[key];
+//        dimension = t->size()-3;
+        number_of_images = list_of_images[key]->size();
         count = 0;
 
-        for(auto &l : list_of_images)
+        for(int j=0; j<number_of_images ; j++)
         {
             cout << " checkkk :" << endl;
-            cout << "check:" << (int)l->at(0) << endl;
-            dist = manhattan_dist(query, *l, dimension);
+//            cout << "check:" << (int)l->at(0) << endl;
+            dist = manhattan_dist(query, t[j], t[j].size()-3);
             if(count < N)
             {
-                image temp(dist,*l);
+                image temp(dist,t[j]);
                 pq.push(temp);
                 image temp2 = pq.top();
                 maxDistance = temp2.get_distance();
@@ -299,7 +261,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
             else{
                 if(maxDistance > dist)
                 {
-                    image temp3(dist,*l);
+                    image temp3(dist,t[j]);
                     pq.pop();
                     pq.push(temp3);
 
