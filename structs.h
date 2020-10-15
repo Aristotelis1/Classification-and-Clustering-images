@@ -78,18 +78,21 @@ class image
 class PQ{
     private:
         priority_queue<image> pq;
+        priority_queue<image> range;
         int maxDistance;
         // list<vector<unsigned char>*> *bucket;
         // vector<vector<unsigned char>> *images;
 
     public:
-        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
+        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables, int r);
         PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
+        //PQ(vector<unsigned char> query,vector<Hash> hash_tables,int r);
 
         void displayN();
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
+        void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
 
 };
 

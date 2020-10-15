@@ -211,7 +211,7 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 
 
 // For hash table
-PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
+PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables,int r)
 {
     int count = 0;
     int key;
@@ -254,9 +254,40 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 
     cout << "pq created " << endl;
 
+    range_search(r,hash_tables,query);
 
 
+}
 
+void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query)
+{
+    int key;
+    vector<vector<unsigned char>> list_of_images;
+    int count = 0;
+    for(int i = 0; i < hash_tables.size(); i++)
+    {
+        key=hash_tables[i].calculate_g(query);
+        list_of_images = hash_tables[i].get_list_of_images(key);
+        int dist, dimension, number_of_images;
+        number_of_images = list_of_images.size();
+
+        for(int j = 0; j<number_of_images ; j++)
+        {
+            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+            if(dist < r)
+            {
+                image temp(dist,list_of_images[j]);
+                count++;
+                range.push(temp);
+            }
+            if(count > 50*hash_tables.size())
+            {
+                return;
+            }
+        }
+
+
+    }
 }
 
 void PQ::displayN()
