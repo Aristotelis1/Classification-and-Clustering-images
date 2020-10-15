@@ -2,11 +2,13 @@
 #include <string.h>
 #include <fstream>
 #include <vector>
+#include <chrono>
 
 #include "hash_functions.h"
 #include "structs.h"
 
 using namespace std;
+using namespace std::chrono;
 
 
 int main(int argc, char* argv[]) 
@@ -81,8 +83,8 @@ int main(int argc, char* argv[])
             break;
         }
     }
-    while (R<0.1 || R>1000){
-        cout <<"Give me R (double) in range 0.1-1000 (if you want it on default type '0') : ";
+    while (R<0.1 || R>70000){
+        cout <<"Give me R (double) in range 0.1-70000 (if you want it on default type '0') : ";
         cin >> R;
         if (R==0){
             R=1.0;
@@ -109,6 +111,8 @@ int main(int argc, char* argv[])
         file.read((char*)&columns,sizeof(columns));
         columns= change_endianess(columns);
         dimension=rows*columns;
+
+        //number_of_images = 10000;
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
@@ -193,8 +197,13 @@ int main(int argc, char* argv[])
         std::ifstream q_file (query_file);
         temp = -1;
         vector<unsigned char> query(dimension);
+
+        // Measure execution time
+        //auto start = high_resolution_clock::now();
+        double lsh_duration = 0.0;
+        double exhaust_duration = 0.0;
         if (q_file.is_open()){
-            for (i=1; i<3 ; i++){          //read 10 queries now -> TODO until EOF
+            for (i=1; i<5 ; i++){          //read 10 queries now -> TODO until EOF
                 // cout<<endl;
                 for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
                     q_file.read((char*)&temp,sizeof(temp));
@@ -202,14 +211,32 @@ int main(int argc, char* argv[])
                     // cout<<(int)query[y]<<"-";
                 }
                 // cout<<"Going to display exhaust..."<<endl;
-                 PQ pr(images,query,N);
+
+                auto start = high_resolution_clock::now();
+                PQ pr(images,query,N);
+                auto end = high_resolution_clock::now();
+                duration<double> elapsed_seconds = (end-start);
+                
+                exhaust_duration = exhaust_duration + elapsed_seconds.count();
+
                 // pr.displayN();
                 // cout<<"Going to display lsh..."<<endl;
-                 PQ pq_hash(query,N,hash_tables,45000);          
+
+                auto start1 = high_resolution_clock::now();
+                PQ pq_hash(query,N,hash_tables); 
+                auto end1 = high_resolution_clock::now();  
+                duration<double> elapsed_seconds1 = (end1-start1);
+                
+                lsh_duration = lsh_duration + elapsed_seconds1.count();       
                 // pq_hash.displayN();
 
-
                 display_prqueues(pq_hash, pr);
+                cout << "Time taken for exhaust: " << elapsed_seconds.count() << " seconds" << endl;
+                cout << "Time taken for lsh: " << elapsed_seconds1.count() << " seconds" << endl;
+
+
+                pq_hash.range_search(R,hash_tables,query);
+                cout << "R-near neighbors: " << endl;
                 pq_hash.displayRange();
 
                 //ASTO ETSI EINAI OI EKTYPWSEIS GIA META
@@ -234,9 +261,17 @@ int main(int argc, char* argv[])
                 // cout<<R<<"-near neighbors:"
                 // //cout all neighbors in range R
             }
+            // auto stop = high_resolution_clock::now();
+            // auto duration = duration_cast<seconds>(stop-start);
+            cout << "Time taken for all the queries with lsh: "
+                 << lsh_duration << " seconds" << endl;
+            cout << "Time taken for all the queries with exhaust: "
+                 << exhaust_duration << " seconds" << endl;
+            
+
 
         }else{
-            cout<<"Cannot open query file: "<<query_file<<endl;
+            cout<<"Cannot open query file: "<< query_file<<endl;
         }
 
 

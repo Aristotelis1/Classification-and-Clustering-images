@@ -78,13 +78,13 @@ class image
 class PQ{
     private:
         priority_queue<image> pq;
-        priority_queue<image> range;
+        priority_queue<int, vector<int>, greater<int>> range;
         int maxDistance;
         // list<vector<unsigned char>*> *bucket;
         // vector<vector<unsigned char>> *images;
 
     public:
-        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables, int r);
+        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
         PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
         //PQ(vector<unsigned char> query,vector<Hash> hash_tables,int r);
 

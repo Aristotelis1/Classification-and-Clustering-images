@@ -82,7 +82,7 @@ int mod_exp(unsigned long int base, unsigned long int exp, unsigned long int mod
 
 
 int get_a(unsigned char x, double s, int w){
-    return (abs((double)x-s)/w);
+    return ((double)x-s+w)/w;
 }
 
 unsigned long int concatenate_h(vector<Hash_Function>hfs, vector<unsigned char> image, int w){

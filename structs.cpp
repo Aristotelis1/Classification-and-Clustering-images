@@ -211,7 +211,7 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 
 
 // For hash table
-PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables,int r)
+PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 {
     int count = 0;
     int key;
@@ -254,7 +254,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables,int r)
 
     cout << "pq created " << endl;
 
-    range_search(r,hash_tables,query);
+    // range_search(r,hash_tables,query);
 
 
 }
@@ -264,6 +264,7 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
     int key;
     vector<vector<unsigned char>> list_of_images;
     int count = 0;
+    cout << "r: " << r << endl;
     for(int i = 0; i < hash_tables.size(); i++)
     {
         key=hash_tables[i].calculate_g(query);
@@ -276,11 +277,12 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
             dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
             if(dist < r)
             {
-                image temp(dist,list_of_images[j]);
+                //image temp(dist,list_of_images[j]);
+                int temp = get_image_pos(list_of_images[j]);
                 count++;
                 range.push(temp);
             }
-            if(count > 50*hash_tables.size())
+            if(count > 20*hash_tables.size())
             {
                 return;
             }
@@ -303,10 +305,11 @@ void PQ::displayN()
 
 void PQ::displayRange()
 {
+    //vector<int> imgs_pos;
     while(!range.empty())
     {
-        image temp = range.top();
-        cout << "distance: " << temp.get_distance() << "\tin image position:"<< get_image_pos(temp.get_image()) << endl;
+        int temp = range.top();
+        cout << "image_number: "<< temp << endl;
         range.pop();
     }
     cout<<endl;
@@ -332,18 +335,26 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
         image temp = (lsh.top());
         auto it = vlsh.insert(vlsh.begin(), temp);
         lsh.pop();
+
     }
     while (!exhaust.empty()){
         image temp = (exhaust.top());
         auto it = vexhaust.insert(vexhaust.begin(), temp);
         exhaust.pop();
     }
+
     n_size=vexhaust.size();
     lsh_size=vlsh.size();
     cout<<"n_size is: "<<n_size<<" and lsh_size is: "<<lsh_size<<endl;
     for (i=0; i<n_size ; i++){
         cout<<"Nearest neighbor-"<<i+1<<": ";
-        cout<<get_image_pos(vexhaust[i].get_image())<<endl;
+        if(i>=lsh_size)
+        {
+            cout<<"neighboor not found"<<endl;
+        }else
+        {
+            cout<<get_image_pos(vlsh[i].get_image())<<endl;
+        }
 
         cout<<"distanceLSH: ";
         //lsh distance
