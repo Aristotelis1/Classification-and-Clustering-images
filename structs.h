@@ -93,6 +93,7 @@ class PQ{
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
         void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
+        void displayRange();
 
 };
 

@@ -301,6 +301,17 @@ void PQ::displayN()
     cout<<endl;
 }
 
+void PQ::displayRange()
+{
+    while(!range.empty())
+    {
+        image temp = range.top();
+        cout << "distance: " << temp.get_distance() << "\tin image position:"<< get_image_pos(temp.get_image()) << endl;
+        range.pop();
+    }
+    cout<<endl;
+}
+
 priority_queue<image> PQ::get_pq()
 {
     return pq;

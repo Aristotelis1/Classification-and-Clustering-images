@@ -205,11 +205,12 @@ int main(int argc, char* argv[])
                  PQ pr(images,query,N);
                 // pr.displayN();
                 // cout<<"Going to display lsh..."<<endl;
-                 PQ pq_hash(query,N,hash_tables);          
+                 PQ pq_hash(query,N,hash_tables,45000);          
                 // pq_hash.displayN();
 
 
                 display_prqueues(pq_hash, pr);
+                pq_hash.displayRange();
 
                 //ASTO ETSI EINAI OI EKTYPWSEIS GIA META
                 
