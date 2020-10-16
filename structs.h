@@ -37,7 +37,7 @@ class Hash {
         Hash_list* hash_table;
         
     public:
-        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s); // Constructor
+        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
 
         ~Hash();
 

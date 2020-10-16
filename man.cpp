@@ -7,6 +7,8 @@
 #include "hash_functions.h"
 #include "structs.h"
 
+#define SAMPLES 100
+
 using namespace std;
 using namespace std::chrono;
 
@@ -112,7 +114,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        //number_of_images = 10000;
+//        number_of_images = 10000;
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
@@ -133,52 +135,24 @@ int main(int argc, char* argv[])
 
         }
         cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
-        cout << "Mean distance (r) is: " << get_mean_range(50, images) << endl;
+        int w;
+        w=get_w(get_mean_range(SAMPLES, images));
+//        w=35000;
+        cout << "W is 4*mean distance--> " << w << endl;
 
         //create a vector for s (normally distributed L*k*d doubles in range [0,w])
         vector<double>s(L*k*dimension);
-        double s_range = (double) get_w(get_mean_range(number_of_images/30, images)) / (double) (L * k * dimension);
+        double s_range = (double) w / (double) (L * k * dimension);
         for (int i=0; i<L*k*dimension ; i++){
             s[i]= i*s_range;
         }
-
-        // vector<Hash_Function>hfunctions;
-        // // hfunctions.resize(k);
-        // int w=get_w(get_mean_range(number_of_images/30, images));
-        // for (i=0; i<k; i++){
-        //     Hash_Function *temp = new Hash_Function(dimension, s, k);
-        //     hfunctions.push_back(*temp);
-        // }
-
-        // Hash_Function hf(dimension, s, 2);
-        // int w=get_w(get_mean_range(number_of_images/30, images));
-//        cout<<"Hash key is: "<< hf.get_hash_key(images[100], w)<<endl;;
-
-        //Hash h(number_of_images);
-
-        //vector<Hash> 
-        // unsigned long int testg;
-        // for (i=1; i<100; i++){
-        //     testg=concatenate_h(hfunctions, images[i], w);
-        //     int key = testg % (number_of_images/8);
-        //     h.insertItem(images[i], key);
-        //     cout<< testg<<endl<<endl;
-        // }
-        // h.displayHash();
-
-
-
-        
-        // cout << "search by key 7487" << endl;
-        // h.searchByKey(7487);
-
 
         // CREATING HASH TABLES
 
         vector<Hash> hash_tables;
         for(int j = 0; j < L; j++)
         {
-            Hash h(number_of_images,images,dimension,k,s);
+            Hash h(number_of_images,images,dimension,k,s, w);
             hash_tables.push_back(h);
         }
         for(int j = 0; j < number_of_images; j++)
@@ -187,7 +161,7 @@ int main(int argc, char* argv[])
             {
                 hash_tables[i].insertItem(images[j]);
             }
-            cout<<j<<endl;
+//            cout<<j<<endl;
         }
 
 
@@ -203,7 +177,7 @@ int main(int argc, char* argv[])
         double lsh_duration = 0.0;
         double exhaust_duration = 0.0;
         if (q_file.is_open()){
-            for (i=1; i<5 ; i++){          //read 10 queries now -> TODO until EOF
+            for (i=1; i<=30 ; i++){          //read 10 queries now -> TODO until EOF
                 // cout<<endl;
                 for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
                     q_file.read((char*)&temp,sizeof(temp));
@@ -211,6 +185,8 @@ int main(int argc, char* argv[])
                     // cout<<(int)query[y]<<"-";
                 }
                 // cout<<"Going to display exhaust..."<<endl;
+
+                cout<<"Query: "<<i<<endl;
 
                 auto start = high_resolution_clock::now();
                 PQ pr(images,query,N);
@@ -263,10 +239,10 @@ int main(int argc, char* argv[])
             }
             // auto stop = high_resolution_clock::now();
             // auto duration = duration_cast<seconds>(stop-start);
-            cout << "Time taken for all the queries with lsh: "
-                 << lsh_duration << " seconds" << endl;
-            cout << "Time taken for all the queries with exhaust: "
-                 << exhaust_duration << " seconds" << endl;
+            // cout << "Time taken for all the queries with lsh: "
+            //      << lsh_duration << " seconds" << endl;
+            // cout << "Time taken for all the queries with exhaust: "
+            //      << exhaust_duration << " seconds" << endl;
             
 
 

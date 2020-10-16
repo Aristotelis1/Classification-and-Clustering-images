@@ -80,12 +80,12 @@ void Hash_list::searchByKey()
     // cout << endl;
 }
 
-Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s)
+Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w)
 {
     this->bucket = number_of_images/8; //size of the hash table
     // table = new array<list< vector<unsigned char>>,bucket>;
     hash_table = new Hash_list[bucket];
-    w=get_w(get_mean_range(number_of_images/30, images));
+    w=in_w;
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, k);
         hfunctions.push_back(*temp);
@@ -213,11 +213,12 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 // For hash table
 PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 {
-    int count = 0;
+    int count = 0, z;
     int key;
     maxDistance = 0;
     vector<vector<unsigned char>> list_of_images;
-
+    vector<int> impos;
+    bool imexist;
 
     for(int i = 0; i < hash_tables.size(); i++)
     {
@@ -234,6 +235,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
             {
                 image temp(dist,list_of_images[j]);
                 pq.push(temp);
+                impos.push_back(get_image_pos(temp.get_image()));
             }else if (count==N){
                 image temp2 = pq.top();
                 maxDistance = temp2.get_distance();
@@ -241,10 +243,19 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
                 if(maxDistance > dist)
                 {
                     image temp3(dist,list_of_images[j]);
-                    pq.pop();
-                    pq.push(temp3);
-                    image temp4 = pq.top();
-                    maxDistance = temp4.get_distance();
+                    for (z=0, imexist=false ; z<impos.size() ; z++){
+                        if (impos[z] == get_image_pos(temp3.get_image())){
+                            imexist = true;
+                            break;
+                        }
+                    }
+                    if (!imexist){
+                        pq.pop();
+                        pq.push(temp3);
+                        impos.push_back(get_image_pos(temp3.get_image()));
+                        image temp4 = pq.top();
+                        maxDistance = temp4.get_distance();
+                    }
                 }
             }
             count++;
@@ -252,7 +263,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 
     }
 
-    cout << "pq created " << endl;
+    cout << "Priority queue searched:\t----"<<count<<" buckets----" << endl;
 
     // range_search(r,hash_tables,query);
 
@@ -261,8 +272,10 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 
 void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query)
 {
-    int key;
+    int key, z;
     vector<vector<unsigned char>> list_of_images;
+    vector<int>impos;
+    bool imexist;
     int count = 0;
     cout << "r: " << r << endl;
     for(int i = 0; i < hash_tables.size(); i++)
@@ -279,8 +292,17 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
             {
                 //image temp(dist,list_of_images[j]);
                 int temp = get_image_pos(list_of_images[j]);
-                count++;
-                range.push(temp);
+                for (z=0, imexist=false ; z < impos.size() ; z++){
+                    if (impos[z] == temp){
+                        imexist=true;
+                        break;
+                    }
+                }
+                if (!imexist){
+                    count++;
+                    range.push(temp);
+                    impos.push_back(temp);
+                }
             }
             if(count > 20*hash_tables.size())
             {
@@ -368,4 +390,3 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
         cout<<vexhaust[i].get_distance()<<endl<<endl;
     }
 }
-
