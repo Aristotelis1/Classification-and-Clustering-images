@@ -12,3 +12,10 @@ int get_image_pos (vector<unsigned char>image){
     unsigned char byte1=image[size-2];
     return set_int_from_bytes(byte1, byte2, byte3);
 }
+    
+
+./CLUSTER
+
+g++ -o cluster cluster.cpp functions.cpp structs.cpp hash_functions.cpp --std=c++11
+
+./cluster -i train-images-idx3-ubyte -c cluster.config -o output.txt -complete yes -method classic
