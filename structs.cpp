@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <stdlib.h>
+#include <algorithm>
 #include "image.h"
 #include "functions.h"
 #include "hash_functions.h"
@@ -389,4 +391,75 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
         cout<<"distanceTrue: ";
         cout<<vexhaust[i].get_distance()<<endl<<endl;
     }
+}
+
+
+/* FUNCTIONS FOR CLUSTERING */
+
+Point::Point(vector<unsigned char> image,int dimensions)
+{
+    this->image=image;
+    this->dimensions=dimensions;
+}
+
+int Point::get_dimensions()
+{
+    return this->dimensions;
+}
+
+unsigned char Point::getPixel(int position)
+{
+    return this->image[position];
+}
+
+void Point::set_cluster(int id)
+{
+    this->clusterId=id;
+}
+
+Cluster::Cluster(int clusterId,Point centroid)
+{
+    this->clusterId = clusterId;
+    for(int i = 0; i < centroid.get_dimensions(); i++)
+    {
+        this->center.push_back(centroid.getPixel(i));
+    }
+    centroid.set_cluster(clusterId);
+    this->images.push_back(centroid);
+}
+
+
+
+KMeans::KMeans(int k)
+{
+    this->K = k;
+    cout<<"Kmeans class created" << endl;
+}
+
+void KMeans::run(vector<Point>& all_points)
+{
+    number_of_points = all_points.size();
+    dimensions = all_points[0].get_dimensions();
+
+    // Initializing Clusters
+
+    vector<int> used;
+    for(int i = 0; i < K; i++)
+    {
+        while(true){
+            int index = rand() % number_of_points; // getting a random point to be a centroid of a cluster
+            if(find(used.begin(),used.end(),index) == used.end())
+            {
+                // index doesnt exist in the vector
+                used.push_back(index);
+                all_points[index].set_cluster(i);
+                Cluster cluster(i,all_points[index]);
+                clusters.push_back(cluster);
+                cout << "Cluster: " << i << " picked for centroid: " << index << endl;
+                break;
+            }
+        }
+    }
+
+    cout<< "dimensions: " << dimensions << endl;
 }

@@ -7,3 +7,9 @@ image.o
 man.o
 structs.o
 test
+lsh
+cube
+cube.o
+cluster
+.vscode/launch.json
+cluster.dSYM/Contents/Info.plist

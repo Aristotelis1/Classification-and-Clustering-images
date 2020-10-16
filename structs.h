@@ -97,6 +97,42 @@ class PQ{
 
 };
 
+
+class Point{
+    private:
+        int clusterId,dimensions;
+        vector<unsigned char> image;
+    public:
+        Point(vector<unsigned char> image,int dimensions);
+        int get_dimensions();
+        unsigned char getPixel(int position);
+        void set_cluster(int id);
+
+};
+
+class Cluster{
+    private:
+        vector<Point> images;
+        vector<unsigned char> center;
+        int clusterId;
+    public:
+        Cluster(int clusterId,Point centroid);
+        vector<unsigned char> get_center();
+        void calculate_center();
+};
+
+class KMeans{
+    private:
+        int K,number_of_points,dimensions;
+        vector<Cluster> clusters;
+    public:
+        KMeans(int K);
+        int get_nearest_cluster_id(Point point);
+        void run(vector<Point>& all_points);
+
+
+};
+
 void display_prqueues(PQ pq_lsh, PQ pq_exhaust);
 
 #endif
