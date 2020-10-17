@@ -6,6 +6,7 @@
 
 #include "functions.h"
 #include "structs.h"
+#include "structs_cluster.h"
 
 
 using namespace std;
@@ -74,7 +75,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-//        number_of_images = 10000;
+       number_of_images = 20;
 
         //declare vector of images
         vector<Point> all_points;
