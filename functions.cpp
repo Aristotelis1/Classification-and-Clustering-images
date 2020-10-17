@@ -1,6 +1,7 @@
 #include <cmath>
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include "functions.h"
 
@@ -85,4 +86,36 @@ void get_bytes_from_int (int source, unsigned char &byte1, unsigned char &byte2,
     byte2 = (byte2 & source);
     source = (source>>8);   
     byte1 = (byte1 & source);
+}
+
+int modifyBit(int n, int p, int b){ 
+    int mask = 1 << p; 
+    return (n & ~mask) | ((b << p) & mask); 
+}
+
+int key_shake(int key, int p){
+    int temp=key;
+    temp=temp>>(p-1);
+    if ((temp%2)==0)
+        key=modifyBit(key, p-1, 1);
+    else
+        key=modifyBit(key, p-1, 0);
+    return key;
+}
+
+int change_neighbor(int key, int p, int k){
+    int z, i;
+
+    for (z=k; z>0; z--){
+        for(i=1; i<=z; i++){
+            if(p==i){
+                key=key_shake(key, i);
+                return key;
+            }
+        }
+        key=key_shake(key, z);
+        p = p-z;
+    }
+
+    return key;
 }

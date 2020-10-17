@@ -4,8 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <stdlib.h>
-#include <algorithm>
 #include "image.h"
 #include "functions.h"
 #include "hash_functions.h"
@@ -103,7 +101,7 @@ Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimen
     //     hash_table[i].clear();
     // }
 
-    cout <<"Hash table created " << endl;
+//    cout <<"Hash table created " << endl;
 
 }
 
@@ -393,73 +391,146 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
     }
 }
 
-
-/* FUNCTIONS FOR CLUSTERING */
-
-Point::Point(vector<unsigned char> image,int dimensions)
-{
-    this->image=image;
-    this->dimensions=dimensions;
-}
-
-int Point::get_dimensions()
-{
-    return this->dimensions;
-}
-
-unsigned char Point::getPixel(int position)
-{
-    return this->image[position];
-}
-
-void Point::set_cluster(int id)
-{
-    this->clusterId=id;
-}
-
-Cluster::Cluster(int clusterId,Point centroid)
-{
-    this->clusterId = clusterId;
-    for(int i = 0; i < centroid.get_dimensions(); i++)
-    {
-        this->center.push_back(centroid.getPixel(i));
+Cube::Cube (vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w){
+    vertices=pow(2,k);
+    w=in_w;
+    cube_vertex = new Hash_list[vertices];
+    for (int i=0; i<k; i++){
+        Hash_Function *temp = new Hash_Function(dimension, s, 4);
+        hfunctions.push_back(*temp);
     }
-    centroid.set_cluster(clusterId);
-    this->images.push_back(centroid);
+    cout<<"Hypercube with "<<vertices<<" vertices created."<<endl;
+}
+
+int Cube::calculate_fh(int key){
+    //TODO A GOOD F FOR SENDING HASH TO [0,1]
+    return (key%2);
+
 }
 
 
 
-KMeans::KMeans(int k)
-{
-    this->K = k;
-    cout<<"Kmeans class created" << endl;
+int Cube::calculate_vector_key(vector<unsigned char>image){
+    int k, bit, fh=0, key;
+    k=hfunctions.size();
+    for (int i=0; i<k ; i++){
+        key = hfunctions[i].get_hash_key(image, w);
+        bit = calculate_fh(key);
+        bit = bit << i;
+        fh = fh | bit;
+    }
+    return fh;
 }
 
-void KMeans::run(vector<Point>& all_points)
+void Cube::insertItem(vector<unsigned char> image)
 {
-    number_of_points = all_points.size();
-    dimensions = all_points[0].get_dimensions();
+    int key = calculate_vector_key(image);
+    cube_vertex[key].add_image(image);
+}
 
-    // Initializing Clusters
 
-    vector<int> used;
-    for(int i = 0; i < K; i++)
+void Cube::displayCube()
+{
+    //list<vector<unsigned char>*>::iterator it;
+    for(int i = 0; i < vertices; i++)
     {
-        while(true){
-            int index = rand() % number_of_points; // getting a random point to be a centroid of a cluster
-            if(find(used.begin(),used.end(),index) == used.end())
-            {
-                // index doesnt exist in the vector
-                used.push_back(index);
-                all_points[index].set_cluster(i);
-                Cluster cluster(i,all_points[index]);
-                clusters.push_back(cluster);
-                cout << "Cluster: " << i << " picked for centroid: " << index << endl;
-                break;
+        cout << i;
+        cube_vertex[i].display_list();
+    }
+}
+
+vector<vector<unsigned char>> Cube::get_list_of_images(int key)
+{
+    return cube_vertex[key].get_list_of_images();
+}
+
+PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k)
+{
+    int key, number_of_images, dist, i,j, z, count=0;
+    bool fit = false, imexist;
+    vector<vector<unsigned char>> list_of_images;
+    vector<int> impos;
+    
+    key=hypercube.calculate_vector_key(query);
+    list_of_images=hypercube.get_list_of_images(key);
+    number_of_images = list_of_images.size();
+    if(probes>(pow(2,k)))   //dont have enough vertices to check
+        probes=pow(2,k);    //changed probes to max vertices
+    cout<<"Probes is: "<<probes<<endl;
+    if (M < number_of_images)
+        fit = true;
+    if(fit == true){        //Search in only one vertex
+        for (j=0 ; j<M ; j++){
+            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+            if (count < N){
+                image temp(dist,list_of_images[j]);
+                pq.push(temp);
+                impos.push_back(get_image_pos(temp.get_image()));
+            }else if (count==N){
+                image temp2 = pq.top();
+                maxDistance = temp2.get_distance();
+            }else{
+                if(maxDistance > dist)
+                {
+                    image temp3(dist,list_of_images[j]);
+                    for (z=0, imexist=false ; z<impos.size() ; z++){
+                        if (impos[z] == get_image_pos(temp3.get_image())){
+                            imexist = true;
+                            break;
+                        }
+                    }
+                    if (!imexist){
+                        pq.pop();
+                        pq.push(temp3);
+                        impos.push_back(get_image_pos(temp3.get_image()));
+                        image temp4 = pq.top();
+                        maxDistance = temp4.get_distance();
+                    }
+                }
             }
+            count++;
         }
-    }
+    }else{          //check other vertices
+        int tempk=key;
+        for(i=0 ; i<probes && count<M ; i++){
+            list_of_images=hypercube.get_list_of_images(tempk);
+            number_of_images = list_of_images.size();
+            for (j=0 ; j<number_of_images && count<M ; j++){
+                dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+                if (count < N){
+                    image temp(dist,list_of_images[j]);
+                    pq.push(temp);
+                    impos.push_back(get_image_pos(temp.get_image()));
+                }else if (count==N){
+                    image temp2 = pq.top();
+                    maxDistance = temp2.get_distance();
+                }else{
+                    if(maxDistance > dist)
+                    {
+                        image temp3(dist,list_of_images[j]);
+                        for (z=0, imexist=false ; z<impos.size() ; z++){
+                            if (impos[z] == get_image_pos(temp3.get_image())){
+                                imexist = true;
+                                break;
+                            }
+                        }
+                        if (!imexist){
+                            pq.pop();
+                            pq.push(temp3);
+                            impos.push_back(get_image_pos(temp3.get_image()));
+                            image temp4 = pq.top();
+                            maxDistance = temp4.get_distance();
+                        }
+                    }
+                }
+                count++;
+            }
+            cout<<"OLD KEY: "<<key;
+            tempk=change_neighbor(key, i+1, k);
+            cout<<" CHANGED TO:"<<tempk<<endl;
+        }
 
-    cout<< "dimensions: " << dimensions << endl;
+    }
+    cout<<"---------Totally checked "<<count<<"---------possible neighboors"<<endl;
+ 
 }

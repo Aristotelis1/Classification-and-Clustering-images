@@ -55,6 +55,23 @@ class Hash {
 
 };
 
+class Cube {
+    private:
+        int vertices, w;
+        unsigned long int testg;
+        vector<Hash_Function> hfunctions;
+        Hash_list* cube_vertex;
+        
+    public:
+//        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
+        Cube(vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w);
+        int calculate_fh(int key);
+        int calculate_vector_key(vector<unsigned char>images);
+        void insertItem(vector<unsigned char> i);
+        void displayCube();
+        vector<vector<unsigned char>> get_list_of_images(int key);
+
+};
 
 class image
 {
@@ -87,49 +104,13 @@ class PQ{
         PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
         PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
         //PQ(vector<unsigned char> query,vector<Hash> hash_tables,int r);
-
+        PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k);
         void displayN();
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
         void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
         void displayRange();
-
-};
-
-
-class Point{
-    private:
-        int clusterId,dimensions;
-        vector<unsigned char> image;
-    public:
-        Point(vector<unsigned char> image,int dimensions);
-        int get_dimensions();
-        unsigned char getPixel(int position);
-        void set_cluster(int id);
-
-};
-
-class Cluster{
-    private:
-        vector<Point> images;
-        vector<unsigned char> center;
-        int clusterId;
-    public:
-        Cluster(int clusterId,Point centroid);
-        vector<unsigned char> get_center();
-        void calculate_center();
-};
-
-class KMeans{
-    private:
-        int K,number_of_points,dimensions;
-        vector<Cluster> clusters;
-    public:
-        KMeans(int K);
-        int get_nearest_cluster_id(Point point);
-        void run(vector<Point>& all_points);
-
 
 };
 

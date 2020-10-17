@@ -2,11 +2,15 @@
 #include <string.h>
 #include <fstream>
 #include <vector>
+#include <chrono>
 
 #include "hash_functions.h"
 #include "structs.h"
 
 using namespace std;
+using namespace std::chrono;
+
+#define SAMPLES 10
 
 
 int main(int argc, char* argv[]) 
@@ -55,23 +59,23 @@ int main(int argc, char* argv[])
         cin >> output_file;
         cout <<endl;
     }
-    while (k<2 || k>8){
-        cout <<"Give me k in range 2-8 (if you want it on default type '0') : ";
+    while (k<2 || k>100){
+        cout <<"Give me k in range 2-100 (if you want it on default type '0') : ";
         cin >> k;
         if (k==0){
-            k=3;
+            k=14;
             break;
         }
     }
-    while (M<1 || M>1000){
-        cout <<"Give me M in range 1-1000 (if you want it on default type '0') : ";
+    while (M<1 || M>1000000){
+        cout <<"Give me M in range 1-1000000 (if you want it on default type '0') : ";
         cin >> M;
         if (M==0){
             M=10;
             break;
         }
-    }while (probes<1 || probes>100){
-        cout <<"Give me probes in range 1-100 (if you want it on default type '0') : ";
+    }while (probes<1 || probes>1000000){
+        cout <<"Give me probes in range 1-1000000 (if you want it on default type '0') : ";
         cin >> probes;
         if (probes==0){
             probes=2;
@@ -86,11 +90,11 @@ int main(int argc, char* argv[])
             break;
         }
     }
-    while (R<0.1 || R>50000){
-        cout <<"Give me R (double) in range 0.1-50000 (if you want it on default type '0') : ";
+    while (R<1 || R>100000){
+        cout <<"Give me R (double) in range 1-100000 (if you want it on default type '0') : ";
         cin >> R;
         if (R==0){
-            R=1.0;
+            R=10000;
             break;
         }
     }
@@ -119,6 +123,8 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
+        number_of_images=10000;
+
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
         int sum=0;
@@ -138,20 +144,87 @@ int main(int argc, char* argv[])
 
         }
         cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
-        cout << "Mean distance (r) is: " << get_mean_range(50, images) << endl;
+        int w=get_mean_range(SAMPLES, images);
+//        w=100;
+        cout << "Mean distance (r) is: " << w << endl;
 
         //create a vector for s (normally distributed L*k*d doubles in range [0,w])
         vector<double>s(k*dimension);
-        double s_range = (double) get_w(get_mean_range(number_of_images/30, images)) / (double) (k * dimension);
-        for (int i=0; i<k*dimension ; i++){
+        double s_range = (double) w / (double) (k * dimension);
+        for (int i=0; i<(k*dimension) ; i++){
             s[i]= i*s_range;
         }
+        Cube hypercube(images, dimension, k, s, w);
+        for(int j = 0; j < number_of_images; j++)
+        {
+            hypercube.insertItem(images[j]);
+            cout<<j<<endl;
+        }
+        hypercube.displayCube();
 
 
+//start reading the query file
+        std::ifstream q_file (query_file);
+        temp = -1;
+        vector<unsigned char> query(dimension);
+
+        // Measure execution time
+        //auto start = high_resolution_clock::now();
+        double lsh_duration = 0.0;
+        double exhaust_duration = 0.0;
+        if (q_file.is_open()){
+            for (i=1; i<=3 ; i++){          //read 10 queries now -> TODO until EOF
+                // cout<<endl;
+                for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
+                    q_file.read((char*)&temp,sizeof(temp));
+                    query[y]=temp;
+                    // cout<<(int)query[y]<<"-";
+                }
+                // cout<<"Going to display exhaust..."<<endl;
+
+                cout<<"Query: "<<i<<endl;
+
+                auto start = high_resolution_clock::now();
+                PQ pr(images,query,N);
+                auto end = high_resolution_clock::now();
+                duration<double> elapsed_seconds = (end-start);
+                
+                exhaust_duration = exhaust_duration + elapsed_seconds.count();
+
+                // pr.displayN();
+                // cout<<"Going to display lsh..."<<endl;
+
+                auto start1 = high_resolution_clock::now();
+                PQ pq_cube(query, N, hypercube, M, probes, k);
+                auto end1 = high_resolution_clock::now();  
+                duration<double> elapsed_seconds1 = (end1-start1);
+                
+                lsh_duration = lsh_duration + elapsed_seconds1.count();       
+                // pq_hash.displayN();
+
+                display_prqueues(pq_cube, pr);
+                cout << "Time taken for exhaust: " << elapsed_seconds.count() << " seconds" << endl;
+                cout << "Time taken for lsh: " << elapsed_seconds1.count() << " seconds" << endl;
+
+
+//                pq_hash.range_search(R,hash_tables,query);
+                cout << "R-near neighbors: " << endl;
+//                pq_hash.displayRange();
+
+
+            }
+
+        }else{
+            cout<<"Cannot open query file: "<< query_file<<endl;
+        }
 
     }else{
         cout<<"Cannot open input file: "<<input_file<<endl;
     }
+
+    int test = 255;
+    test=change_neighbor(test, 200, 8);
+    cout<<test<<endl;
 
     return 0; 
 

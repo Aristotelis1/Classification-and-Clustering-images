@@ -7,15 +7,17 @@ Hash_Function::Hash_Function(int dim, vector<double>s, unsigned int k_out){
     int r;
     dimension=dim;
     k=k_out;
-    m=pow(2,31)-5;
+//    m=pow(2,31)-5;
     int temp=32/k;
     mod=pow(2,temp);
+    m=mod/4 + 1;
     s_h.resize(dimension);
     int s_size=s.size();
     for (int i=0; i<dimension ; i++){
         r=rand()%s_size;
         s_h[i]=s[r];    //random pick of s
     }
+    cout<<"New hash_function inserted"<< s_h[5]<<endl;
 
 }
 
@@ -34,6 +36,8 @@ unsigned long int Hash_Function::get_hash_key(vector<unsigned char> image, int w
             h= (h+sum)%mod;
         }
     }
+//    cout<<h<<endl;
+
     return h;
     
 

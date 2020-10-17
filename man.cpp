@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-//        number_of_images = 10000;
+        number_of_images = 10000;
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
         cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
         int w;
         w=get_w(get_mean_range(SAMPLES, images));
-//        w=35000;
+//        w=50000;
         cout << "W is 4*mean distance--> " << w << endl;
 
         //create a vector for s (normally distributed L*k*d doubles in range [0,w])
