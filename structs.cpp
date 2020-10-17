@@ -450,13 +450,14 @@ PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, in
     bool fit = false, imexist;
     vector<vector<unsigned char>> list_of_images;
     vector<int> impos;
+    vector<int> nb;
     
     key=hypercube.calculate_vector_key(query);
     list_of_images=hypercube.get_list_of_images(key);
     number_of_images = list_of_images.size();
+    nb = get_route(k);
     if(probes>(pow(2,k)))   //dont have enough vertices to check
         probes=pow(2,k);    //changed probes to max vertices
-    cout<<"Probes is: "<<probes<<endl;
     if (M < number_of_images)
         fit = true;
     if(fit == true){        //Search in only one vertex
@@ -525,12 +526,12 @@ PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, in
                 }
                 count++;
             }
-            cout<<"OLD KEY: "<<key;
-            tempk=change_neighbor(key, i+1, k);
-            cout<<" CHANGED TO:"<<tempk<<endl;
+            // cout<<"OLD KEY: "<<key;
+            tempk=change_neighbor(key, i+1, k, nb);
+            // cout<<" CHANGED TO:"<<tempk<<endl;
         }
 
     }
-    cout<<"---------Totally checked "<<count<<"---------possible neighboors"<<endl;
+//    cout<<"---------Totally checked "<<count<<"---------possible neighboors"<<endl;
  
 }
