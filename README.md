@@ -16,6 +16,6 @@ int get_image_pos (vector<unsigned char>image){
 
 ./CLUSTER
 
-g++ -o cluster cluster.cpp functions.cpp structs.cpp hash_functions.cpp --std=c++11
+g++ -o cluster cluster.cpp functions.cpp struct_cluster.cpp hash_functions.cpp --std=c++11
 
 ./cluster -i train-images-idx3-ubyte -c cluster.config -o output.txt -complete yes -method classic
