@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <queue>
 
 #include "functions.h"
 
@@ -119,3 +120,31 @@ int change_neighbor(int key, int p, int k){
 
     return key;
 }
+
+vector<int> get_route(int k)
+{
+    int size = pow(2,k)-1;
+    vector<int> route(size);
+    vector<bool> visited(size+1);
+    queue<int> q;
+    int key,s;
+
+    while(!q)
+    {
+        s = q.front();
+        q.pop();
+
+        for(int i = 1; i < k; i++)
+        {
+            key = key_shake(s,i);
+            if(!visited[key])
+            {
+                q.push(key);
+                visited[key]=true;
+                route.push_back(key);
+            }
+        }
+    }
+
+    return route;
+} 
