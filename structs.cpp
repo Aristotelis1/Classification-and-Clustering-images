@@ -398,7 +398,7 @@ void PQ::displayRange(ofstream & out)
         out << "image_number: "<< temp << endl;
         range.pop();
     }
-    cout<<endl;
+    out << endl;
 }
 
 priority_queue<image> PQ::get_pq()

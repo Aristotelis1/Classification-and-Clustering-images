@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
                 if(out.is_open()){
                     q_file.read((char*)&temp,sizeof(temp));
                     query[0]=temp;
-                    for (i=1; q_file ; i++){          //change "q_file" --> "i<10" to read less queries
+                    for (i=1; i<10 ; i++){          //change "q_file" --> "i<10" to read less queries
                         // cout<<endl;
                         for(y=1; y<dimension; ++y){         //read "query-image" on query (vector)
                             q_file.read((char*)&temp,sizeof(temp));
