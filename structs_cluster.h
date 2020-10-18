@@ -31,20 +31,24 @@ class Cluster{
     public:
         Cluster(int clusterId,Point centroid);
         vector<unsigned char> get_center();
-        void calculate_center(); // den exei ulopohithei
+        void calculate_center(int dimensions); // den exei ulopohithei
         int get_clusterId();
         void add_image(Point point);
+        bool remove(Point point);
+        int get_size();
+        int calculate_average_distance();
 };
 
 class KMeans{
     private:
-        int K,number_of_points,dimensions;
+        int K,number_of_points,dimensions; // K is number of clusters
         vector<Cluster> clusters;
     public:
         KMeans(int K);
         int get_nearest_cluster_id(Point point);
         void run(vector<Point>& all_points);
         int get_nearest_cluster(Point point);
+        void silhouette();
 
 
 };

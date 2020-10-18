@@ -2,6 +2,7 @@
 #include <string.h>
 #include <fstream>
 #include <vector>
+#include <chrono>
 
 
 #include "functions.h"
@@ -10,6 +11,7 @@
 
 
 using namespace std;
+using namespace std::chrono;
 
 
 int main(int argc, char* argv[])
@@ -75,7 +77,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-       number_of_images = 20;
+       number_of_images = 100;
 
         //declare vector of images
         vector<Point> all_points;
@@ -103,8 +105,13 @@ int main(int argc, char* argv[])
         if(strcmp(method,"classic") == 0)
         {
             cout << "We gonna do classic clustering" << endl;
+            auto start = high_resolution_clock::now();
             KMeans kmeans(k);
             kmeans.run(all_points);
+            auto end = high_resolution_clock::now();
+            duration<double> elapsed_seconds = (end-start);
+            cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
+            kmeans.silhouette();
         }
 
 

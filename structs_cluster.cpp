@@ -70,6 +70,72 @@ vector<unsigned char> Cluster::get_center()
     return center;
 }
 
+void Cluster::calculate_center(int dimensions)
+{
+    vector <unsigned char> new_center;
+    unsigned char pixel;
+    unsigned long int t = 5;
+
+    for(int i = 0; i < dimensions; i++)
+    {
+        int sum = 0;
+        for(int j = 0; j < images.size(); j++)
+        {
+            //cout << (int)(images[j].getPixel(i));
+            sum = sum + (int)(images[j].getPixel(i));
+        }
+        sum = sum/images.size();
+        pixel = (unsigned char)(sum);
+        new_center.push_back(pixel);
+        //cout << (int)pixel << endl;
+    }
+    //cout << "new center size: " << new_center.size() << endl;
+    this->center = new_center;
+}
+
+bool Cluster::remove(Point point)
+{
+    vector<unsigned char> image = point.get_image();
+    int size = images.size();
+    
+    int image_number = get_image_pos(image);
+
+    for(int i = 0; i < size; i++)
+    {
+        int temp_number = get_image_pos(images[i].get_image());
+        if(temp_number == image_number)
+        {
+            images.erase(images.begin() + i);
+            cout << "image removed from cluster: " << this->clusterId << endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+int Cluster::get_size()
+{
+    return images.size();
+}
+
+int Cluster::calculate_average_distance()
+{
+    int count = 0;
+    int sum = 0;
+    int dist;
+    for(int i = 0; i < images.size(); i++)
+    {
+        for(int j = i+1; j < images.size(); j++)
+        {
+            dist = manhattan_dist(images[i].get_image(),images[j].get_image(),images[i].get_dimensions());
+            sum = sum + dist;
+            //cout << sum << endl;
+            count++;
+        }
+    }
+    return sum/count;
+}
+
 
 
 KMeans::KMeans(int k)
@@ -104,6 +170,7 @@ void KMeans::run(vector<Point>& all_points)
     number_of_points = all_points.size();
     dimensions = all_points[0].get_dimensions();
 
+
     // Initializing Clusters
 
     vector<int> used;
@@ -118,41 +185,73 @@ void KMeans::run(vector<Point>& all_points)
                 all_points[index].set_cluster(i);
                 Cluster cluster(i,all_points[index]);
                 clusters.push_back(cluster);
-                cout << "Cluster: " << i << " picked for centroid: " << index << endl;
+                cout << "Cluster: " << i << " picked for centroid image number: " << index << endl;
                 break;
             }
         }
     }
 
     // Add all points to a cluster
-    for(int i = 0; i < number_of_points; i++)
+    int count_changes = 101;
+    while(count_changes >10)
     {
-        int current_cluster = all_points[i].get_cluster();
-        int nearest_cluster = get_nearest_cluster(all_points[i]);
-
-        if(current_cluster != nearest_cluster)
+        count_changes = 0;
+        for(int i = 0; i < number_of_points; i++)
         {
-            // se periptwsi poy einai hdh
-            // if(current_cluster != -1)
-            // {
+            int current_cluster = all_points[i].get_cluster();
+            int nearest_cluster = get_nearest_cluster(all_points[i]);
 
-            // }
-
-            for(int j = 0; j < K; j++)
+            if(current_cluster != nearest_cluster)
             {
-                if(clusters[j].get_clusterId() == nearest_cluster)
+                // se periptwsi poy einai hdh
+                if(current_cluster != -1)
                 {
-                    clusters[j].add_image(all_points[i]);
-                    cout << "image number: " << get_image_pos(all_points[i].get_image()) << " to cluster: " << nearest_cluster << endl;
+                    for(int l = 0; l < K; l++)
+                    {
+                        if(clusters[l].get_clusterId() == current_cluster)
+                        {
+                            clusters[l].remove(all_points[i]);
+                        }
+                    }
                 }
+
+                for(int j = 0; j < K; j++)
+                {
+                    if(clusters[j].get_clusterId() == nearest_cluster)
+                    {
+                        clusters[j].add_image(all_points[i]);
+                        cout << "image number: " << get_image_pos(all_points[i].get_image()) << " to cluster: " << nearest_cluster << endl;
+                        count_changes++;
+                    }
+                }
+                all_points[i].set_cluster(nearest_cluster);
             }
-            all_points[i].set_cluster(nearest_cluster);
+        }
+        //cout << "all images have been added to clusters " << endl;
+
+
+        // Recalculating the centroid
+
+        for(int i = 0; i < K; i++)
+        {
+            clusters[i].calculate_center(dimensions);
         }
     }
-    cout << "all images have been added to clusters " << endl;
+
+    for(int i = 0; i < K; i++)
+    {
+        cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+    }
 
 }
 
+void KMeans::silhouette()
+{
+    for(int i = 0; i < K; i++)
+    {
+        cout <<"Cluster-"<< i <<" average distance: "<< clusters[i].calculate_average_distance() << endl;;
+    }
+}
 
 
 
