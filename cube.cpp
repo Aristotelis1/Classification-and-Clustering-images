@@ -208,8 +208,8 @@ int main(int argc, char* argv[])
                         // pq_hash.displayN();
 
                         display_prqueues(pq_cube, pr, "Hypercube", out);
-                        out << "tLSH: " << elapsed_seconds.count() << endl;
-                        out << "tTrue: " << elapsed_seconds1.count() << endl;
+                        out << "tLSH: " << elapsed_seconds1.count() << endl;
+                        out << "tTrue: " << elapsed_seconds.count() << endl;
 
                         pq_cube.cube_range_search(R, hypercube, query, probes, k, M);
                         out << "R-near neighbors: " << endl;

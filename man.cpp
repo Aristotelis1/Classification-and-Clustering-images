@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-//      number_of_images=10000;       //uncomment this to read less images
+        //number_of_images=10000;       //uncomment this to read less images
 
 
         //declare vector of images
@@ -203,8 +203,8 @@ int main(int argc, char* argv[])
                         lsh_duration = lsh_duration + elapsed_seconds1.count();       
                         // pq_hash.displayN();
                         display_prqueues(pq_hash, pr, "LSH", out);
-                        out << "tLSH: " << elapsed_seconds.count() << endl;
-                        out << "tTrue: " << elapsed_seconds1.count() << endl;
+                        out << "tLSH: " << elapsed_seconds1.count() << endl;
+                        out << "tTrue: " << elapsed_seconds.count() << endl;
 
 
 
