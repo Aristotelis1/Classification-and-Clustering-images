@@ -158,9 +158,9 @@ int main(int argc, char* argv[])
         for(int j = 0; j < number_of_images; j++)
         {
             hypercube.insertItem(images[j]);
-            cout<<j<<endl;
+//            cout<<j<<endl;
         }
-        hypercube.displayCube();
+//        hypercube.displayCube();
 
 
 //start reading the query file
@@ -221,10 +221,6 @@ int main(int argc, char* argv[])
     }else{
         cout<<"Cannot open input file: "<<input_file<<endl;
     }
-
-    int test = 255;
-    test=change_neighbor(test, 200, 8);
-    cout<<test<<endl;
 
     return 0; 
 

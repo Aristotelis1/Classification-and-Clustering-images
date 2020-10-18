@@ -104,37 +104,34 @@ int key_shake(int key, int p){
     return key;
 }
 
-int change_neighbor(int key, int p, int k){
-    int z, i;
-
-    for (z=k; z>0; z--){
-        for(i=1; i<=z; i++){
-            if(p==i){
-                key=key_shake(key, i);
-                return key;
-            }
+int change_neighbor(int key, int p, int k, vector<int> nb){
+    int mask=nb[p-1];
+    for(int i=1; mask>0 ; i++){
+        if ((mask%2)==1){
+            key=key_shake(key, i);
         }
-        key=key_shake(key, z);
-        p = p-z;
+        mask = mask>>1;
     }
-
     return key;
 }
 
 vector<int> get_route(int k)
 {
     int size = pow(2,k)-1;
-    vector<int> route(size);
+    vector<int> route;
     vector<bool> visited(size+1);
     queue<int> q;
     int key,s;
 
-    while(!q)
+    visited[0]=true;
+    q.push(0);
+
+    while(!q.empty())
     {
         s = q.front();
         q.pop();
 
-        for(int i = 1; i < k; i++)
+        for(int i = 1; i <= k; i++)
         {
             key = key_shake(s,i);
             if(!visited[key])
