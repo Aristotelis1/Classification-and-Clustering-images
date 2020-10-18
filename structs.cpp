@@ -263,7 +263,7 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
 
     }
 
-    cout << "Priority queue searched:\t----"<<count<<" buckets----" << endl;
+//    cout << "Priority queue searched:\t----"<<count<<" buckets----" << endl;
 
     // range_search(r,hash_tables,query);
 
@@ -277,7 +277,7 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
     vector<int>impos;
     bool imexist;
     int count = 0;
-    cout << "r: " << r << endl;
+//    cout << "r: " << r << endl;
     for(int i = 0; i < hash_tables.size(); i++)
     {
         key=hash_tables[i].calculate_g(query);
@@ -314,6 +314,70 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
     }
 }
 
+void PQ::cube_range_search(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M){
+    int key, number_of_images, dist, i,j, z, count=0;
+    bool fit = false, imexist;
+    vector<vector<unsigned char>> list_of_images;
+    vector<int> impos;
+    vector<int> nb;
+    
+    key=hypercube.calculate_vector_key(query);
+    list_of_images=hypercube.get_list_of_images(key);
+    number_of_images = list_of_images.size();
+    nb = get_route(k);
+    if(probes>=(pow(2,k)))   //dont have enough vertices to check
+        probes=pow(2,k)-1;    //changed probes to max vertices
+    if (M < number_of_images)
+        fit = true;
+    if(fit == true){        //Search in only one vertex
+        for (j=0 ; j<M ; j++){
+            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+            if (dist < r){
+                int temp = get_image_pos(list_of_images[j]);
+                //image temp(dist,list_of_images[j]);
+                for (z=0, imexist=false ; z < impos.size() ; z++){
+                    if (impos[z] == temp){
+                        imexist=true;
+                        break;
+                    }
+                }
+                if (!imexist){
+                    count++;
+                    range.push(temp);
+                    impos.push_back(temp);
+                }
+            }
+        }
+    }else{          //check other vertices
+        int tempk=key;
+        for(i=0 ; i<probes && count<M ; i++){
+            list_of_images=hypercube.get_list_of_images(tempk);
+            number_of_images = list_of_images.size();
+            for (j=0 ; j<number_of_images && count<M ; j++){
+                dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+                if (dist < r){
+                    int temp = get_image_pos(list_of_images[j]);
+                    //image temp(dist,list_of_images[j]);
+                    for (z=0, imexist=false ; z < impos.size() ; z++){
+                        if (impos[z] == temp){
+                            imexist=true;
+                            break;
+                        }
+                    }
+                    if (!imexist){
+                        count++;
+                        range.push(temp);
+                        impos.push_back(temp);
+                    }
+                }
+            }
+            tempk=change_neighbor(key, i+1, k, nb);
+        }
+
+    }    
+}
+
+
 void PQ::displayN()
 {
     while(!pq.empty())
@@ -325,13 +389,13 @@ void PQ::displayN()
     cout<<endl;
 }
 
-void PQ::displayRange()
+void PQ::displayRange(ofstream & out)
 {
     //vector<int> imgs_pos;
     while(!range.empty())
     {
         int temp = range.top();
-        cout << "image_number: "<< temp << endl;
+        out << "image_number: "<< temp << endl;
         range.pop();
     }
     cout<<endl;
@@ -342,7 +406,7 @@ priority_queue<image> PQ::get_pq()
     return pq;
 }
 
-void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
+void display_prqueues(PQ pq_lsh, PQ pq_exhaust, string type, ofstream & out){
     int  i, lsh_size, n_size;
     priority_queue<image> lsh = pq_lsh.get_pq();
     priority_queue<image> exhaust = pq_exhaust.get_pq();
@@ -352,6 +416,7 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
 
     vector<image> vlsh;
     vector<image> vexhaust;
+    
 
     while(!lsh.empty()){
         image temp = (lsh.top());
@@ -367,27 +432,27 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust){
 
     n_size=vexhaust.size();
     lsh_size=vlsh.size();
-    cout<<"n_size is: "<<n_size<<" and lsh_size is: "<<lsh_size<<endl;
+//    cout<<"n_size is: "<<n_size<<" and lsh_size is: "<<lsh_size<<endl;
     for (i=0; i<n_size ; i++){
-        cout<<"Nearest neighbor-"<<i+1<<": ";
+        out<<"Nearest neighbor-"<<i+1<<": ";
         if(i>=lsh_size)
         {
-            cout<<"neighboor not found"<<endl;
+            out<<"neighboor not found"<<endl;
         }else
         {
-            cout<<get_image_pos(vlsh[i].get_image())<<endl;
+            out<<get_image_pos(vlsh[i].get_image())<<endl;
         }
 
-        cout<<"distanceLSH: ";
+        out<<"distance"<<type<<": ";
         //lsh distance
         if(i>=lsh_size)
-            cout<<"neighboor not found"<<endl;
+            out<<"neighboor not found"<<endl;
         else{
-            cout<<vlsh[i].get_distance()<<endl;
+            out<<vlsh[i].get_distance()<<endl;
         }
 
-        cout<<"distanceTrue: ";
-        cout<<vexhaust[i].get_distance()<<endl<<endl;
+        out<<"distanceTrue: ";
+        out<<vexhaust[i].get_distance()<<endl;
     }
 }
 
@@ -399,7 +464,7 @@ Cube::Cube (vector<vector<unsigned char>> images, int dimension, int k, vector<d
         Hash_Function *temp = new Hash_Function(dimension, s, 4);
         hfunctions.push_back(*temp);
     }
-    cout<<"Hypercube with "<<vertices<<" vertices created."<<endl;
+//    cout<<"Hypercube with "<<vertices<<" vertices created."<<endl;
 }
 
 int Cube::calculate_fh(int key){

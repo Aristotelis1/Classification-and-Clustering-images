@@ -5,6 +5,7 @@
 #include <list>
 #include <array>
 #include <queue>
+#include <fstream>
 #include "image.h"
 #include "functions.h"
 #include "hash_functions.h"
@@ -110,10 +111,12 @@ class PQ{
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
         void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
-        void displayRange();
+        void cube_range_search(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
+
+        void displayRange(ofstream & out);
 
 };
 
-void display_prqueues(PQ pq_lsh, PQ pq_exhaust);
+void display_prqueues(PQ pq_lsh, PQ pq_exhaust, string type, ofstream& out);
 
 #endif

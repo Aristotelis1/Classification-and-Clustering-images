@@ -7,8 +7,6 @@
 #include "hash_functions.h"
 #include "structs.h"
 
-#define SAMPLES 100
-
 using namespace std;
 using namespace std::chrono;
 
@@ -16,9 +14,10 @@ using namespace std::chrono;
 int main(int argc, char* argv[]) 
 { 
     srand(time(NULL));
-    int i,y,z, k=-1, L=-1, N=-1;
+    int i,y,z, k=-1, L=-1, N=-1, samples=100;
     float R=-1.0;
     char input_file[128], query_file[128], output_file[128];
+    bool finished=false;
 
     for (i=1; i<argc ; i+=2)
     {
@@ -37,10 +36,8 @@ int main(int argc, char* argv[])
             N=atoi(argv[i+1]);
         }else if (strcmp(argv[i],"-R")==0){
             R=atoi(argv[i+1]);
-        // }else if (strcmp(argv[i],"-t")==0){       //lsh or cube
-        //     cout << "Working on lsh..." << endl;        //TO BE DONE SOMETHING
-        // }else if (strcmp(argv[i],"-M")==0){
-        //     M=atoi(argv[i+1]);
+        }else if (strcmp(argv[i],"-t")==0){       // optional parameter for samples to get mean nearest-neighboor range
+            samples=atoi(argv[i+1]);
         }else {
             cout << "Wrong arguments, please try again..." <<endl;
             return 0;
@@ -96,9 +93,8 @@ int main(int argc, char* argv[])
     //Reading data from binary 
 
 
-    cout << input_file << endl;
-
     std::ifstream file (input_file);
+    std::ofstream out (output_file);
 
     int magic_number, number_of_images, rows, columns, dimension;
     unsigned char temp = -1;
@@ -114,7 +110,8 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        number_of_images = 10000;
+//      number_of_images=10000;       //uncomment this to read less images
+
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
@@ -134,12 +131,8 @@ int main(int argc, char* argv[])
             images[i].push_back(byte3);
 
         }
-        cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
         int w;
-        w=get_w(get_mean_range(SAMPLES, images));
-//        w=50000;
-        cout << "W is 4*mean distance--> " << w << endl;
-
+        w=get_w(get_mean_range(samples, images));
         //create a vector for s (normally distributed L*k*d doubles in range [0,w])
         vector<double>s(L*k*dimension);
         double s_range = (double) w / (double) (L * k * dimension);
@@ -168,100 +161,76 @@ int main(int argc, char* argv[])
 
 
         //start reading the query file
-        std::ifstream q_file (query_file);
-        temp = -1;
-        vector<unsigned char> query(dimension);
+        while(finished==false){
+            std::ifstream q_file (query_file);
+            temp = -1;
+            vector<unsigned char> query(dimension);
 
-        // Measure execution time
-        //auto start = high_resolution_clock::now();
-        double lsh_duration = 0.0;
-        double exhaust_duration = 0.0;
-        if (q_file.is_open()){
-            for (i=1; i<=30 ; i++){          //read 10 queries now -> TODO until EOF
-                // cout<<endl;
-                for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
+            // Measure execution time
+            //auto start = high_resolution_clock::now();
+            double lsh_duration = 0.0;
+            double exhaust_duration = 0.0;
+            if (q_file.is_open()){
+                if(out.is_open()){
                     q_file.read((char*)&temp,sizeof(temp));
-                    query[y]=temp;
-                    // cout<<(int)query[y]<<"-";
+                    query[0]=temp;
+                    for (i=1; q_file ; i++){          //change "q_file" --> "i<10" to read less queries
+                        // cout<<endl;
+                        for(y=1; y<dimension; ++y){         //read "query-image" on query (vector)
+                            q_file.read((char*)&temp,sizeof(temp));
+                            query[y]=temp;
+                            // cout<<(int)query[y]<<"-";
+                        }
+                        // cout<<"Going to display exhaust..."<<endl;
+
+                        out<<"Query: "<<i<<endl;
+
+                        auto start = high_resolution_clock::now();
+                        PQ pr(images,query,N);
+                        auto end = high_resolution_clock::now();
+                        duration<double> elapsed_seconds = (end-start);
+                        
+                        exhaust_duration = exhaust_duration + elapsed_seconds.count();
+
+                        // pr.displayN();
+                        // cout<<"Going to display lsh..."<<endl;
+
+                        auto start1 = high_resolution_clock::now();
+                        PQ pq_hash(query,N,hash_tables); 
+                        auto end1 = high_resolution_clock::now();  
+                        duration<double> elapsed_seconds1 = (end1-start1);
+                        
+                        lsh_duration = lsh_duration + elapsed_seconds1.count();       
+                        // pq_hash.displayN();
+                        display_prqueues(pq_hash, pr, "LSH", out);
+                        out << "tLSH: " << elapsed_seconds.count() << endl;
+                        out << "tTrue: " << elapsed_seconds1.count() << endl;
+
+
+
+                        pq_hash.range_search(R,hash_tables,query);
+                        out << "R-near neighbors: " << endl;
+                        pq_hash.displayRange(out);
+                    }
+                }else{
+                    cout<<"Cannot open output_file: "<<output_file<<endl<<"Try again please: ";
+                    cin>>output_file;
                 }
-                // cout<<"Going to display exhaust..."<<endl;
-
-                cout<<"Query: "<<i<<endl;
-
-                auto start = high_resolution_clock::now();
-                PQ pr(images,query,N);
-                auto end = high_resolution_clock::now();
-                duration<double> elapsed_seconds = (end-start);
-                
-                exhaust_duration = exhaust_duration + elapsed_seconds.count();
-
-                // pr.displayN();
-                // cout<<"Going to display lsh..."<<endl;
-
-                auto start1 = high_resolution_clock::now();
-                PQ pq_hash(query,N,hash_tables); 
-                auto end1 = high_resolution_clock::now();  
-                duration<double> elapsed_seconds1 = (end1-start1);
-                
-                lsh_duration = lsh_duration + elapsed_seconds1.count();       
-                // pq_hash.displayN();
-
-                display_prqueues(pq_hash, pr);
-                cout << "Time taken for exhaust: " << elapsed_seconds.count() << " seconds" << endl;
-                cout << "Time taken for lsh: " << elapsed_seconds1.count() << " seconds" << endl;
-
-
-                pq_hash.range_search(R,hash_tables,query);
-                cout << "R-near neighbors: " << endl;
-                pq_hash.displayRange();
-
-                //ASTO ETSI EINAI OI EKTYPWSEIS GIA META
-                
-
-                // cout<<"Query: "<<i+1<<endl;
-                // for (i=1; i<=N ; i++){
-                //     cout<<"Nearest neighbor-"<<i<<": ";
-                //     //image number in dataset
-
-                //     cout<<"distanceLSH: ";
-                //     //lsh distance
-
-                //     cout<<"distanceTrue"
-                // }
-                // cout<<"tLSH: ";
-                // //lsh timer
-
-                // cout<<"tTrue: ";
-                // //true timer
-
-                // cout<<R<<"-near neighbors:"
-                // //cout all neighbors in range R
+            }else{
+                cout<<"Cannot open query file: "<< query_file<<endl;
             }
-            // auto stop = high_resolution_clock::now();
-            // auto duration = duration_cast<seconds>(stop-start);
-            // cout << "Time taken for all the queries with lsh: "
-            //      << lsh_duration << " seconds" << endl;
-            // cout << "Time taken for all the queries with exhaust: "
-            //      << exhaust_duration << " seconds" << endl;
-            
-
-
-        }else{
-            cout<<"Cannot open query file: "<< query_file<<endl;
+            cout<<"If you want to finish press 0, else give me the file: ";
+            cin>>query_file;
+            if(strcmp("0", query_file)==0){
+                q_file.close();
+                finished=true; 
+            }    
         }
-
-
-
     }else{
         cout<<"Cannot open input file: "<<input_file<<endl;
     }
-    // unsigned char b1, b2, b3;
-    // get_bytes_from_int(125555, b1, b2, b3);
-    // cout<<(int)b1<<"-"<<(int)b2<<"-"<<(int)b3<<endl;
-
-    // int target;
-    // target= set_int_from_bytes(1 , 234, 115);
-    // cout<<target<<endl;
+    file.close();
+    out.close();
 
     return 0; 
 

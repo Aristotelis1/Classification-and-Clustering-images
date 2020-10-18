@@ -17,7 +17,6 @@ Hash_Function::Hash_Function(int dim, vector<double>s, unsigned int k_out){
         r=rand()%s_size;
         s_h[i]=s[r];    //random pick of s
     }
-    cout<<"New hash_function inserted"<< s_h[5]<<endl;
 
 }
 
@@ -48,13 +47,6 @@ double get_mean_range(int samples, vector<vector<unsigned char>> images){
     int i, image1, image2, dimension, j;
 
     dimension=images[1].size()-3;
-    // for (i=0; i<samples ; i++){
-    //     image1=rand()%images.size();
-    //     image2=rand()%images.size();
-    //     distance=manhattan_dist(images[image1], images[image2], dimension);
-    //     mean+=(distance/(double)samples);
-    // }
-    //  return mean;
     int number_of_images=images.size(), mindist;
     long long int nearest_mean=0;
     for (i=0; i<samples ; i++){
