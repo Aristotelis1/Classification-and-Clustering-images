@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
             M=10;
             break;
         }
-    }while (probes<1 || probes>1000000){
+    }while (probes<0 || probes>1000000){
         cout <<"Give me probes in range 1-1000000 (if you want it on default type '0') : ";
         cin >> probes;
         if (probes==0){

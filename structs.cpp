@@ -49,6 +49,11 @@ Hash_list::Hash_list()
     list_of_images.clear();
 }
 
+Cointoss::Cointoss(int inf, int inh){
+    f=inf;
+    h=inh;
+}
+
 void Hash_list::add_image(vector<unsigned char> &i)
 {
     //image im(i);
@@ -469,7 +474,16 @@ Cube::Cube (vector<vector<unsigned char>> images, int dimension, int k, vector<d
 
 int Cube::calculate_fh(int key){
     //TODO A GOOD F FOR SENDING HASH TO [0,1]
-    return (key%2);
+    int i, flist_size;
+    flist_size=flist.size();
+    for(i=0; i<flist_size ; i++){
+        if(flist[i].h==key)
+            return flist[i].f;
+    }
+    int fkey=rand()%2;
+    Cointoss temp(fkey, key);
+    flist.push_back(temp);
+    return fkey;
 
 }
 
@@ -558,7 +572,7 @@ PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, in
         }
     }else{          //check other vertices
         int tempk=key;
-        for(i=0 ; i<probes && count<M ; i++){
+        for(i=0 ; i<=probes && count<M ; i++){
             list_of_images=hypercube.get_list_of_images(tempk);
             number_of_images = list_of_images.size();
             for (j=0 ; j<number_of_images && count<M ; j++){
@@ -593,7 +607,7 @@ PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, in
             }
             // cout<<"OLD KEY: "<<key;
             tempk=change_neighbor(key, i+1, k, nb);
-            // cout<<" CHANGED TO:"<<tempk<<endl;
+            //cout<<" CHANGED TO:"<<tempk<<endl;
         }
 
     }

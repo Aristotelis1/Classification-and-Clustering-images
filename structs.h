@@ -56,12 +56,22 @@ class Hash {
 
 };
 
+class Cointoss{
+    private:
+
+    public:
+        int f, h;
+        Cointoss(int inf, int inh);
+
+};
+
 class Cube {
     private:
         int vertices, w;
         unsigned long int testg;
         vector<Hash_Function> hfunctions;
         Hash_list* cube_vertex;
+        vector<Cointoss> flist;
         
     public:
 //        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
@@ -91,6 +101,8 @@ class image
             return i1.distance < i2.distance; 
         } 
 };
+
+
 
 
 class PQ{
