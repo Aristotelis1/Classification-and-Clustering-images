@@ -115,8 +115,39 @@ int main(int argc, char* argv[])
         }
         else if(strcmp(method,"lsh") == 0)
         {
-            cout << "We gonna do clustering with lsh range search" << endl;
-            
+            int L,samples = 100;
+            cout << "Give the number(L) of Hash Tables:" << endl;
+            cin >> L;
+
+            int w=get_w(get_mean_range(samples, images));
+
+            vector<double>s(L*k*dimension);
+            double s_range = (double) w / (double) (L * k * dimension);
+            for (int i=0; i<L*k*dimension ; i++){
+                s[i]= i*s_range;
+            }
+
+            vector<Hash> hash_tables;
+            for(int j = 0; j < L; j++)
+            {
+                Hash h(number_of_images,images,dimension,k,s, w);
+                hash_tables.push_back(h);
+            }
+            for(int j = 0; j < number_of_images; j++)
+            {
+                for(int i=0;i<L;i++)
+                {
+                    hash_tables[i].insertItem(images[j]);
+                }
+            }
+
+            auto start = high_resolution_clock::now();
+            KMeans kmeans(k);
+            kmeans.lsh(all_points,hash_tables);
+
+            auto end = high_resolution_clock::now();
+            //duration<double> elapsed_seconds = (end-start);
+            //cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
         }
 
     }else{

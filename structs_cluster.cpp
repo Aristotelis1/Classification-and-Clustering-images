@@ -245,6 +245,34 @@ void KMeans::run(vector<Point>& all_points)
 
 }
 
+void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
+{
+    number_of_points = all_points.size();
+    dimensions = all_points[0].get_dimensions();
+    // Initializing Clusters
+
+    // cout << "lsh running" << endl;
+    vector<int> used;
+    for(int i = 0; i < K; i++)
+    {
+        while(true){
+            int index = rand() % number_of_points; // getting a random point to be a centroid of a cluster
+            if(find(used.begin(),used.end(),index) == used.end())
+            {
+                // index doesnt exist in the vector
+                used.push_back(index);
+                all_points[index].set_cluster(i);
+                Cluster cluster(i,all_points[index]);
+                clusters.push_back(cluster);
+                cout << "Cluster: " << i << " picked for centroid image number: " << index << endl;
+                break;
+            }
+        }
+    }
+    
+    
+}
+
 void KMeans::silhouette()
 {
     for(int i = 0; i < K; i++)

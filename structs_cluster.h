@@ -6,6 +6,8 @@
 #include <array>
 #include <queue>
 
+#include "structs.h"
+
 using namespace std;
 
 
@@ -49,6 +51,7 @@ class KMeans{
         void run(vector<Point>& all_points);
         int get_nearest_cluster(Point point);
         void silhouette();
+        void lsh(vector<Point>& all_points,vector<Hash> hash_tables);
 
 
 };
