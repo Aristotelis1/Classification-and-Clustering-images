@@ -269,7 +269,15 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
             }
         }
     }
-    
+    //int L = 10000;
+    // Add similar points to the same cluster using range search
+    for(int i = 0; i < K; i++)
+    {
+        vector<unsigned char> center = clusters[i].get_center();
+        
+        PQ pq_hash(center,2,hash_tables); // NA TO TSEKARW
+        pq_hash.range_search(35000,hash_tables,center);
+    }
     
 }
 
