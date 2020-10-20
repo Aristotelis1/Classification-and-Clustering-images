@@ -113,7 +113,11 @@ int main(int argc, char* argv[])
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
             kmeans.silhouette();
         }
-
+        else if(strcmp(method,"lsh") == 0)
+        {
+            cout << "We gonna do clustering with lsh range search" << endl;
+            
+        }
 
     }else{
         cout<<"Cannot open input file: "<<input_file<<endl;
