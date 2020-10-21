@@ -84,16 +84,16 @@ void Cluster::calculate_center(int dimensions)
 
     for(int i = 0; i < dimensions; i++)
     {
+        vector <unsigned char> pixels;
         int sum = 0;
         for(int j = 0; j < images.size(); j++)
         {
             //cout << (int)(images[j].getPixel(i));
-            sum = sum + (int)(images[j].getPixel(i));
+            //sum = sum + (int)(images[j].getPixel(i));
+            pixels.push_back(images[j].getPixel(i));
         }
-        sum = sum/images.size();
-        pixel = (unsigned char)(sum);
-        new_center.push_back(pixel);
-        //cout << (int)pixel << endl;
+        sort(pixels.begin(),pixels.end());
+        new_center.push_back(pixels[(images.size()/2)+1]);
     }
     //cout << "new center size: " << new_center.size() << endl;
     this->center = new_center;
@@ -160,11 +160,12 @@ int KMeans::get_nearest_cluster(Point point)
     for(int i = 1; i < K; i++)
     {
         int dist = manhattan_dist(clusters[i].get_center(), point.get_image(),dimensions);
+        cout << "dist to cluster: "<< i << "-> " << dist << "min dist" << min_dist<<  endl;
 
         if(dist < min_dist)
         {
             min_dist = dist;
-            nearest_cluster = clusters[i].get_clusterId();
+            nearest_cluster = i;
         }
     }
 
@@ -298,26 +299,6 @@ void KMeans::run(vector<Point>& all_points)
     dimensions = all_points[0].get_dimensions();
 
 
-    // Initializing Clusters
-
-    // vector<int> used;
-    // for(int i = 0; i < K; i++)
-    // {
-    //     while(true){
-    //         int index = rand() % number_of_points; // getting a random point to be a centroid of a cluster
-    //         if(find(used.begin(),used.end(),index) == used.end())
-    //         {
-    //             // index doesnt exist in the vector
-    //             used.push_back(index);
-    //             all_points[index].set_cluster(i);
-    //             Cluster cluster(i,all_points[index]);
-    //             clusters.push_back(cluster);
-    //             cout << "Cluster: " << i << " picked for centroid image number: " << index << endl;
-    //             break;
-    //         }
-    //     }
-    // }
-
     // Add all points to a cluster
     int count_changes = 101;
     while(count_changes >10)
@@ -327,33 +308,20 @@ void KMeans::run(vector<Point>& all_points)
         {
             int current_cluster = all_points[i].get_cluster();
             int nearest_cluster = get_nearest_cluster(all_points[i]);
+            cout << "nearest cluster: " << nearest_cluster << endl;
 
             if(current_cluster != nearest_cluster)
             {
                 // se periptwsi poy einai hdh
                 if(current_cluster != -1)
                 {
-                    for(int l = 0; l < K; l++)
-                    {
-                        if(clusters[l].get_clusterId() == current_cluster)
-                        {
-                            clusters[l].remove(all_points[i]);
-                        }
-                    }
+                    clusters[current_cluster].remove(all_points[i]);
                 }
-
-                for(int j = 0; j < K; j++)
-                {
-                    if(clusters[j].get_clusterId() == nearest_cluster)
-                    {
-                        clusters[j].add_image(all_points[i]);
-                        cout << "image number: " << get_image_pos(all_points[i].get_image()) << " to cluster: " << nearest_cluster << endl;
-                        count_changes++;
-                        break;
-                    }
-                }
-                all_points[i].set_cluster(nearest_cluster);
+                clusters[nearest_cluster].add_image(all_points[i]);
+                cout << "image number: " << get_image_pos(all_points[i].get_image()) - 1 << " to cluster: " << nearest_cluster << endl;
+                count_changes++;
             }
+            all_points[i].set_cluster(nearest_cluster);
         }
         //cout << "all images have been added to clusters " << endl;
 
