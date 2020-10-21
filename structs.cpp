@@ -16,6 +16,11 @@ vector<vector<unsigned char>> Hash_list::get_list_of_images()
     return list_of_images;
 }
 
+vector<unsigned long int> Hash_list::get_labels()
+{
+    return labels;
+}
+
 void Hash_list::display_list()
 {
 
@@ -48,6 +53,13 @@ void Hash_list::add_image(vector<unsigned char> &i)
 {
     //image im(i);
     list_of_images.push_back(i);
+}
+
+void Hash_list::add_imagel(vector<unsigned char> &i, unsigned long int label)
+{
+    //image im(i);
+    list_of_images.push_back(i);
+    labels.push_back(label);
 }
 
 void Hash_list::clear()
@@ -121,13 +133,19 @@ vector<vector<unsigned char>> Hash::get_list_of_images(int key)
     return hash_table[key].get_list_of_images();
 }
 
+vector<unsigned long int> Hash::get_labels(int key)
+{
+    return hash_table[key].get_labels();
+}
+
 void Hash::insertItem(vector<unsigned char> image)
 {
     //int index = 2; // we call the hash function
     int key = calculate_g(image);
     //cout << "pixel 2: " << (int)image.at(2) << endl;
     //cout << "inserting item in: " << key << endl;
-    hash_table[key].add_image(image);
+    unsigned long int label = concatenate_h(hfunctions, image, w);
+    hash_table[key].add_imagel(image, label);
     //table[index].push_back(image);
 }
 
@@ -148,6 +166,13 @@ void Hash::searchByKey(int index)
     hash_table[index].searchByKey();
 }
 
+vector<Hash_Function> Hash::get_hfs(){
+    return hfunctions;
+}
+
+int Hash::get_w(){
+    return w;
+}
 
 
 /* FUNCTIONS FOR PQ */
@@ -213,57 +238,61 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
     maxDistance = 0;
     vector<vector<unsigned char>> list_of_images;
     vector<int> impos;
+    vector<unsigned long int> labels;
     bool imexist;
+    unsigned long int label;
 
     for(int i = 0; i < hash_tables.size(); i++)
     {
         key=hash_tables[i].calculate_g(query);
+        label = concatenate_h(hash_tables[i].get_hfs(), query, hash_tables[i].get_w());
         list_of_images = hash_tables[i].get_list_of_images(key);
+        labels = hash_tables[i].get_labels(key);
         int dist, dimension, number_of_images;
         number_of_images = list_of_images.size();
 
+
         for(int j = 0; j<number_of_images ; j++)
         {
-//            cout << "check:" << (int)l->at(0) << endl;
-            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
-            if(count < N)
-            {
-                image temp(dist,list_of_images[j]);
-                pq.push(temp);
-                impos.push_back(get_image_pos(temp.get_image()));
-            }else if (count==N){
-                image temp2 = pq.top();
-                maxDistance = temp2.get_distance();
-            }else{
-                if(maxDistance > dist)
+            if(label==labels[j]){
+    //            cout << "check:" << (int)l->at(0) << endl;
+                dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+                if(count < N)
                 {
-                    image temp3(dist,list_of_images[j]);
-                    for (z=0, imexist=false ; z<impos.size() ; z++){
-                        if (impos[z] == get_image_pos(temp3.get_image())){
-                            imexist = true;
-                            break;
+                    image temp(dist,list_of_images[j]);
+                    pq.push(temp);
+                    impos.push_back(get_image_pos(temp.get_image()));
+                }else if (count==N){
+                    image temp2 = pq.top();
+                    maxDistance = temp2.get_distance();
+                }else{
+                    if(maxDistance > dist)
+                    {
+                        image temp3(dist,list_of_images[j]);
+                        for (z=0, imexist=false ; z<impos.size() ; z++){
+                            if (impos[z] == get_image_pos(temp3.get_image())){
+                                imexist = true;
+                                break;
+                            }
+                        }
+                        if (!imexist){
+                            pq.pop();
+                            pq.push(temp3);
+                            impos.push_back(get_image_pos(temp3.get_image()));
+                            image temp4 = pq.top();
+                            maxDistance = temp4.get_distance();
                         }
                     }
-                    if (!imexist){
-                        pq.pop();
-                        pq.push(temp3);
-                        impos.push_back(get_image_pos(temp3.get_image()));
-                        image temp4 = pq.top();
-                        maxDistance = temp4.get_distance();
-                    }
                 }
+                count++;
             }
-            count++;
         }
 
     }
 
 //    cout << "Priority queue searched:\t----"<<count<<" buckets----" << endl;
-
-    // range_search(r,hash_tables,query);
-
-
 }
+
 
 void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query)
 {

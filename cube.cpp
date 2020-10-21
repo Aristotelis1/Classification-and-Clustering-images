@@ -176,11 +176,21 @@ int main(int argc, char* argv[])
             double exhaust_duration = 0.0;
             if (q_file.is_open()){
                 if(out.is_open()){
-                    q_file.read((char*)&temp,sizeof(temp));
-                    query[0]=temp;
-                    for (i=1; i<10 ; i++){          //change "q_file" --> "i<10" to read less queries
-                        // cout<<endl;
-                        for(y=1; y<dimension; ++y){         //read "query-image" on query (vector)
+                    int number_of_queries;
+                    q_file.read((char*)&magic_number,sizeof(magic_number)); 
+                    magic_number= change_endianess(magic_number);
+                    q_file.read((char*)&number_of_queries,sizeof(number_of_queries));
+                    number_of_queries= change_endianess(number_of_queries);
+                    q_file.read((char*)&rows,sizeof(rows));
+                    rows= change_endianess(rows);
+                    q_file.read((char*)&columns,sizeof(columns));
+                    columns= change_endianess(columns);
+                    dimension=rows*columns;
+
+
+                    number_of_queries=10;                       //uncomment this to read less queries
+                    for (i=1; i<=number_of_queries ; i++){   
+                        for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
                             q_file.read((char*)&temp,sizeof(temp));
                             query[y]=temp;
                             // cout<<(int)query[y]<<"-";

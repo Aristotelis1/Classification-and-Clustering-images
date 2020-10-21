@@ -18,13 +18,16 @@ class Hash_list
 {
     private:
         vector<vector<unsigned char>> list_of_images;
+        vector<unsigned long int> labels;
     public:
         Hash_list();
         void add_image(vector<unsigned char> &i);
+        void add_imagel(vector<unsigned char> &i, unsigned long int label);
         void display_list();
         void clear();
         void searchByKey();
         vector<vector<unsigned char>> get_list_of_images();
+        vector<unsigned long int>get_labels();
 
 };
 
@@ -39,20 +42,15 @@ class Hash {
         
     public:
         Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
-
         ~Hash();
-
-        // insert
         void insertItem(vector<unsigned char> i);
-
         void displayHash();
-
         void searchByKey(int index);
-
         int calculate_g(vector<unsigned char> img);
-
         vector<vector<unsigned char>> get_list_of_images(int key);
-
+        vector<unsigned long int> get_labels(int key);
+        vector<Hash_Function> get_hfs();
+        int get_w();
 
 };
 
@@ -88,8 +86,7 @@ class image
 {
     private:
         vector<unsigned char> img;
-
-
+        unsigned long int label;
     public:
         int distance;
         image(int dist, vector<unsigned char> &i);
@@ -110,8 +107,7 @@ class PQ{
         priority_queue<image> pq;
         priority_queue<int, vector<int>, greater<int>> range;
         int maxDistance;
-        // list<vector<unsigned char>*> *bucket;
-        // vector<vector<unsigned char>> *images;
+
 
     public:
         PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
