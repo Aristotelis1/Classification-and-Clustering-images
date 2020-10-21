@@ -207,26 +207,7 @@ void KMeans::initialize(vector<Point>& all_points)
     Cluster cluster(0,all_points[index]);
     clusters.push_back(cluster);
     cout << " Initializing " << endl;
-    // // Calculating the min sum;
-    // for(int i = 0; i < all_points.size(); i++)
-    // {
-    //     int minDist;
-    //     if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image())) == used.end())
-    //     {
-    //         minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
-    //         for(int j = 1; j < count_centroids; j++)
-    //         {
-    //             int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
-    //             if(newDist < minDist)
-    //             {
-    //                 minDist = newDist;
-    //             }
-    //         }
-    //         sum = sum + minDist;
-    //     }
-    //     cout << "image: " << i << " has minDist: " << minDist << endl;
-    // }
-    // cout << sum << endl;
+
 
     while(count_centroids != K)
     {
