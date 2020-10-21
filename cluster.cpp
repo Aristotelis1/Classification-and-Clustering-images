@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        number_of_images = 1000;
+        number_of_images = 10;
 
         //declare vector of images
         vector<Point> all_points;
@@ -107,11 +107,12 @@ int main(int argc, char* argv[])
             cout << "We gonna do classic clustering" << endl;
             auto start = high_resolution_clock::now();
             KMeans kmeans(k);
-            kmeans.run(all_points);
+            kmeans.initialize(all_points);
+            //kmeans.run(all_points);
             auto end = high_resolution_clock::now();
             duration<double> elapsed_seconds = (end-start);
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
-            kmeans.silhouette();
+            //kmeans.silhouette();
         }
         else if(strcmp(method,"lsh") == 0)
         {

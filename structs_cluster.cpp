@@ -106,7 +106,7 @@ bool Cluster::remove(Point point)
         if(temp_number == image_number)
         {
             images.erase(images.begin() + i);
-            cout << "image removed from cluster: " << this->clusterId << endl;
+            cout << "image " << image_number << " removed from cluster: " << this->clusterId << endl;
             return true;
         }
     }
@@ -165,6 +165,125 @@ int KMeans::get_nearest_cluster(Point point)
     return nearest_cluster;
 }
 
+bool KMeans::prob(int dist,unsigned long int sum)
+{
+    int x = rand() % sum;
+    cout << "x: " << x << " pow: " << (int)(pow(dist,2)+0.5) << endl;
+    if(x < (unsigned long int)(pow(dist,2)+0.5))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
+}
+
+void KMeans::initialize(vector<Point>& all_points)
+{
+    number_of_points = all_points.size();
+    dimensions = all_points[0].get_dimensions();
+    vector<int> used;
+
+
+
+    int count_centroids = 0;
+    int index = rand() % number_of_points;
+    cout << "index: " << index << endl;
+    count_centroids++;
+    used.push_back(index);
+    all_points[index].set_cluster(0);
+
+    Cluster cluster(0,all_points[index]);
+    clusters.push_back(cluster);
+    cout << " Initializing " << endl;
+    // // Calculating the min sum;
+    // for(int i = 0; i < all_points.size(); i++)
+    // {
+    //     int minDist;
+    //     if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image())) == used.end())
+    //     {
+    //         minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+    //         for(int j = 1; j < count_centroids; j++)
+    //         {
+    //             int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+    //             if(newDist < minDist)
+    //             {
+    //                 minDist = newDist;
+    //             }
+    //         }
+    //         sum = sum + minDist;
+    //     }
+    //     cout << "image: " << i << " has minDist: " << minDist << endl;
+    // }
+    // cout << sum << endl;
+
+    while(count_centroids != K)
+    {
+        unsigned long int sum = 0;
+        // Calculating the min sum;
+        for(int i = 0; i < all_points.size(); i++)
+        {
+            int minDist;
+            cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
+            if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
+            {
+                minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+                for(int j = 1; j < count_centroids; j++)
+                {
+                    int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+                    if(newDist < minDist)
+                    {
+                        minDist = newDist;
+                    }
+                }
+                sum = sum + minDist;
+                cout << "image: " << i << " has minDist: " << minDist << endl;
+            }
+        }
+        cout << sum << endl;
+
+
+        for(int i = 0; i < all_points.size(); i++)
+        {
+            cout << i << endl;
+            int minDist,cluster_id;
+            if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
+            {
+                minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+                cluster_id = 0;
+                for(int j = 1; j < count_centroids; j++)
+                {
+                    int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+                    if(newDist < minDist)
+                    {
+                        minDist = newDist;
+                        cluster_id = j;
+                    }
+                }
+                if(this->prob(minDist,sum) == true)
+                {
+                    used.push_back(i);
+                    all_points[i].set_cluster(cluster_id);
+                    Cluster cluster(cluster_id,all_points[i]);
+                    clusters.push_back(cluster);
+                    count_centroids++;
+                    cout << "true " << endl;
+                    break;
+                }
+            }
+            else
+            {
+                cout << "This point already picked " << endl;
+            }
+            
+        }
+    }
+
+
+}
+
 void KMeans::run(vector<Point>& all_points)
 {
     number_of_points = all_points.size();
@@ -173,23 +292,23 @@ void KMeans::run(vector<Point>& all_points)
 
     // Initializing Clusters
 
-    vector<int> used;
-    for(int i = 0; i < K; i++)
-    {
-        while(true){
-            int index = rand() % number_of_points; // getting a random point to be a centroid of a cluster
-            if(find(used.begin(),used.end(),index) == used.end())
-            {
-                // index doesnt exist in the vector
-                used.push_back(index);
-                all_points[index].set_cluster(i);
-                Cluster cluster(i,all_points[index]);
-                clusters.push_back(cluster);
-                cout << "Cluster: " << i << " picked for centroid image number: " << index << endl;
-                break;
-            }
-        }
-    }
+    // vector<int> used;
+    // for(int i = 0; i < K; i++)
+    // {
+    //     while(true){
+    //         int index = rand() % number_of_points; // getting a random point to be a centroid of a cluster
+    //         if(find(used.begin(),used.end(),index) == used.end())
+    //         {
+    //             // index doesnt exist in the vector
+    //             used.push_back(index);
+    //             all_points[index].set_cluster(i);
+    //             Cluster cluster(i,all_points[index]);
+    //             clusters.push_back(cluster);
+    //             cout << "Cluster: " << i << " picked for centroid image number: " << index << endl;
+    //             break;
+    //         }
+    //     }
+    // }
 
     // Add all points to a cluster
     int count_changes = 101;
@@ -222,6 +341,7 @@ void KMeans::run(vector<Point>& all_points)
                         clusters[j].add_image(all_points[i]);
                         cout << "image number: " << get_image_pos(all_points[i].get_image()) << " to cluster: " << nearest_cluster << endl;
                         count_changes++;
+                        break;
                     }
                 }
                 all_points[i].set_cluster(nearest_cluster);
