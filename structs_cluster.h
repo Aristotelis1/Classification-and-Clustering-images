@@ -39,6 +39,7 @@ class Cluster{
         bool remove(Point point);
         int get_size();
         int calculate_average_distance();
+        void display_images();
 };
 
 class KMeans{

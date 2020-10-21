@@ -53,12 +53,11 @@ int Point::get_cluster()
 Cluster::Cluster(int clusterId,Point centroid)
 {
     this->clusterId = clusterId;
-    for(int i = 0; i < centroid.get_dimensions(); i++)
-    {
-        this->center.push_back(centroid.getPixel(i));
-    }
-    centroid.set_cluster(clusterId);
-    this->images.push_back(centroid);
+
+    center = centroid.get_image();
+
+    // centroid.set_cluster(clusterId);
+    // this->images.push_back(centroid);
 }
 
 int Cluster::get_clusterId()
@@ -140,6 +139,14 @@ int Cluster::calculate_average_distance()
         }
     }
     return sum/count;
+}
+
+void Cluster::display_images()
+{
+    for(int i = 0; i < images.size(); i++)
+    {
+        cout << get_image_pos(images[i].get_image()) << endl;
+    }
 }
 
 
@@ -318,6 +325,8 @@ void KMeans::run(vector<Point>& all_points)
     for(int i = 0; i < K; i++)
     {
         cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+        clusters[i].display_images();
+
     }
 
 }
