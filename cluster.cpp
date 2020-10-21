@@ -3,6 +3,8 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+#include <random>
+#include <limits>
 
 
 #include "functions.h"
@@ -16,7 +18,7 @@ using namespace std::chrono;
 
 int main(int argc, char* argv[])
 {
-    srand(time(NULL));
+    //srand(time(NULL));
 
     int k=-1;
     char input_file[128], config_file[128], output_file[128], method[15], complete[10];
@@ -77,7 +79,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        number_of_images = 10;
+        number_of_images = 100;
 
         //declare vector of images
         vector<Point> all_points;
@@ -108,7 +110,7 @@ int main(int argc, char* argv[])
             auto start = high_resolution_clock::now();
             KMeans kmeans(k);
             kmeans.initialize(all_points);
-            //kmeans.run(all_points);
+            kmeans.run(all_points);
             auto end = high_resolution_clock::now();
             duration<double> elapsed_seconds = (end-start);
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;

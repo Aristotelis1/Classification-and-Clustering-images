@@ -4,9 +4,15 @@
 #include <list>
 #include <stdlib.h>
 #include <algorithm>
+#include <random>
+#include <limits>
 #include "structs_cluster.h"
 #include "structs.h"
 
+random_device rd;
+mt19937_64 eng(rd());
+
+uniform_int_distribution<unsigned long long> distr;
 
 using namespace std;
 
@@ -165,19 +171,21 @@ int KMeans::get_nearest_cluster(Point point)
     return nearest_cluster;
 }
 
-bool KMeans::prob(int dist,unsigned long int sum)
+bool KMeans::prob(int dist,unsigned long long int sum)
 {
-    int x = rand() % sum;
-    cout << "x: " << x << " pow: " << (int)(pow(dist,2)+0.5) << endl;
-    if(x < (unsigned long int)(pow(dist,2)+0.5))
+
+
+    unsigned long long int sum_pow = sum*sum;
+    unsigned long long int x = distr(eng) % sum_pow;
+    cout << "x: " << x << " sum: " << sum << " sum pow: " << sum_pow<< endl;
+    if(x < (unsigned long long int)dist*(unsigned long long int)dist)
     {
         return true;
     }
     else
     {
         return false;
-    }
-    
+    }   
 }
 
 void KMeans::initialize(vector<Point>& all_points)
@@ -226,7 +234,7 @@ void KMeans::initialize(vector<Point>& all_points)
         for(int i = 0; i < all_points.size(); i++)
         {
             int minDist;
-            cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
+            //cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
             if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
             {
                 minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
@@ -239,10 +247,10 @@ void KMeans::initialize(vector<Point>& all_points)
                     }
                 }
                 sum = sum + minDist;
-                cout << "image: " << i << " has minDist: " << minDist << endl;
+                //cout << "image: " << i << " has minDist: " << minDist << endl;
             }
         }
-        cout << sum << endl;
+        //cout << sum << endl;
 
 
         for(int i = 0; i < all_points.size(); i++)
