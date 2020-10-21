@@ -54,7 +54,7 @@ class KMeans{
         void silhouette();
         void lsh(vector<Point>& all_points,vector<Hash> hash_tables);
         void initialize(vector<Point>& all_points);
-        bool prob(int dist,unsigned long long int sum);
+        int prob(vector<int> dist,unsigned long long int sum);
 
 
 };

@@ -179,21 +179,22 @@ int KMeans::get_nearest_cluster(Point point)
     return nearest_cluster;
 }
 
-bool KMeans::prob(int dist,unsigned long long int sum)
+int KMeans::prob(vector<int> dist,unsigned long long int sum)
 {
 
 
     unsigned long long int sum_pow = sum*sum;
-    unsigned long long int x = distr(eng) % sum_pow;
+    unsigned long long int x;
     //cout << "x: " << x << " sum: " << sum << " sum pow: " << sum_pow<< endl;
-    if(x < (unsigned long long int)dist*(unsigned long long int)dist)
-    {
-        return true;
+    while(1){
+        for(int i = 0; i < dist.size(); i++){
+            x = distr(eng) % sum_pow;
+            if(x < (unsigned long long int)dist[i]*(unsigned long long int)dist[i])
+            {
+                return i;
+            }
+        }
     }
-    else
-    {
-        return false;
-    }   
 }
 
 void KMeans::initialize(vector<Point>& all_points)
@@ -239,38 +240,44 @@ void KMeans::initialize(vector<Point>& all_points)
             }
         }
         //cout << sum << endl;
-        int flag=0;
-        while(flag == 0){
-            for(int i = 0; i < all_points.size(); i++)
+        vector<int> dists;
+        vector<int> clusters_id;
+        for(int i = 0; i < all_points.size(); i++)
+        {
+            int minDist,cluster_id;
+            if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
             {
-                int minDist,cluster_id;
-                if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
+                minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+                cluster_id = 0;
+                for(int j = 1; j < count_centroids; j++)
                 {
-                    minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
-                    cluster_id = 0;
-                    for(int j = 1; j < count_centroids; j++)
+                    int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+                    if(newDist < minDist)
                     {
-                        int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
-                        if(newDist < minDist)
-                        {
-                            minDist = newDist;
-                            cluster_id = j;
-                        }
+                        minDist = newDist;
+                        cluster_id = j;
                     }
-                    if(this->prob(minDist,sum) == true)
-                    {
-                        used.push_back(i);
-                        //all_points[i].set_cluster(cluster_id);
-                        Cluster cluster(cluster_id,all_points[i]);
-                        clusters.push_back(cluster);
-                        count_centroids++;
-                        flag=1;
-                        cout << "true " << endl;
-                        break;
-                    }
-                }            
-            }
+                }
+                dists.push_back(minDist);
+                clusters_id.push_back(cluster_id);
+                // if(this->prob(minDist,sum) == true)
+                // {
+                //     used.push_back(i);
+                //     //all_points[i].set_cluster(cluster_id);
+                //     Cluster cluster(cluster_id,all_points[i]);
+                //     clusters.push_back(cluster);
+                //     count_centroids++;
+                //     cout << "true " << endl;
+                //     break;
+                // }
+            }            
         }
+        int pos = prob(dists,sum);
+        used.push_back(pos);
+        Cluster cluster(clusters_id[pos],all_points[pos]);
+        clusters.push_back(cluster);
+        count_centroids++;
+        cout << "new cluster centroid: " << pos << endl;
     }
 }
 
@@ -281,8 +288,8 @@ void KMeans::run(vector<Point>& all_points)
 
 
     // Add all points to a cluster
-    int count_changes = 101;
-    while(count_changes >10)
+    int count_changes = number_of_points;
+    while(count_changes > number_of_points/100)
     {
         count_changes = 0;
         for(int i = 0; i < number_of_points; i++)
