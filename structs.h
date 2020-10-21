@@ -123,8 +123,9 @@ class PQ{
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
         void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
+        vector<vector<unsigned char>> lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query);
         void cube_range_search(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
-
+        vector<vector<unsigned char>> cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
         void displayRange(ofstream & out);
 
 };

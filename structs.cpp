@@ -11,16 +11,6 @@
 using namespace std;
 
 
-// vector<unsigned char>* hash_list::get_image()
-// {
-
-// }
-
-// image::image(vector<unsigned char> i)
-// {
-//     img = &i;
-// }
-
 vector<vector<unsigned char>> Hash_list::get_list_of_images()
 {
     return list_of_images;
@@ -319,6 +309,51 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
     }
 }
 
+vector<vector<unsigned char>> PQ::lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query)
+{
+    int key, z;
+    vector<vector<unsigned char>> list_of_images;
+    vector<int>impos;
+    bool imexist;
+    int count = 0;
+    vector<vector<unsigned char>> return_images;
+    for(int i = 0; i < hash_tables.size(); i++)
+    {
+        key=hash_tables[i].calculate_g(query);
+        list_of_images = hash_tables[i].get_list_of_images(key);
+        int dist, dimension, number_of_images;
+        number_of_images = list_of_images.size();
+
+        for(int j = 0; j<number_of_images ; j++)
+        {
+            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+            if(dist < r)
+            {
+                //image temp(dist,list_of_images[j]);
+                int temp = get_image_pos(list_of_images[j]);
+                for (z=0, imexist=false ; z < impos.size() ; z++){
+                    if (impos[z] == temp){
+                        imexist=true;
+                        break;
+                    }
+                }
+                if (!imexist){
+                    count++;
+                    return_images.push_back(list_of_images[j]);
+                    impos.push_back(temp);
+                }
+            }
+            // if(count > 20*hash_tables.size())
+            // {
+            //     return;
+            // }
+        }
+
+
+    }
+    return return_images;
+}
+
 void PQ::cube_range_search(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M){
     int key, number_of_images, dist, i,j, z, count=0;
     bool fit = false, imexist;
@@ -380,6 +415,70 @@ void PQ::cube_range_search(int r, Cube hypercube, vector<unsigned char> query, i
         }
 
     }    
+}
+
+vector<vector<unsigned char>> PQ::cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M){
+    int key, number_of_images, dist, i,j, z, count=0;
+    bool fit = false, imexist;
+    vector<vector<unsigned char>> list_of_images;
+    vector<int> impos;
+    vector<int> nb;
+    vector<vector<unsigned char>> return_images;
+    key=hypercube.calculate_vector_key(query);
+    list_of_images=hypercube.get_list_of_images(key);
+    number_of_images = list_of_images.size();
+    nb = get_route(k);
+    if(probes>=(pow(2,k)))   //dont have enough vertices to check
+        probes=pow(2,k)-1;    //changed probes to max vertices
+    if (M < number_of_images)
+        fit = true;
+    if(fit == true){        //Search in only one vertex
+        for (j=0 ; j<M ; j++){
+            dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+            if (dist < r){
+                int temp = get_image_pos(list_of_images[j]);
+                //image temp(dist,list_of_images[j]);
+                for (z=0, imexist=false ; z < impos.size() ; z++){
+                    if (impos[z] == temp){
+                        imexist=true;
+                        break;
+                    }
+                }
+                if (!imexist){
+                    count++;
+                    return_images.push_back(list_of_images[j]);
+                    impos.push_back(temp);
+                }
+            }
+        }
+    }else{          //check other vertices
+        int tempk=key;
+        for(i=0 ; i<probes && count<M ; i++){
+            list_of_images=hypercube.get_list_of_images(tempk);
+            number_of_images = list_of_images.size();
+            for (j=0 ; j<number_of_images && count<M ; j++){
+                dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
+                if (dist < r){
+                    int temp = get_image_pos(list_of_images[j]);
+                    //image temp(dist,list_of_images[j]);
+                    for (z=0, imexist=false ; z < impos.size() ; z++){
+                        if (impos[z] == temp){
+                            imexist=true;
+                            break;
+                        }
+                    }
+                    if (!imexist){
+                        count++;
+                        return_images.push_back(list_of_images[j]);
+                        impos.push_back(temp);
+                    }
+                }
+            }
+            tempk=change_neighbor(key, i+1, k, nb);
+        }
+
+    }  
+    return return_images;  
 }
 
 
