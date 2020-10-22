@@ -40,6 +40,9 @@ class Cluster{
         int get_size();
         int calculate_average_distance();
         void display_images();
+
+        int calculate_average_distance_silh(vector<unsigned char> image);
+        vector<Point> get_images();
 };
 
 class KMeans{
@@ -55,6 +58,8 @@ class KMeans{
         void lsh(vector<Point>& all_points,vector<Hash> hash_tables);
         void initialize(vector<Point>& all_points);
         int prob(vector<int> dist,unsigned long long int sum);
+
+        int get_second_nearest_cluster(Point point, int cluster_id);
 
 
 };

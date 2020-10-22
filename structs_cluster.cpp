@@ -388,13 +388,88 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
     
 }
 
+int KMeans::get_second_nearest_cluster(Point point, int cluster_id)
+{
+    int min_dist,nearest_cluster;
+    
+    min_dist = 999999;
+
+//    cout<<"My cluster is "<<cluster_id;
+
+    for(int i = 0; i < K; i++)
+    {   
+        if (cluster_id != i ){
+            int dist = manhattan_dist(clusters[i].get_center(), point.get_image(),dimensions);
+//            cout << "dist to cluster: "<< i << "-> " << dist << "min dist" << min_dist<<  endl;
+
+            if(dist < min_dist)
+            {
+                min_dist = dist;
+                nearest_cluster = i;
+            }
+        }
+    }
+
+//    cout<<" and nearest cluster is "<<nearest_cluster<<endl;
+
+    return nearest_cluster;
+}
+
+int Cluster::calculate_average_distance_silh(vector<unsigned char> image)
+{
+    int count = -1;
+    int sum = 0;
+    int dist;
+    for(int i = 0; i < images.size(); i++)
+    {
+        dist = manhattan_dist(images[i].get_image(),image,images[i].get_dimensions());
+        sum = sum + dist;
+        //cout << sum << endl;
+        count++;
+    }
+    return sum/count;
+}
+
+vector<Point> Cluster::get_images(){
+    return images;
+}
+
 void KMeans::silhouette()
 {
+    int number_of_images, meandist_nearest, meandist_second, second_cluster;
+    int samples, j, count=0;
+    vector<Point> images;
+    vector<unsigned char> image;
+
+    double s, sil=0, si;
+    cout<<"Silhouette: [";
     for(int i = 0; i < K; i++)
     {
-        cout <<"Cluster-"<< i <<" average distance: "<< clusters[i].calculate_average_distance() << endl;
+        si=0;
+        images=clusters[i].get_images();
+        number_of_images=images.size();
+        for (j=0; j<number_of_images ; j++){
+            image=images[j].get_image();
+            meandist_nearest=clusters[i].calculate_average_distance_silh(image);
+            second_cluster=get_second_nearest_cluster(images[j], i);
+            meandist_second=clusters[second_cluster].calculate_average_distance_silh(image);
+            s=(double)meandist_second - (double)meandist_nearest;
+            if (meandist_nearest>meandist_second)
+                s = s / (double) meandist_nearest;
+            else
+                s = s / (double) meandist_second;
+            
+            sil+=s;
+            si+=s;
+            count++;
+        }
+        si = si / (double) number_of_images;
+        cout<<si<<",";
     }
+    sil=sil/(double) count;
+    cout<<sil<<"]"<<endl;
 }
+
 
 
 

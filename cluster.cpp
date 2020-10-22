@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
             auto end = high_resolution_clock::now();
             duration<double> elapsed_seconds = (end-start);
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
-            //kmeans.silhouette();
+            kmeans.silhouette();
         }
         else if(strcmp(method,"lsh") == 0)
         {
