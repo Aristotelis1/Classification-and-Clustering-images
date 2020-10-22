@@ -341,50 +341,55 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
     int r = 20000;
 
     //int L = 10000;
-    // Add similar points to the same cluster using range search
-    for(int i = 0; i < K; i++)
-    {
-        vector<unsigned char> center = clusters[i].get_center();
-        
-        PQ pq_hash(center,2,hash_tables); // NA TO TSEKARW
-        //pq_hash.range_search(35000,hash_tables,center);
-        vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
-        cout << "range search size: " << range_search.size() << endl;
-
-        for(int j = 0; j < range_search.size(); j++)
+    while(r < 55000){
+        cout << "r: " << r << endl;
+        // Add similar points to the same cluster using range search
+        for(int i = 0; i < K; i++)
         {
-            int pos = get_image_pos(range_search[j]);
-            int current_cluster = all_points[pos].get_cluster();
-            cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
-            if(current_cluster != -1) // This point is already in a cluster
+            vector<unsigned char> center = clusters[i].get_center();
+            
+            PQ pq_hash(center,2,hash_tables); // NA TO TSEKARW
+            //pq_hash.range_search(35000,hash_tables,center);
+            vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
+            cout << "range search size: " << range_search.size() << endl;
+
+            for(int j = 0; j < range_search.size(); j++)
             {
-                //cout << all_points[pos].get_cluster() << endl;
-                int current_distance = manhattan_dist(all_points[pos].get_image(),clusters[current_cluster].get_center(),dimensions);
-                int new_distance = manhattan_dist(all_points[pos].get_image(),clusters[i].get_center(),dimensions);
-                if(new_distance < current_distance)
+                int pos = get_image_pos(range_search[j]) - 1;
+                int current_cluster = all_points[pos].get_cluster();
+                cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
+                if(current_cluster != -1 && current_cluster != i) // This point is already in a cluster
                 {
-                    clusters[current_cluster].remove(all_points[pos]);
+                    
+                    //cout << all_points[pos].get_cluster() << endl;
+                    int current_distance = manhattan_dist(all_points[pos].get_image(),clusters[current_cluster].get_center(),dimensions);
+                    int new_distance = manhattan_dist(all_points[pos].get_image(),clusters[i].get_center(),dimensions);
+                    if(new_distance < current_distance)
+                    {
+                        clusters[current_cluster].remove(all_points[pos]);
+                        clusters[i].add_image(all_points[pos]);
+                        all_points[pos].set_cluster(i);
+                        cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl; 
+                    }
+                }
+                else
+                {
                     clusters[i].add_image(all_points[pos]);
                     all_points[pos].set_cluster(i);
-                    cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl; 
+                    cout << "Image: "<< pos  << " added to: " << i << endl;
                 }
+                
             }
-            else
-            {
-                clusters[i].add_image(all_points[pos]);
-                all_points[pos].set_cluster(i);
-                cout << "Image: "<< pos  << " added to: " << i << endl;
-            }
-            
         }
+        r = r*2;
     }
 
-    for(int i = 0; i < K; i++)
-    {
-        cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-        //clusters[i].display_images();
+    // for(int i = 0; i < K; i++)
+    // {
+    //     cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+    //     //clusters[i].display_images();
 
-    }
+    // }
     
 }
 
