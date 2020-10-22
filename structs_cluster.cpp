@@ -276,7 +276,7 @@ void KMeans::initialize(vector<Point>& all_points)
         }
         int pos = prob(dists,sum);
         used.push_back(pos);
-        Cluster cluster(clusters_id[pos],all_points[pos]);
+        Cluster cluster(count_centroids,all_points[pos]);
         clusters.push_back(cluster);
         count_centroids++;
         cout << "new cluster centroid: " << pos << endl;
@@ -332,11 +332,6 @@ void KMeans::run(vector<Point>& all_points)
 
     }
 
-    for(int i = 0; i < K; i++)
-    {
-        cout << "cluster's id: " << clusters[i].get_clusterId() << endl;
-    }
-
 }
 
 void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
@@ -372,15 +367,15 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                     if(new_distance < current_distance)
                     {
                         clusters[current_cluster].remove(all_points[pos]);
-                        clusters[i].add_image(all_points[pos]);
                         all_points[pos].set_cluster(i);
+                        clusters[i].add_image(all_points[pos]);
                         cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl; 
                     }
                 }
                 else if(current_cluster == -1)
                 {
-                    clusters[i].add_image(all_points[pos]);
                     all_points[pos].set_cluster(i);
+                    clusters[i].add_image(all_points[pos]);
                     cout << "Image: "<< pos  << " added to: " << i << endl;
                     cout << "New cluster: " << all_points[pos].get_cluster() << endl;
                 }
@@ -393,12 +388,7 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
     for(int i = 0; i < K; i++)
     {
         cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-        clusters[i].display_images();
-    }
-
-    for(int i = 0; i < K; i++)
-    {
-        cout << "cluster's id: " << clusters[i].get_clusterId() << endl;
+        //clusters[i].display_images();
     }
     
 }
@@ -477,7 +467,6 @@ void KMeans::silhouette()
             sil+=s;
             si+=s;
             count++;
-            cout << count << endl;
         }
         if(number_of_images != 0)
         {
