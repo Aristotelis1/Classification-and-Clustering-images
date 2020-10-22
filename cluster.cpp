@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        number_of_images = 3000;
+        number_of_images = 500;
 
         //declare vector of images
         vector<Point> all_points;
@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
 
             auto start = high_resolution_clock::now();
             KMeans kmeans(k);
+            kmeans.initialize(all_points);
             kmeans.lsh(all_points,hash_tables);
 
             auto end = high_resolution_clock::now();
