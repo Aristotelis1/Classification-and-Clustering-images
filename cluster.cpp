@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
         cout <<endl;
     }
 
-    while (k<1){
+    while (k<=1){
         cout <<"Give me k > 1 (if you want it on default type '0') : ";
         cin >> k;
         if (k==0){
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        number_of_images = 100;
+        number_of_images = 10;
 
         //declare vector of images
         vector<Point> all_points;

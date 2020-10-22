@@ -51,7 +51,7 @@ class KMeans{
         vector<Cluster> clusters;
     public:
         KMeans(int K);
-        int get_nearest_cluster_id(Point point);
+        // int get_nearest_cluster_id(Point point);
         void run(vector<Point>& all_points);
         int get_nearest_cluster(Point point);
         void silhouette();

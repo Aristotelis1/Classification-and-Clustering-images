@@ -77,10 +77,11 @@ vector<unsigned char> Cluster::get_center()
 
 void Cluster::calculate_center(int dimensions)
 {
+    if(images.size() == 0)return;
     vector <unsigned char> new_center;
+    new_center.clear();
     unsigned char pixel;
     unsigned long int t = 5;
-
     for(int i = 0; i < dimensions; i++)
     {
         vector <unsigned char> pixels;
@@ -92,7 +93,7 @@ void Cluster::calculate_center(int dimensions)
             pixels.push_back(images[j].getPixel(i));
         }
         sort(pixels.begin(),pixels.end());
-        new_center.push_back(pixels[(images.size()/2)+1]);
+        new_center.push_back(pixels[(images.size()/2)]); // SKAEI
     }
     //cout << "new center size: " << new_center.size() << endl;
     this->center = new_center;
@@ -146,7 +147,7 @@ void Cluster::display_images()
     for(int i = 0; i < images.size(); i++)
     {
         //cout << get_image_pos(images[i].get_image()) << endl;
-        cout << images[i].get_cluster() << endl;
+        cout << images[i].get_cluster() << " position: " << get_image_pos(images[i].get_image()) - 1 << endl;
     }
 }
 
@@ -165,7 +166,7 @@ int KMeans::get_nearest_cluster(Point point)
     min_dist = manhattan_dist(clusters[0].get_center(), point.get_image(),dimensions);
     nearest_cluster = clusters[0].get_clusterId();
 
-    for(int i = 1; i < K; i++)
+    for(int i = 0; i < K; i++)
     {
         int dist = manhattan_dist(clusters[i].get_center(), point.get_image(),dimensions);
         //cout << "dist to cluster: "<< i << "-> " << dist << "min dist" << min_dist<<  endl;
@@ -318,7 +319,6 @@ void KMeans::run(vector<Point>& all_points)
 
 
         // Recalculating the centroid
-
         for(int i = 0; i < K; i++)
         {
             clusters[i].calculate_center(dimensions);
@@ -332,6 +332,11 @@ void KMeans::run(vector<Point>& all_points)
 
     }
 
+    for(int i = 0; i < K; i++)
+    {
+        cout << "cluster's id: " << clusters[i].get_clusterId() << endl;
+    }
+
 }
 
 void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
@@ -341,7 +346,7 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
     int r = 20000;
 
     //int L = 10000;
-    while(r < 55000){
+    while(r < 45000){
         cout << "r: " << r << endl;
         // Add similar points to the same cluster using range search
         for(int i = 0; i < K; i++)
@@ -372,11 +377,12 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                         cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl; 
                     }
                 }
-                else
+                else if(current_cluster == -1)
                 {
                     clusters[i].add_image(all_points[pos]);
                     all_points[pos].set_cluster(i);
                     cout << "Image: "<< pos  << " added to: " << i << endl;
+                    cout << "New cluster: " << all_points[pos].get_cluster() << endl;
                 }
                 
             }
@@ -384,12 +390,16 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
         r = r*2;
     }
 
-    // for(int i = 0; i < K; i++)
-    // {
-    //     cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-    //     //clusters[i].display_images();
+    for(int i = 0; i < K; i++)
+    {
+        cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+        clusters[i].display_images();
+    }
 
-    // }
+    for(int i = 0; i < K; i++)
+    {
+        cout << "cluster's id: " << clusters[i].get_clusterId() << endl;
+    }
     
 }
 
@@ -467,8 +477,17 @@ void KMeans::silhouette()
             sil+=s;
             si+=s;
             count++;
+            cout << count << endl;
         }
-        si = si / (double) number_of_images;
+        if(number_of_images != 0)
+        {
+            si = si / (double) number_of_images;
+        }
+        else
+        {
+            si = 0;
+        }
+        
         cout<<si<<",";
     }
     sil=sil/(double) count;
