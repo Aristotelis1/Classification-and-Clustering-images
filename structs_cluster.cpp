@@ -186,24 +186,28 @@ int KMeans::prob(vector<unsigned long long int> dist)
 //    cout<<"size is: "<<dist.size()<<endl;
     unsigned long long int x = distr(eng) % (dist.back());
     cout<<x<<endl;
-    int dist_size= dist.size()-1, i=0, mid;
+    int dist_size= dist.size(), i=0, mid;
 
     while(i != dist_size){
 //        sleep(1);
         mid= i + ( (dist_size -i)/2 );
         if (dist[mid] < x){
             if(dist[mid+1] > x){
-                cout<<dist[mid]<<" between "<<dist[mid+1]<<"\t gonna return the right "<<mid+1<<endl;
+//                cout<<dist[mid]<<" between "<<dist[mid+1]<<"\t gonna return the right "<<mid+1<<endl;
                 return mid+1;
             }
             i = mid + 1;
 
-        }else if (dist[mid] > x)
+        }else if (dist[mid] > x){
+            if(dist[mid-1] < x){
+//                cout<<dist[mid]<<" between "<<dist[mid+1]<<"\t gonna return the right "<<mid+1<<endl;
+                return mid+1;
+            }
             dist_size = mid - 1;
-        else
+        }else
             return mid;
     }
-    cout<<dist[i]<<" between "<<dist[i+1]<<"\t gonna return the right"<<i+1<<endl;
+//    cout<<dist[i]<<" between "<<dist[i+1]<<"\t gonna return the right"<<i+1<<endl;
  
     return i+1;
 }
@@ -280,9 +284,13 @@ void KMeans::initialize(vector<Point>& all_points)
                 cout<<"Found something..."<<endl;
             }            
         }
-        //  for(int xx=0; xx<10 ; xx++)
-        //      cout<<dists[xx]<<endl;
-        // sleep(5);
+        unsigned long long int xxx;
+        cout<<"PRINTING DI"<<endl;
+         for(int e=1; e<dists.size() ; e++){
+             xxx=dists[e] - dists[e-1];
+             cout<<sqrt(xxx)<<endl;
+         }
+//        sleep(5);
         int pos = prob(dists);
         cout<<dists[pos]<<endl;
 //        sleep(5);
@@ -294,7 +302,7 @@ void KMeans::initialize(vector<Point>& all_points)
         cout << "new cluster centroid: " << pos << endl;
     }
     int r = mean_centroid_distance();
-    sleep(5);
+    // sleep(5);
 }
 
 void KMeans::run(vector<Point>& all_points)

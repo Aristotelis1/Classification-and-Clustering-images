@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         cin >> input_file;
         cout <<endl;
     }while (strcmp(config_file, "")==0){
-        cout <<"Need query file: ";
+        cout <<"Need config file: ";
         cin >> config_file;
         cout <<endl;
     }while (strcmp(output_file, "")==0){
@@ -54,16 +54,60 @@ int main(int argc, char* argv[])
         cout <<endl;
     }
 
-    while (k<=1){
-        cout <<"Give me k > 1 (if you want it on default type '0') : ";
-        cin >> k;
-        if (k==0){
-            k=3;
-            break;
+    //READING CONFIG FILE
+
+    std::ifstream config (config_file);
+    char str[128];
+    int L=3, k_lsh=4, M_hypercube=10, k_hypercube=3, probes=2;
+    if (config.is_open()){
+        while (config >> str){
+            if (strcmp(str, "number_of_clusters:")==0){
+                config >> str;
+                k=atoi(str);
+                
+            }else if (strcmp(str, "number_of_vector_hash_tables:")==0){
+                config >> str;
+                L=atoi(str);
+
+            }else if (strcmp(str, "number_of_vector_hash_functions:")==0){
+                config >> str;
+                k_lsh=atoi(str);
+
+            }else if (strcmp(str, "max_number_M_hypercube:")==0){
+                config >> str;
+                M_hypercube=atoi(str);
+
+            }else if (strcmp(str, "number_of_hypercube_dimensions:")==0){
+                config >> str;
+                k_hypercube=atoi(str);
+
+            }else if (strcmp(str, "number_of_probes:")==0){
+                config >> str;
+                probes=atoi(str);
+
+            }else{
+                cout<<"Bad config texting. Please try again."<<endl;
+                break;
+            } 
         }
+
+    }else{
+        cout<<"Cannot open config file. Start over... Bye bye"<<endl;
+        return 1;
     }
 
-        std::ifstream file (input_file);
+//    cout<< probes << k_hypercube << k_lsh << M_hypercube << k << L <<endl;
+//    sleep(10);
+    while (k<1){
+        cout <<"Give me k > 1 : ";
+        cin >> k;
+    }
+
+    config.close();
+
+    //STARTING READING INPUT FILE
+
+    std::ifstream file (input_file);
 
     int magic_number, number_of_images, rows, columns, dimension;
     unsigned char temp = -1;
@@ -118,22 +162,24 @@ int main(int argc, char* argv[])
         }
         else if(strcmp(method,"lsh") == 0)
         {
-            int L,samples = 100;
-            cout << "Give the number(L) of Hash Tables:" << endl;
-            cin >> L;
+//            int L,samples = 100;
+            int samples = 100;
+
+            // cout << "Give the number(L) of Hash Tables:" << endl;
+            // cin >> L;
 
             int w=get_w(get_mean_range(samples, images));
 
-            vector<double>s(L*k*dimension);
-            double s_range = (double) w / (double) (L * k * dimension);
-            for (int i=0; i<L*k*dimension ; i++){
+            vector<double>s(L*k_lsh*dimension);
+            double s_range = (double) w / (double) (L * k_lsh * dimension);
+            for (int i=0; i<L*k_lsh*dimension ; i++){
                 s[i]= i*s_range;
             }
 
             vector<Hash> hash_tables;
             for(int j = 0; j < L; j++)
             {
-                Hash h(number_of_images,images,dimension,k,s, w);
+                Hash h(number_of_images,images,dimension,k_lsh,s, w);
                 hash_tables.push_back(h);
             }
             for(int j = 0; j < number_of_images; j++)
@@ -154,6 +200,11 @@ int main(int argc, char* argv[])
             duration<double> elapsed_seconds = (end-start);
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
             kmeans.silhouette();
+        }        
+        else if(strcmp(method,"hypercube") == 0)
+        {
+
+
         }
 
     }else{
