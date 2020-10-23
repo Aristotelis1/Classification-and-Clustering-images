@@ -59,7 +59,7 @@ class KMeans{
         void silhouette();
         void lsh(vector<Point>& all_points,vector<Hash> hash_tables);
         void initialize(vector<Point>& all_points);
-        int prob(vector<unsigned long long int> dist,unsigned long long int sum);
+        int prob(vector<unsigned long long int> dist);
 
         int get_second_nearest_cluster(Point point, int cluster_id);
 

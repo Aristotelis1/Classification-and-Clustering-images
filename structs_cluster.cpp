@@ -181,7 +181,7 @@ int KMeans::get_nearest_cluster(Point point)
     return nearest_cluster;
 }
 
-int KMeans::prob(vector<unsigned long long int> dist,unsigned long long int sum)
+int KMeans::prob(vector<unsigned long long int> dist)
 {
 //    cout<<"size is: "<<dist.size()<<endl;
     unsigned long long int x = distr(eng) % (dist.back());
@@ -228,27 +228,27 @@ void KMeans::initialize(vector<Point>& all_points)
 
     while(count_centroids != K)
     {
-        unsigned long int sum = 0, old;
+        unsigned long long int old;
         // Calculating the min sum;
-        for(int i = 0; i < all_points.size(); i++)
-        {
-            int minDist;
-            //cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
-            if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
-            {
-                minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
-                for(int j = 0; j < count_centroids; j++)
-                {
-                    int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
-                    if(newDist < minDist)
-                    {
-                        minDist = newDist;
-                    }
-                }
-                sum = sum + minDist;
-                //cout << "image: " << i << " has minDist: " << minDist << endl;
-            }
-        }
+        // for(int i = 0; i < all_points.size(); i++)
+        // {
+        //     int minDist;
+        //     //cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
+        //     if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
+        //     {
+        //         minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+        //         for(int j = 0; j < count_centroids; j++)
+        //         {
+        //             int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+        //             if(newDist < minDist)
+        //             {
+        //                 minDist = newDist;
+        //             }
+        //         }
+        //         sum = sum + minDist;
+        //         //cout << "image: " << i << " has minDist: " << minDist << endl;
+        //     }
+        // }
         //cout << sum << endl;
         vector<unsigned long long int> dists;
         dists.push_back(0);
@@ -274,19 +274,12 @@ void KMeans::initialize(vector<Point>& all_points)
                 old=dists.back();
                 dists.push_back(minDist+old);
                 clusters_id.push_back(cluster_id);
-                // if(this->prob(minDist,sum) == true)
-                // {
-                //     used.push_back(i);
-                //     //all_points[i].set_cluster(cluster_id);
-                //     Cluster cluster(cluster_id,all_points[i]);
-                //     clusters.push_back(cluster);
-                //     count_centroids++;
-                //     cout << "true " << endl;
-                //     break;
-                // }
             }            
         }
-        int pos = prob(dists,sum);
+        // for(int xx=0; xx<dists.size() ; xx++)
+        //     cout<<dists[xx]<<endl;
+        // sleep(1);
+        int pos = prob(dists);
         cout<<"pos is: "<<pos<<endl;
         used.push_back(pos);
         Cluster cluster(count_centroids,all_points[pos]);
