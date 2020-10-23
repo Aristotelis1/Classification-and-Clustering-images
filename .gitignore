@@ -14,3 +14,4 @@ cluster
 .vscode/launch.json
 cluster.dSYM/Contents/Info.plist
 output.txt
+.DS_Store
