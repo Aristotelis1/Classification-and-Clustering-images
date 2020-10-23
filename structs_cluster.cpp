@@ -181,22 +181,30 @@ int KMeans::get_nearest_cluster(Point point)
     return nearest_cluster;
 }
 
-int KMeans::prob(vector<int> dist,unsigned long long int sum)
+int KMeans::prob(vector<unsigned long long int> dist)
 {
+//    cout<<"size is: "<<dist.size()<<endl;
+    unsigned long long int x = distr(eng) % (dist.back());
+    int dist_size= dist.size()-1, i=0, mid;
 
-
-    unsigned long long int sum_pow = sum*sum;
-    unsigned long long int x;
-    //cout << "x: " << x << " sum: " << sum << " sum pow: " << sum_pow<< endl;
-    while(1){
-        for(int i = 0; i < dist.size(); i++){
-            x = distr(eng) % sum_pow;
-            if(x < (unsigned long long int)dist[i]*(unsigned long long int)dist[i])
-            {
-                return i;
+    while(i != dist_size){
+//        sleep(1);
+        mid= i + ( (dist_size -i)/2 );
+        if (dist[mid] < x){
+            if(dist[mid+1] > x){
+                cout<<dist[mid]<<" between "<<dist[mid+1]<<"\t gonna return the right "<<mid+1<<endl;
+                return mid+1;
             }
-        }
+            i = mid + 1;
+
+        }else if (dist[mid] > x)
+            dist_size = mid - 1;
+        else
+            return mid;
     }
+    cout<<dist[i]<<" between "<<dist[i+1]<<"\t gonna return the right"<<i+1<<endl;
+ 
+    return i+1;
 }
 
 void KMeans::initialize(vector<Point>& all_points)
@@ -220,61 +228,64 @@ void KMeans::initialize(vector<Point>& all_points)
 
     while(count_centroids != K)
     {
-        unsigned long int sum = 0;
+        unsigned long long int old;
         // Calculating the min sum;
-        for(int i = 0; i < all_points.size(); i++)
-        {
-            int minDist;
-            //cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
-            if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
-            {
-                minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
-                for(int j = 0; j < count_centroids; j++)
-                {
-                    int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
-                    if(newDist < minDist)
-                    {
-                        minDist = newDist;
-                    }
-                }
-                sum = sum + minDist;
-                //cout << "image: " << i << " has minDist: " << minDist << endl;
-            }
-        }
+        // for(int i = 0; i < all_points.size(); i++)
+        // {
+        //     int minDist;
+        //     //cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
+        //     if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
+        //     {
+        //         minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+        //         for(int j = 0; j < count_centroids; j++)
+        //         {
+        //             int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+        //             if(newDist < minDist)
+        //             {
+        //                 minDist = newDist;
+        //             }
+        //         }
+        //         sum = sum + minDist;
+        //         //cout << "image: " << i << " has minDist: " << minDist << endl;
+        //     }
+        // }
         //cout << sum << endl;
-        vector<int> dists;
+        vector<unsigned long long int> dists;
+        dists.push_back(0);
         vector<int> clusters_id;
+        clusters_id.push_back(0);
         for(int i = 0; i < all_points.size(); i++)
         {
-            int minDist,cluster_id;
+            unsigned long long int minDist;
+            int cluster_id;
             if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
             {
                 minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+                minDist = minDist * minDist;
                 cluster_id = 0;
                 for(int j = 1; j < count_centroids; j++)
                 {
                     int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
                     if(newDist < minDist)
                     {
-                        minDist = newDist;
+                        minDist = (unsigned long long int)newDist;
+                        minDist = minDist * minDist;
                         cluster_id = j;
                     }
                 }
-                dists.push_back(minDist);
+                old=dists.back();
+                dists.push_back(minDist+old);
                 clusters_id.push_back(cluster_id);
-                // if(this->prob(minDist,sum) == true)
-                // {
-                //     used.push_back(i);
-                //     //all_points[i].set_cluster(cluster_id);
-                //     Cluster cluster(cluster_id,all_points[i]);
-                //     clusters.push_back(cluster);
-                //     count_centroids++;
-                //     cout << "true " << endl;
-                //     break;
-                // }
+            }else{
+                dists.push_back(1+old);
+                cout<<"Found something..."<<endl;
             }            
         }
-        int pos = prob(dists,sum);
+        // for(int xx=0; xx<dists.size() ; xx++)
+        //     cout<<dists[xx]<<endl;
+        sleep(1);
+        int pos = prob(dists) - 1;
+        cout<<"pos is: "<<pos<<endl;
         used.push_back(pos);
         Cluster cluster(count_centroids,all_points[pos]);
         clusters.push_back(cluster);
