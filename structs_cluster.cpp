@@ -185,6 +185,7 @@ int KMeans::prob(vector<unsigned long long int> dist)
 {
 //    cout<<"size is: "<<dist.size()<<endl;
     unsigned long long int x = distr(eng) % (dist.back());
+    cout<<x<<endl;
     int dist_size= dist.size()-1, i=0, mid;
 
     while(i != dist_size){
@@ -252,8 +253,6 @@ void KMeans::initialize(vector<Point>& all_points)
         //cout << sum << endl;
         vector<unsigned long long int> dists;
         dists.push_back(0);
-        vector<int> clusters_id;
-        clusters_id.push_back(0);
         for(int i = 0; i < all_points.size(); i++)
         {
             unsigned long long int minDist;
@@ -261,12 +260,12 @@ void KMeans::initialize(vector<Point>& all_points)
             if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
             {
                 minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
-                minDist = minDist * minDist;
+                minDist = (unsigned long long int)minDist * (unsigned long long int)minDist;
                 cluster_id = 0;
                 for(int j = 1; j < count_centroids; j++)
                 {
-                    int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
-                    newDist = newDist*newDist;
+                    unsigned long long int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
+                    newDist = (unsigned long long int)newDist*(unsigned long long int)newDist;
                     if(newDist < minDist)
                     {
                         minDist = (unsigned long long int)newDist;
@@ -274,17 +273,19 @@ void KMeans::initialize(vector<Point>& all_points)
                     }
                 }
                 old=dists.back();
+//                cout<<sqrt(minDist)<<endl;
                 dists.push_back(minDist+old);
-                clusters_id.push_back(cluster_id);
             }else{
                 dists.push_back(1+old);
                 cout<<"Found something..."<<endl;
             }            
         }
-        // for(int xx=0; xx<dists.size() ; xx++)
-        //     cout<<dists[xx]<<endl;
-        //sleep(1);
-        int pos = prob(dists) - 1;
+        //  for(int xx=0; xx<10 ; xx++)
+        //      cout<<dists[xx]<<endl;
+        // sleep(5);
+        int pos = prob(dists);
+        cout<<dists[pos]<<endl;
+//        sleep(5);
         cout<<"pos is: "<<pos<<endl;
         used.push_back(pos);
         Cluster cluster(count_centroids,all_points[pos]);
@@ -293,6 +294,7 @@ void KMeans::initialize(vector<Point>& all_points)
         cout << "new cluster centroid: " << pos << endl;
     }
     int r = mean_centroid_distance();
+    sleep(5);
 }
 
 void KMeans::run(vector<Point>& all_points)

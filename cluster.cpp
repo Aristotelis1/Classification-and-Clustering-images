@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        //number_of_images = 2000;
+        number_of_images = 2000;
 
         //declare vector of images
         vector<Point> all_points;
