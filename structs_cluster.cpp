@@ -192,7 +192,7 @@ int KMeans::prob(vector<unsigned long long int> dist)
         mid= i + ( (dist_size -i)/2 );
         if (dist[mid] < x){
             if(dist[mid+1] > x){
-//                cout<<dist[mid]<<" between "<<dist[mid+1]<<"\t gonna return the right"<<endl;
+                cout<<dist[mid]<<" between "<<dist[mid+1]<<"\t gonna return the right "<<mid+1<<endl;
                 return mid+1;
             }
             i = mid + 1;
@@ -202,7 +202,7 @@ int KMeans::prob(vector<unsigned long long int> dist)
         else
             return mid;
     }
-//    cout<<dist[i]<<" between "<<dist[i+1]<<"\tRandom x is: "<<x<<endl;
+    cout<<dist[i]<<" between "<<dist[i+1]<<"\t gonna return the right"<<i+1<<endl;
  
     return i+1;
 }
@@ -261,6 +261,7 @@ void KMeans::initialize(vector<Point>& all_points)
             if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
             {
                 minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
+                minDist = minDist * minDist;
                 cluster_id = 0;
                 for(int j = 1; j < count_centroids; j++)
                 {
@@ -268,18 +269,22 @@ void KMeans::initialize(vector<Point>& all_points)
                     if(newDist < minDist)
                     {
                         minDist = (unsigned long long int)newDist;
+                        minDist = minDist * minDist;
                         cluster_id = j;
                     }
                 }
                 old=dists.back();
                 dists.push_back(minDist+old);
                 clusters_id.push_back(cluster_id);
+            }else{
+                dists.push_back(1+old);
+                cout<<"Found something..."<<endl;
             }            
         }
         // for(int xx=0; xx<dists.size() ; xx++)
         //     cout<<dists[xx]<<endl;
-        // sleep(1);
-        int pos = prob(dists);
+        sleep(1);
+        int pos = prob(dists) - 1;
         cout<<"pos is: "<<pos<<endl;
         used.push_back(pos);
         Cluster cluster(count_centroids,all_points[pos]);
