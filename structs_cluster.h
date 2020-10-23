@@ -62,10 +62,10 @@ class KMeans{
         void initialize(vector<Point>& all_points);
         int prob(vector<unsigned long long int> dist);
         int mean_centroid_distance();
-
         int get_second_nearest_cluster(Point point, int cluster_id);
 
-
+        void hypercube(vector<Point>& all_points, Cube cube, int M, int probes, int k);
+        
 };
 
 #endif

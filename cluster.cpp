@@ -203,6 +203,40 @@ int main(int argc, char* argv[])
         }        
         else if(strcmp(method,"hypercube") == 0)
         {
+            int samples=100;
+            int w=get_mean_range(samples, images);
+
+            //create a vector for s (normally distributed L*k*d doubles in range [0,w])
+            vector<double>s(k_hypercube*dimension);
+            double s_range = (double) w / (double) (k_hypercube * dimension);
+            for (int i=0; i<(k_hypercube*dimension) ; i++){
+                s[i]= i*s_range;
+            }
+            Cube hypercube(images, dimension, k_hypercube, s, w);
+            for(int j = 0; j < number_of_images; j++)
+            {
+                hypercube.insertItem(images[j]);
+    //            cout<<j<<endl;
+            }
+    //        hypercube.displayCube();
+
+            auto start = high_resolution_clock::now();
+            KMeans kmeans(k);
+            kmeans.initialize(all_points);
+
+
+            //TODO HYPERCUBE RUN
+            kmeans.hypercube(all_points, hypercube, M_hypercube, probes, k_hypercube);
+            kmeans.run_lsh(all_points);
+
+            //MAYBE ABOVE IMPLEMENTATION IS INCORRECT
+
+            auto end = high_resolution_clock::now();
+            duration<double> elapsed_seconds = (end-start);
+            cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
+            kmeans.silhouette();
+
+
 
 
         }
