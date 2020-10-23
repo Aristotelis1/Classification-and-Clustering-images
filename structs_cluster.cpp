@@ -531,8 +531,10 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
         r = r*2;
     }
 
+
     for(int i = 0; i < K; i++)
     {
+        clusters[i].calculate_center(dimensions);
         cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
         //clusters[i].display_images();
     }
