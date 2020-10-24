@@ -227,7 +227,7 @@ int main(int argc, char* argv[])
 
             //TODO HYPERCUBE RUN
             kmeans.hypercube(all_points, hypercube, M_hypercube, probes, k_hypercube);
-            kmeans.run_lsh(all_points);
+            //kmeans.run_lsh(all_points);
 
             //MAYBE ABOVE IMPLEMENTATION IS INCORRECT
 
