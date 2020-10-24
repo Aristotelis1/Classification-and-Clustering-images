@@ -470,9 +470,9 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
 
     while(count_changes > number_of_points/100){
         r = mean_centroid_distance()/2;
+        count_changes = 0;
         while(r < 60000){
             cout << "r: " << r << endl;
-            count_changes = 0;
             // Add similar points to the same cluster using range search
             for(int i = 0; i < K; i++)
             {
