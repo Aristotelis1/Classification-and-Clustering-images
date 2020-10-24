@@ -55,7 +55,7 @@ class KMeans{
         KMeans(int K);
         // int get_nearest_cluster_id(Point point);
         void run(vector<Point>& all_points);
-        void run_lsh(vector<Point>& all_points);
+        int run_lsh(vector<Point>& all_points);
         int get_nearest_cluster(Point point);
         void silhouette();
         void lsh(vector<Point>& all_points,vector<Hash> hash_tables);
