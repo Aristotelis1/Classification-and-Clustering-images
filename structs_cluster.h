@@ -65,6 +65,7 @@ class KMeans{
         int get_second_nearest_cluster(Point point, int cluster_id);
 
         void hypercube(vector<Point>& all_points, Cube cube, int M, int probes, int k);
+        void display();
         
 };
 

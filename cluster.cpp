@@ -159,6 +159,11 @@ int main(int argc, char* argv[])
             duration<double> elapsed_seconds = (end-start);
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
             kmeans.silhouette();
+
+            if(strcmp(complete,"yes") == 0)
+            {
+                kmeans.display();
+            }
         }
         else if(strcmp(method,"lsh") == 0)
         {
@@ -200,6 +205,12 @@ int main(int argc, char* argv[])
             duration<double> elapsed_seconds = (end-start);
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
             kmeans.silhouette();
+
+
+            if(strcmp(complete,"yes") == 0)
+            {
+                kmeans.display();
+            }
         }        
         else if(strcmp(method,"hypercube") == 0)
         {
@@ -236,9 +247,10 @@ int main(int argc, char* argv[])
             cout << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
             kmeans.silhouette();
 
-
-
-
+            if(strcmp(complete,"yes") == 0)
+            {
+                kmeans.display();
+            }
         }
 
     }else{

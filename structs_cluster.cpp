@@ -112,7 +112,7 @@ bool Cluster::remove(Point point)
         if(temp_number == image_number)
         {
             images.erase(images.begin() + i);
-            cout << "image " << image_number << " removed from cluster: " << this->clusterId << endl;
+            //cout << "image " << image_number << " removed from cluster: " << this->clusterId << endl;
             return true;
         }
     }
@@ -185,7 +185,7 @@ int KMeans::prob(vector<unsigned long long int> dist)
 {
 //    cout<<"size is: "<<dist.size()<<endl;
     unsigned long long int x = distr(eng) % (dist.back());
-    cout<<x<<endl;
+    //cout<<x<<endl;
     int dist_size= dist.size(), i=0, mid;
 
     while(i != dist_size){
@@ -222,39 +222,18 @@ void KMeans::initialize(vector<Point>& all_points)
 
     int count_centroids = 0;
     int index = rand() % number_of_points;
-    cout << "index: " << index << endl;
+    //cout << "index: " << index << endl;
     count_centroids++;
     used.push_back(index);
     //all_points[index].set_cluster(0);
     Cluster cluster(0,all_points[index]);
     clusters.push_back(cluster);
-    cout << " Initializing " << endl;
+    cout << "Initializing " << endl;
 
 
     while(count_centroids != K)
     {
         unsigned long long int old;
-        // Calculating the min sum;
-        // for(int i = 0; i < all_points.size(); i++)
-        // {
-        //     int minDist;
-        //     //cout << "image numb: " << get_image_pos(all_points[i].get_image()) - 1 << endl;
-        //     if(find(used.begin(),used.end(),get_image_pos(all_points[i].get_image()) - 1) == used.end())
-        //     {
-        //         minDist = manhattan_dist(all_points[i].get_image(),clusters[0].get_center(),dimensions);
-        //         for(int j = 0; j < count_centroids; j++)
-        //         {
-        //             int newDist = manhattan_dist(all_points[i].get_image(),clusters[j].get_center(),dimensions);
-        //             if(newDist < minDist)
-        //             {
-        //                 minDist = newDist;
-        //             }
-        //         }
-        //         sum = sum + minDist;
-        //         //cout << "image: " << i << " has minDist: " << minDist << endl;
-        //     }
-        // }
-        //cout << sum << endl;
         vector<unsigned long long int> dists;
         dists.push_back(0);
         for(int i = 0; i < all_points.size(); i++)
@@ -281,28 +260,22 @@ void KMeans::initialize(vector<Point>& all_points)
                 dists.push_back(minDist+old);
             }else{
                 dists.push_back(1+old);
-                cout<<"Found something..."<<endl;
+                //cout<<"Found something..."<<endl;
             }            
         }
         unsigned long long int xxx;
-        cout<<"PRINTING DI"<<endl;
+        //cout<<"PRINTING DI"<<endl;
          for(int e=1; e<dists.size() ; e++){
-             xxx=dists[e] - dists[e-1];
-             cout<<sqrt(xxx)<<endl;
+            xxx=dists[e] - dists[e-1];
+            //cout<<sqrt(xxx)<<endl;
          }
-//        sleep(5);
         int pos = prob(dists);
-        cout<<dists[pos]<<endl;
-//        sleep(5);
-        cout<<"pos is: "<<pos<<endl;
         used.push_back(pos);
         Cluster cluster(count_centroids,all_points[pos]);
         clusters.push_back(cluster);
         count_centroids++;
-        cout << "new cluster centroid: " << pos << endl;
     }
     int r = mean_centroid_distance();
-    // sleep(5);
 }
 
 void KMeans::run(vector<Point>& all_points)
@@ -310,7 +283,7 @@ void KMeans::run(vector<Point>& all_points)
     number_of_points = all_points.size();
     dimensions = all_points[0].get_dimensions();
 
-
+    cout << "Executing Lloyds " << endl;
     // Add all points to a cluster
     int count_changes = number_of_points;
     while(count_changes > number_of_points/30)
@@ -320,7 +293,7 @@ void KMeans::run(vector<Point>& all_points)
         {
             int current_cluster = all_points[i].get_cluster();
             int nearest_cluster = get_nearest_cluster(all_points[i]);
-            cout << "nearest cluster: " << nearest_cluster << endl;
+            //cout << "nearest cluster: " << nearest_cluster << endl;
 
             if(current_cluster != nearest_cluster)
             {
@@ -330,11 +303,11 @@ void KMeans::run(vector<Point>& all_points)
                     clusters[current_cluster].remove(all_points[i]);
                 }
                 clusters[nearest_cluster].add_image(all_points[i]);
-                cout << "image number: " << get_image_pos(all_points[i].get_image()) - 1 << " to cluster: " << nearest_cluster << endl;
+                //cout << "image number: " << get_image_pos(all_points[i].get_image()) - 1 << " to cluster: " << nearest_cluster << endl;
                 count_changes++;
             }
             all_points[i].set_cluster(nearest_cluster);
-            cout << "cluster: " << all_points[i].get_cluster() << endl;
+            //cout << "cluster: " << all_points[i].get_cluster() << endl;
             
         }
         //cout << "all images have been added to clusters " << endl;
@@ -349,7 +322,7 @@ void KMeans::run(vector<Point>& all_points)
 
     for(int i = 0; i < K; i++)
     {
-        cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+        cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
         //clusters[i].display_images();
 
     }
@@ -368,7 +341,7 @@ int KMeans::run_lsh(vector<Point>& all_points)
     {
         int current_cluster = all_points[i].get_cluster();
         int nearest_cluster = get_nearest_cluster(all_points[i]);
-        cout << "nearest cluster: " << nearest_cluster << endl;
+        //cout << "nearest cluster: " << nearest_cluster << endl;
 
         if(current_cluster != nearest_cluster)
         {
@@ -379,10 +352,10 @@ int KMeans::run_lsh(vector<Point>& all_points)
             }
             clusters[nearest_cluster].add_image(all_points[i]);
             count_changes++;
-            cout << "image number: " << get_image_pos(all_points[i].get_image()) - 1 << " to cluster: " << nearest_cluster << endl;
+            //cout << "image number: " << get_image_pos(all_points[i].get_image()) - 1 << " to cluster: " << nearest_cluster << endl;
         }
         all_points[i].set_cluster(nearest_cluster);
-        cout << "cluster: " << all_points[i].get_cluster() << endl;
+        //cout << "cluster: " << all_points[i].get_cluster() << endl;
         
     }
 
@@ -399,7 +372,7 @@ int KMeans::mean_centroid_distance()
         second_cluster = get_second_nearest_cluster(temp,i);
 
         dist = manhattan_dist(clusters[i].get_center(),clusters[second_cluster].get_center(),dimensions);
-        cout << "distance: " << dist << endl;
+        //cout << "distance: " << dist << endl;
         sum = sum + dist;
     }
     return sum/K;
@@ -411,9 +384,10 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
     dimensions = all_points[0].get_dimensions();
     int count_changes = 1000;
     
+    cout << "Reverse Assignment" << endl;
     int r = mean_centroid_distance()/2;
     while(r < 60000){
-        cout << "r: " << r << endl;
+        //cout << "r: " << r << endl;
         count_changes = 0;
         // Add similar points to the same cluster using range search
         for(int i = 0; i < K; i++)
@@ -423,13 +397,13 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
             PQ pq_hash(center,2, hash_tables); // NA TO TSEKARW
             //pq_hash.range_search(35000,hash_tables,center);
             vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
-            cout << "range search size: " << range_search.size() << endl;
+            //cout << "range search size: " << range_search.size() << endl;
 
             for(int j = 0; j < range_search.size(); j++)
             {
                 int pos = get_image_pos(range_search[j]) - 1;
                 int current_cluster = all_points[pos].get_cluster();
-                cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
+                //cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
                 if(current_cluster != -1 && current_cluster != i) // This point is already in a cluster
                 {
                     
@@ -441,7 +415,7 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                         clusters[current_cluster].remove(all_points[pos]);
                         all_points[pos].set_cluster(i);
                         clusters[i].add_image(all_points[pos]);
-                        cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
+                        //cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
                         count_changes++;
                     }
                 }
@@ -450,8 +424,8 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                     all_points[pos].set_cluster(i);
                     clusters[i].add_image(all_points[pos]);
                     count_changes++;
-                    cout << "Image: "<< pos  << " added to: " << i << endl;
-                    cout << "New cluster: " << all_points[pos].get_cluster() << endl;
+                    // cout << "Image: "<< pos  << " added to: " << i << endl;
+                    // cout << "New cluster: " << all_points[pos].get_cluster() << endl;
                 }
                 
             }
@@ -459,20 +433,22 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
         r = r*2;
     }
 
+    cout << "Calling Lloyds" << endl;
     count_changes = count_changes + run_lsh(all_points);
 
-    for(int i = 0; i < K; i++)
-    {
-        cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-        //clusters[i].display_images();
-    }
+    // for(int i = 0; i < K; i++)
+    // {
+    //     cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+    //     //clusters[i].display_images();
+    // }
     
 
+    cout << "Reverse Assignment" << endl;
     while(count_changes > number_of_points/80){
         r = mean_centroid_distance()/2;
         count_changes = 0;
         while(r < 60000){
-            cout << "r: " << r << endl;
+            //cout << "r: " << r << endl;
             // Add similar points to the same cluster using range search
             for(int i = 0; i < K; i++)
             {
@@ -481,13 +457,13 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                 PQ pq_hash(center,2, hash_tables); // NA TO TSEKARW
                 //pq_hash.range_search(35000,hash_tables,center);
                 vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
-                cout << "range search size: " << range_search.size() << endl;
+                //cout << "range search size: " << range_search.size() << endl;
 
                 for(int j = 0; j < range_search.size(); j++)
                 {
                     int pos = get_image_pos(range_search[j]) - 1;
                     int current_cluster = all_points[pos].get_cluster();
-                    cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
+                    //cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
                     if(current_cluster != -1 && current_cluster != i) // This point is already in a cluster
                     {
                         
@@ -499,7 +475,7 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                             clusters[current_cluster].remove(all_points[pos]);
                             all_points[pos].set_cluster(i);
                             clusters[i].add_image(all_points[pos]);
-                            cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
+                            //cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
                             count_changes++;
                         }
                     }
@@ -508,8 +484,8 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
                         all_points[pos].set_cluster(i);
                         clusters[i].add_image(all_points[pos]);
                         count_changes++;
-                        cout << "Image: "<< pos  << " added to: " << i << endl;
-                        cout << "New cluster: " << all_points[pos].get_cluster() << endl;
+                        // cout << "Image: "<< pos  << " added to: " << i << endl;
+                        // cout << "New cluster: " << all_points[pos].get_cluster() << endl;
                     }
                     
                 }
@@ -519,7 +495,7 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
 
         for(int i = 0; i < K; i++)
         {
-            cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
             //clusters[i].display_images();
         }
     }
@@ -534,8 +510,9 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
     
     int r = mean_centroid_distance()/2;
 
+    cout << "Reverse Assignment" << endl;
     while(r < 60000){
-        cout << "r: " << r << endl;
+        //cout << "r: " << r << endl;
         count_changes = 0;
         // Add similar points to the same cluster using range search
         for(int i = 0; i < K; i++)
@@ -547,13 +524,13 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
 //            vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
 
             vector<vector<unsigned char>> range_search = pq_cube.cube_images_in_range(r, cube, center, probes, k, M);
-            cout << "range search size: " << range_search.size() << endl;
+            //cout << "range search size: " << range_search.size() << endl;
 
             for(int j = 0; j < range_search.size(); j++)
             {
                 int pos = get_image_pos(range_search[j]) - 1;
                 int current_cluster = all_points[pos].get_cluster();
-                cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
+                //cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
                 if(current_cluster != -1 && current_cluster != i) // This point is already in a cluster
                 {
                     
@@ -565,7 +542,7 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
                         clusters[current_cluster].remove(all_points[pos]);
                         all_points[pos].set_cluster(i);
                         clusters[i].add_image(all_points[pos]);
-                        cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
+                        //cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
                         count_changes++;
                     }
                 }
@@ -574,33 +551,32 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
                     all_points[pos].set_cluster(i);
                     clusters[i].add_image(all_points[pos]);
                     count_changes++;
-                    cout << "Image: "<< pos  << " added to: " << i << endl;
-                    cout << "New cluster: " << all_points[pos].get_cluster() << endl;
+                    // cout << "Image: "<< pos  << " added to: " << i << endl;
+                    // cout << "New cluster: " << all_points[pos].get_cluster() << endl;
                 }
                 
             }
         }
         r = r*2;
     }
-    //int r = 18000;
 
-    //int L = 10000;
-
+    cout << "Calling Lloyds" << endl;
     count_changes = count_changes + run_lsh(all_points);
 
-    for(int i = 0; i < K; i++)
-    {
-        clusters[i].calculate_center(dimensions);
-        cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-        //clusters[i].display_images();
-    }
+    // for(int i = 0; i < K; i++)
+    // {
+    //     clusters[i].calculate_center(dimensions);
+    //     cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+    //     //clusters[i].display_images();
+    // }
 
 
 
+    cout << "Reverse Assignment" << endl;
     while(count_changes > number_of_points/80){
         r = mean_centroid_distance()/2;
         while(r < 60000){
-            cout << "r: " << r << endl;
+            //cout << "r: " << r << endl;
             count_changes = 0;
             // Add similar points to the same cluster using range search
             for(int i = 0; i < K; i++)
@@ -612,13 +588,13 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
     //            vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
 
                 vector<vector<unsigned char>> range_search = pq_cube.cube_images_in_range(r, cube, center, probes, k, M);
-                cout << "range search size: " << range_search.size() << endl;
+                //cout << "range search size: " << range_search.size() << endl;
 
                 for(int j = 0; j < range_search.size(); j++)
                 {
                     int pos = get_image_pos(range_search[j]) - 1;
                     int current_cluster = all_points[pos].get_cluster();
-                    cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
+                    //cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
                     if(current_cluster != -1 && current_cluster != i) // This point is already in a cluster
                     {
                         
@@ -630,7 +606,7 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
                             clusters[current_cluster].remove(all_points[pos]);
                             all_points[pos].set_cluster(i);
                             clusters[i].add_image(all_points[pos]);
-                            cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
+                            //cout << "Image removed from: " << current_cluster << " and added to cluster: " << i << endl;
                             count_changes++;
                         }
                     }
@@ -639,8 +615,8 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
                         all_points[pos].set_cluster(i);
                         clusters[i].add_image(all_points[pos]);
                         count_changes++;
-                        cout << "Image: "<< pos  << " added to: " << i << endl;
-                        cout << "New cluster: " << all_points[pos].get_cluster() << endl;
+                        // cout << "Image: "<< pos  << " added to: " << i << endl;
+                        // cout << "New cluster: " << all_points[pos].get_cluster() << endl;
                     }
                     
                 }
@@ -652,7 +628,7 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
         for(int i = 0; i < K; i++)
         {
             clusters[i].calculate_center(dimensions);
-            cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
+            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
             //clusters[i].display_images();
         }
     }
@@ -749,6 +725,26 @@ void KMeans::silhouette()
     }
     sil=sil/(double) count;
     cout<<sil<<"]"<<endl;
+}
+
+void KMeans::display()
+{
+    for(int i = 0; i < K; i++)
+    {
+        cout << "Cluster-" << i+1 << " {";
+        vector<unsigned char> c = clusters[i].get_center();
+        for(int j = 0; j < dimensions; j++)
+        {
+            cout << int(c[j]);
+        }
+        cout << ", ";
+        vector<Point> imgs = clusters[i].get_images();
+        for(int k = 0; k < imgs.size(); k++)
+        {
+            cout << "image_number_" << get_image_pos(imgs[k].get_image()) << ", ";
+        }
+        cout << " }" << endl;
+    }
 }
 
 
