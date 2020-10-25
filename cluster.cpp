@@ -270,6 +270,8 @@ int main(int argc, char* argv[])
     }else{
         cout<<"Cannot open output file: "<<output_file<<endl;
     }
+    file.close();
+    out.close();
 
-
+    return 0;
 }

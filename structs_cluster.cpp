@@ -322,7 +322,13 @@ void KMeans::run(vector<Point>& all_points, ofstream & out)
 
     for(int i = 0; i < K; i++)
     {
-        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << ", ";
+        vector<unsigned char> c = clusters[i].get_center();
+        for(int j = 0; j < dimensions; j++)
+        {
+            out << int(c[j]) <<" ";
+        }
+        out << "}"<<endl;;
         //clusters[i].display_images();
 
     }
@@ -502,7 +508,13 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
     }
     for(int i = 0; i < K; i++)
     {
-        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << ", ";
+        vector<unsigned char> c = clusters[i].get_center();
+        for(int j = 0; j < dimensions; j++)
+        {
+            out << int(c[j]) <<" ";
+        }
+        out << "}"<<endl;;
         //clusters[i].display_images();
     }
 
@@ -642,7 +654,13 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
     for(int i = 0; i < K; i++)
     {
 //        clusters[i].calculate_center(dimensions);
-        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << ", ";
+        vector<unsigned char> c = clusters[i].get_center();
+        for(int j = 0; j < dimensions; j++)
+        {
+            out << int(c[j]) <<" ";
+        }
+        out << "}"<<endl;;
         //clusters[i].display_images();
     }
 
@@ -754,9 +772,9 @@ void KMeans::display(ofstream & out)
         vector<unsigned char> c = clusters[i].get_center();
         for(int j = 0; j < dimensions; j++)
         {
-            out << int(c[j]);
+            out << int(c[j])<<" ";
         }
-        cout << ", ";
+        out << ", ";
         vector<Point> imgs = clusters[i].get_images();
         for(int k = 0; k < imgs.size(); k++)
         {
