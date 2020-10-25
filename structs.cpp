@@ -96,6 +96,7 @@ Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimen
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, k);
         hfunctions.push_back(*temp);
+        delete temp;
     }
 
     // calculate g
@@ -596,6 +597,7 @@ Cube::Cube (vector<vector<unsigned char>> images, int dimension, int k, vector<d
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, 4);
         hfunctions.push_back(*temp);
+        delete temp;
     }
 //    cout<<"Hypercube with "<<vertices<<" vertices created."<<endl;
 }

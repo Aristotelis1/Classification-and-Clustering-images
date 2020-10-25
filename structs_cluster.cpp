@@ -701,6 +701,8 @@ int Cluster::calculate_average_distance_silh(vector<unsigned char> image)
     int count = -1;
     int sum = 0;
     int dist;
+    if(images.size() == 1)
+        return 0;
     for(int i = 0; i < images.size(); i++)
     {
         dist = manhattan_dist(images[i].get_image(),image,images[i].get_dimensions());
