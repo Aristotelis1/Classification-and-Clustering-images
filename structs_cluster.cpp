@@ -776,9 +776,15 @@ void KMeans::display(ofstream & out)
         }
         out << ", ";
         vector<Point> imgs = clusters[i].get_images();
+        vector<int> numbers;
         for(int k = 0; k < imgs.size(); k++)
         {
-            out << "image_number_" << get_image_pos(imgs[k].get_image()) << ", ";
+            numbers.push_back(get_image_pos(imgs[k].get_image()));
+        }
+        sort(numbers.begin(), numbers.end()); 
+        for(int k = 0; k < imgs.size(); k++)
+        {
+            out << "image_number_" << numbers[k] << ", ";
         }
         out << " }" << endl;
     }
