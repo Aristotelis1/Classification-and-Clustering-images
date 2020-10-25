@@ -15,7 +15,7 @@ using namespace std::chrono;
 int main(int argc, char* argv[]) 
 { 
     srand(time(NULL));
-    int i,y,z, k=-1, M=-1, N=-1, probes, samples=100;
+    int i,y,z, k=-1, M=-1, N=-1, probes=-1, samples=100;
     float R=-1.0;
     char input_file[128], query_file[128], output_file[128];
     bool finished=false;

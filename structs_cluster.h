@@ -54,18 +54,18 @@ class KMeans{
     public:
         KMeans(int K);
         // int get_nearest_cluster_id(Point point);
-        void run(vector<Point>& all_points);
+        void run(vector<Point>& all_points, ofstream & out);
         int run_lsh(vector<Point>& all_points);
         int get_nearest_cluster(Point point);
-        void silhouette();
-        void lsh(vector<Point>& all_points,vector<Hash> hash_tables);
+        void silhouette(ofstream & out);
+        void lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & out);
         void initialize(vector<Point>& all_points);
         int prob(vector<unsigned long long int> dist);
         int mean_centroid_distance();
         int get_second_nearest_cluster(Point point, int cluster_id);
 
-        void hypercube(vector<Point>& all_points, Cube cube, int M, int probes, int k);
-        void display();
+        void hypercube(vector<Point>& all_points, Cube cube, int M, int probes, int k, ofstream & out);
+        void display(ofstream & out);
         
 };
 

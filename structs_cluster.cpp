@@ -278,7 +278,7 @@ void KMeans::initialize(vector<Point>& all_points)
     int r = mean_centroid_distance();
 }
 
-void KMeans::run(vector<Point>& all_points)
+void KMeans::run(vector<Point>& all_points, ofstream & out)
 {
     number_of_points = all_points.size();
     dimensions = all_points[0].get_dimensions();
@@ -322,7 +322,7 @@ void KMeans::run(vector<Point>& all_points)
 
     for(int i = 0; i < K; i++)
     {
-        cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
         //clusters[i].display_images();
 
     }
@@ -378,7 +378,7 @@ int KMeans::mean_centroid_distance()
     return sum/K;
 }
 
-void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
+void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & out)
 {
     number_of_points = all_points.size();
     dimensions = all_points[0].get_dimensions();
@@ -495,14 +495,21 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables)
 
         for(int i = 0; i < K; i++)
         {
-            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+            clusters[i].calculate_center(dimensions);
+//            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
             //clusters[i].display_images();
         }
     }
-    
+    for(int i = 0; i < K; i++)
+    {
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+        //clusters[i].display_images();
+    }
+
+
 }
 
-void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, int k){
+void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, int k, ofstream & out){
     number_of_points = all_points.size();
     dimensions = all_points[0].get_dimensions();
     int count_changes = 1000;
@@ -628,10 +635,17 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
         for(int i = 0; i < K; i++)
         {
             clusters[i].calculate_center(dimensions);
-            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+//            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
             //clusters[i].display_images();
         }
     }
+    for(int i = 0; i < K; i++)
+    {
+//        clusters[i].calculate_center(dimensions);
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
+        //clusters[i].display_images();
+    }
+
     
 }
 
@@ -683,7 +697,7 @@ vector<Point> Cluster::get_images(){
     return images;
 }
 
-void KMeans::silhouette()
+void KMeans::silhouette(ofstream & out)
 {
     int number_of_images, meandist_nearest, meandist_second, second_cluster;
     int samples, j, count=0;
@@ -691,7 +705,12 @@ void KMeans::silhouette()
     vector<unsigned char> image;
 
     double s, sil=0, si;
-    cout<<"Silhouette: [";
+    out<<"Silhouette: [";
+    if (K<=1){
+        out<<"0]"<<endl;
+        return;
+    }
+
     for(int i = 0; i < K; i++)
     {
         si=0;
@@ -721,29 +740,29 @@ void KMeans::silhouette()
             si = 0;
         }
         
-        cout<<si<<",";
+        out<<si<<",";
     }
     sil=sil/(double) count;
-    cout<<sil<<"]"<<endl;
+    out<<sil<<"]"<<endl;
 }
 
-void KMeans::display()
+void KMeans::display(ofstream & out)
 {
     for(int i = 0; i < K; i++)
     {
-        cout << "Cluster-" << i+1 << " {";
+        out << "Cluster-" << i+1 << " {";
         vector<unsigned char> c = clusters[i].get_center();
         for(int j = 0; j < dimensions; j++)
         {
-            cout << int(c[j]);
+            out << int(c[j]);
         }
         cout << ", ";
         vector<Point> imgs = clusters[i].get_images();
         for(int k = 0; k < imgs.size(); k++)
         {
-            cout << "image_number_" << get_image_pos(imgs[k].get_image()) << ", ";
+            out << "image_number_" << get_image_pos(imgs[k].get_image()) << ", ";
         }
-        cout << " }" << endl;
+        out << " }" << endl;
     }
 }
 
