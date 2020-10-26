@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        //number_of_images= 3000;  //uncomment this to read less images
+        number_of_images= 10000;  //uncomment this to read less images
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);

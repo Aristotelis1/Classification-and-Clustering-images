@@ -91,12 +91,8 @@ Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimen
 {
     this->bucket = number_of_images/8; //size of the hash table
     // table = new array<list< vector<unsigned char>>,bucket>;
-    for(int i=0; i < bucket; i++)
-    {
-        Hash_list *temp = new Hash_list();
-        hash_table.push_back(*temp);
-        delete temp;
-    }
+    hash_table = new Hash_list[bucket];
+    
     w=in_w;
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, k);
