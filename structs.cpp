@@ -103,19 +103,6 @@ Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimen
         hfunctions.push_back(*temp);
         delete temp;
     }
-
-    // calculate g
-
-
-    // for(int i = 0; i < bucket; i++)
-    // {
-    //     //cout << i << endl;;
-
-    //     hash_table[i].clear();
-    // }
-
-//    cout <<"Hash table created " << endl;
-
 }
 
 Hash::~Hash()
@@ -127,8 +114,6 @@ int Hash::calculate_g(vector<unsigned char> img)
 {
     testg=concatenate_h(hfunctions, img, w);
     int key = testg % (bucket);
-
-//    cout << "keyy: " << key << endl;
 
     return key;
 
@@ -206,7 +191,6 @@ vector<unsigned char> image::get_image(){
 
 PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
 {
-    //images = &imgs;
     maxDistance = 0;
     int dist, i, dimension, number_of_images;
     dimension=imgs[0].size()-3;
@@ -222,8 +206,7 @@ PQ::PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N)
     for(i=N; i<number_of_images ; i++){
         dist= manhattan_dist(query, imgs[i], dimension);
         image temp3(dist, imgs[i]);
-        //cout << "temp3:" << temp3.get_distance() << endl;
-        //cout << "dist: " << dist << endl;
+
         if (maxDistance > dist){
             pq.pop();
             pq.push(temp3);
@@ -261,7 +244,6 @@ PQ::PQ(vector<unsigned char> query, int N, vector<Hash> hash_tables)
         for(int j = 0; j<number_of_images ; j++)
         {
             if(label==labels[j]){
-    //            cout << "check:" << (int)l->at(0) << endl;
                 dist = manhattan_dist(query, list_of_images[j], list_of_images[j].size()-3);
                 if(count < N)
                 {
@@ -307,7 +289,6 @@ void PQ::range_search(int r, vector<Hash> hash_tables, vector<unsigned char> que
     vector<int>impos;
     bool imexist;
     int count = 0;
-//    cout << "r: " << r << endl;
     for(int i = 0; i < hash_tables.size(); i++)
     {
         key=hash_tables[i].calculate_g(query);

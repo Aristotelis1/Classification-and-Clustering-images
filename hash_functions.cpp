@@ -44,7 +44,7 @@ unsigned long int Hash_Function::get_hash_key(vector<unsigned char> image, int w
 
 
 double get_mean_range(int samples, vector<vector<unsigned char>> images){
-    int i, image1, image2, dimension, j;
+    int i, dimension, j;
 
     dimension=images[1].size()-3;
     int number_of_images=images.size(), mindist;
@@ -97,7 +97,6 @@ int get_a(unsigned char x, double s, int w){
         return -1;
     else
         return 0;
-
 }
 
 unsigned long int concatenate_h(vector<Hash_Function>hfs, vector<unsigned char> image, int w){

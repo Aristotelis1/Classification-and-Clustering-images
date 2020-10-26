@@ -17,7 +17,7 @@ using namespace std;
 class Hash_list
 {
     private:
-        vector<vector<unsigned char>> list_of_images;
+        vector<vector<unsigned char> > list_of_images;
         vector<unsigned long int> labels;
     public:
         Hash_list();
@@ -26,7 +26,7 @@ class Hash_list
         void display_list();
         void clear();
         void searchByKey();
-        vector<vector<unsigned char>> get_list_of_images();
+        vector<vector<unsigned char> > get_list_of_images();
         vector<unsigned long int>get_labels();
 
 };
@@ -41,13 +41,13 @@ class Hash {
         vector<Hash_list> hash_table;
         
     public:
-        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
+        Hash(int number_of_images, vector<vector<unsigned char> > images, int dimension, int k, vector<double>s, int in_w); // Constructor
         ~Hash();
         void insertItem(vector<unsigned char> i);
         void displayHash();
         void searchByKey(int index);
         int calculate_g(vector<unsigned char> img);
-        vector<vector<unsigned char>> get_list_of_images(int key);
+        vector<vector<unsigned char> > get_list_of_images(int key);
         vector<unsigned long int> get_labels(int key);
         vector<Hash_Function> get_hfs();
         int get_w();
@@ -73,12 +73,12 @@ class Cube {
         
     public:
 //        Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
-        Cube(vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w);
+        Cube(vector<vector<unsigned char> > images, int dimension, int k, vector<double>s, int in_w);
         int calculate_fh(int key);
         int calculate_vector_key(vector<unsigned char>images);
         void insertItem(vector<unsigned char> i);
         void displayCube();
-        vector<vector<unsigned char>> get_list_of_images(int key);
+        vector<vector<unsigned char> > get_list_of_images(int key);
 
 };
 
@@ -105,13 +105,13 @@ class image
 class PQ{
     private:
         priority_queue<image> pq;
-        priority_queue<int, vector<int>, greater<int>> range;
+        priority_queue<int, vector<int>, greater<int> > range;
         int maxDistance;
 
 
     public:
         PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
-        PQ(vector<vector<unsigned char>> imgs, vector<unsigned char> query, int N);
+        PQ(vector<vector<unsigned char> > imgs, vector<unsigned char> query, int N);
         //PQ(vector<unsigned char> query,vector<Hash> hash_tables,int r);
         PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k);
         void displayN();
@@ -119,9 +119,9 @@ class PQ{
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
         void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
-        vector<vector<unsigned char>> lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query);
+        vector<vector<unsigned char> > lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query);
         void cube_range_search(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
-        vector<vector<unsigned char>> cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
+        vector<vector<unsigned char> > cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
         void displayRange(ofstream & out);
 
 };

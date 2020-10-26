@@ -14,8 +14,8 @@ HEADER3	= functions.h image.h structs.h hash_functions.h structs_cluster.h
 OUT3	= cluster
 
 CC		= g++ --std=c++11
-FLAGS	 = -g -c -Wall 
-LFLAGS	 = 
+FLAGS	=  -c -Wall 
+LFLAGS	=
 
 all: lsh cube cluster
 
@@ -50,4 +50,4 @@ structs_cluster.o: structs_cluster.cpp
 	$(CC) $(FLAGS) structs_cluster.cpp 
 
 clean:
-	rm -f $(OBJS1) $(OUT1) $(OBJS2) $(OUT2) $(OBJS3) $(OUT3)
+	rm -f $(OBJS1) $(OUT1) $(OBJS2) $(OUT2) $(OBJS3) $(OUT3) *.txt
