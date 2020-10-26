@@ -38,7 +38,7 @@ class Hash {
         int bucket, w;
         unsigned long int testg;
         vector<Hash_Function> hfunctions;
-        Hash_list* hash_table;
+        vector<Hash_list> hash_table;
         
     public:
         Hash(int number_of_images, vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w); // Constructor
@@ -68,7 +68,7 @@ class Cube {
         int vertices, w;
         unsigned long int testg;
         vector<Hash_Function> hfunctions;
-        Hash_list* cube_vertex;
+        vector<Hash_list> cube_vertex;
         vector<Cointoss> flist;
         
     public:

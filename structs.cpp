@@ -91,7 +91,12 @@ Hash::Hash(int number_of_images, vector<vector<unsigned char>> images, int dimen
 {
     this->bucket = number_of_images/8; //size of the hash table
     // table = new array<list< vector<unsigned char>>,bucket>;
-    hash_table = new Hash_list[bucket];
+    for(int i=0; i < bucket; i++)
+    {
+        Hash_list *temp = new Hash_list();
+        hash_table.push_back(*temp);
+        delete temp;
+    }
     w=in_w;
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, k);
@@ -593,7 +598,13 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust, string type, ofstream & out){
 Cube::Cube (vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w){
     vertices=pow(2,k);
     w=in_w;
-    cube_vertex = new Hash_list[vertices];
+    //cube_vertex = new Hash_list[vertices];
+    for(int i=0; i < vertices; i++)
+    {
+        Hash_list *temp = new Hash_list();
+        cube_vertex.push_back(*temp);
+        delete temp;
+    }
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, 4);
         hfunctions.push_back(*temp);
