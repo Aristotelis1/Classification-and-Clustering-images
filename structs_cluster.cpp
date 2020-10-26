@@ -322,17 +322,20 @@ void KMeans::run(vector<Point>& all_points, ofstream & out)
 
     for(int i = 0; i < K; i++)
     {
-        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << ", ";
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << endl;
         vector<unsigned char> c = clusters[i].get_center();
-        for(int j = 0; j < dimensions; j++)
+        int rows = sqrt(dimensions);
+        int columns = rows;
+        for(int j = 0; j < rows; j++)
         {
-            out << int(c[j]) <<" ";
+            for (int i=0; i<columns; i++)
+                out << int(c[i + (j*rows)]) <<"\t";
+            out<<endl;
         }
         out << "}"<<endl;;
         //clusters[i].display_images();
 
     }
-
 }
 
 
@@ -442,15 +445,10 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
     cout << "Calling Lloyds" << endl;
     count_changes = count_changes + run_lsh(all_points);
 
-    // for(int i = 0; i < K; i++)
-    // {
-    //     cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-    //     //clusters[i].display_images();
-    // }
     
 
     cout << "Reverse Assignment" << endl;
-    while(count_changes > number_of_points/80){
+    while(count_changes > number_of_points/30){
         r = mean_centroid_distance()/2;
         count_changes = 0;
         while(r < 60000){
@@ -508,14 +506,19 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
     }
     for(int i = 0; i < K; i++)
     {
-        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << ", ";
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << endl;
         vector<unsigned char> c = clusters[i].get_center();
-        for(int j = 0; j < dimensions; j++)
+        int rows = sqrt(dimensions);
+        int columns = rows;
+        for(int j = 0; j < rows; j++)
         {
-            out << int(c[j]) <<" ";
+            for (int i=0; i<columns; i++)
+                out << int(c[i + (j*rows)]) <<"\t";
+            out<<endl;
         }
         out << "}"<<endl;;
         //clusters[i].display_images();
+
     }
 
 
@@ -582,17 +585,10 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
     cout << "Calling Lloyds" << endl;
     count_changes = count_changes + run_lsh(all_points);
 
-    // for(int i = 0; i < K; i++)
-    // {
-    //     clusters[i].calculate_center(dimensions);
-    //     cout << "CLUSTER-" << i << "{ size: " << clusters[i].get_size() << " }" << endl;
-    //     //clusters[i].display_images();
-    // }
-
 
 
     cout << "Reverse Assignment" << endl;
-    while(count_changes > number_of_points/80){
+    while(count_changes > number_of_points/30){
         r = mean_centroid_distance()/2;
         while(r < 60000){
             //cout << "r: " << r << endl;
@@ -653,17 +649,20 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
     }
     for(int i = 0; i < K; i++)
     {
-//        clusters[i].calculate_center(dimensions);
-        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << ", ";
+        out << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << endl;
         vector<unsigned char> c = clusters[i].get_center();
-        for(int j = 0; j < dimensions; j++)
+        int rows = sqrt(dimensions);
+        int columns = rows;
+        for(int j = 0; j < rows; j++)
         {
-            out << int(c[j]) <<" ";
+            for (int i=0; i<columns; i++)
+                out << int(c[i + (j*rows)]) <<"\t";
+            out<<endl;
         }
         out << "}"<<endl;;
         //clusters[i].display_images();
-    }
 
+    }
     
 }
 
