@@ -69,7 +69,7 @@ class Cube {
         int vertices, w;
         unsigned long int testg;
         vector<Hash_Function> hfunctions;
-        vector<Hash_list> cube_vertex;
+        Hash_list* cube_vertex;
         vector<Cointoss> flist;
         
     public:
@@ -113,7 +113,7 @@ class PQ{
     public:
         PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables, vector<unsigned long int> query_keys,vector<unsigned long int> query_labels);
         PQ(vector<vector<unsigned char> > imgs, vector<unsigned char> query, int N);
-        PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k, int key);
+        PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k, int key, vector<int> nb);
         void displayN();
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k

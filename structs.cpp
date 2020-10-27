@@ -575,13 +575,8 @@ void display_prqueues(PQ pq_lsh, PQ pq_exhaust, string type, ofstream & out){
 Cube::Cube (vector<vector<unsigned char>> images, int dimension, int k, vector<double>s, int in_w){
     vertices=pow(2,k);
     w=in_w;
-    //cube_vertex = new Hash_list[vertices];
-    for(int i=0; i < vertices; i++)
-    {
-        Hash_list *temp = new Hash_list();
-        cube_vertex.push_back(*temp);
-        delete temp;
-    }
+    cube_vertex = new Hash_list[vertices];
+    
     for (int i=0; i<k; i++){
         Hash_Function *temp = new Hash_Function(dimension, s, 4);
         hfunctions.push_back(*temp);
@@ -641,17 +636,17 @@ vector<vector<unsigned char>> Cube::get_list_of_images(int key)
     return cube_vertex[key].get_list_of_images();
 }
 
-PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k, int key)
+PQ::PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k, int key, vector<int> nb)
 {
     int number_of_images, dist, i,j, z, count=0;
     bool fit = false, imexist;
     vector<vector<unsigned char>> list_of_images;
     vector<int> impos;
-    vector<int> nb;
+    //vector<int> nb;
     
     list_of_images=hypercube.get_list_of_images(key);
     number_of_images = list_of_images.size();
-    nb = get_route(k);
+    // nb = get_route(k);
     if(probes>(pow(2,k)))   //dont have enough vertices to check
         probes=pow(2,k);    //changed probes to max vertices
     if (M < number_of_images)
