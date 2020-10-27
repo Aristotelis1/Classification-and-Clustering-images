@@ -14,7 +14,7 @@ using namespace std::chrono;
 int main(int argc, char* argv[]) 
 { 
     srand(time(NULL));
-    int i,y,z, k=-1, L=-1, N=-1, samples=100;
+    int i,y, k=-1, L=-1, N=-1, samples=100;
     float R=-1.0;
     char input_file[128], query_file[128], output_file[128];
     bool finished=false;
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         cout <<"Give me R (double) in range 0.1-70000 (if you want it on default type '0') : ";
         cin >> R;
         if (R==0){
-            R=1.0;
+            R=10000;
             break;
         }
     }
@@ -115,10 +115,8 @@ int main(int argc, char* argv[])
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
-        int sum=0;
         unsigned char byte1, byte2, byte3;
         for(i = 0; i < number_of_images; ++i){
-            sum=0;
             images[i].resize(dimension);
             for(y=0; y<dimension; ++y){
                 file.read((char*)&temp,sizeof(temp));
@@ -206,9 +204,15 @@ int main(int argc, char* argv[])
 
                         // pr.displayN();
                         // cout<<"Going to display lsh..."<<endl;
+                        vector<unsigned long int> query_keys;
+                        vector<unsigned long int> query_labels;
+                        for (int x=0; x<L ; x++){
+                            query_keys.push_back(hash_tables[x].calculate_g(query));
+                            query_labels.push_back(concatenate_h(hash_tables[x].get_hfs(), query, hash_tables[x].get_w()));
 
+                        }
                         auto start1 = high_resolution_clock::now();
-                        PQ pq_hash(query,N,hash_tables); 
+                        PQ pq_hash(query,N,hash_tables, query_keys, query_labels); 
                         auto end1 = high_resolution_clock::now();  
                         duration<double> elapsed_seconds1 = (end1-start1);
                         

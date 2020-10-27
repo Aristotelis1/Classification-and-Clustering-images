@@ -49,5 +49,8 @@ cube.o: cube.cpp
 structs_cluster.o: structs_cluster.cpp
 	$(CC) $(FLAGS) structs_cluster.cpp 
 
+cluster.o: cluster.cpp
+	$(CC) $(FLAGS) cluster.cpp 
+
 clean:
 	rm -f $(OBJS1) $(OUT1) $(OBJS2) $(OUT2) $(OBJS3) $(OUT3) *.txt

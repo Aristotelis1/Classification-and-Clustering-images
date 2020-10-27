@@ -47,18 +47,21 @@ double get_mean_range(int samples, vector<vector<unsigned char>> images){
     int i, dimension, j;
 
     dimension=images[1].size()-3;
-    int number_of_images=images.size(), mindist;
-    long long int nearest_mean=0;
+    int number_of_images=images.size(), mindist, random_image, dist;
+    unsigned long long int nearest_mean=0;
     for (i=0; i<samples ; i++){
         mindist=999999;
-        for (j=i+1; j<(number_of_images) ; j++){
-            if (manhattan_dist(images[i], images[j], dimension)<mindist)
-                mindist=manhattan_dist(images[i], images[j], dimension);
+        random_image=rand()%number_of_images;
+        for (j=0; j<(number_of_images) ; j++){
+            dist = manhattan_dist(images[random_image], images[j], dimension);
+            if (dist<mindist && random_image!=j)
+                mindist=dist;
         }
         nearest_mean+=mindist;
 
     }
-     return nearest_mean/samples;
+    int mean_distance = nearest_mean/samples;
+    return mean_distance;
 
 
 }

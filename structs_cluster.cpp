@@ -286,7 +286,7 @@ void KMeans::run(vector<Point>& all_points, ofstream & out)
     cout << "Executing Lloyds " << endl;
     // Add all points to a cluster
     int count_changes = number_of_points;
-    while(count_changes > number_of_points/30)
+    while(count_changes > number_of_points/500)
     {
         count_changes = 0;
         for(int i = 0; i < number_of_points; i++)
@@ -318,6 +318,8 @@ void KMeans::run(vector<Point>& all_points, ofstream & out)
         {
             clusters[i].calculate_center(dimensions);
         }
+//        cout<<"Mphka ki ekana "<<count_changes<<" allages me orio to "<<number_of_points/500<<endl;
+
     }
 
     for(int i = 0; i < K; i++)
@@ -403,9 +405,9 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
         {
             vector<unsigned char> center = clusters[i].get_center();
             
-            PQ pq_hash(center,2, hash_tables); // NA TO TSEKARW
+//            PQ pq_hash(center,2, hash_tables); // NA TO TSEKARW
             //pq_hash.range_search(35000,hash_tables,center);
-            vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
+            vector<vector<unsigned char>> range_search = lsh_images_in_range(r,hash_tables,center);
             //cout << "range search size: " << range_search.size() << endl;
 
             for(int j = 0; j < range_search.size(); j++)
@@ -448,27 +450,23 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
     
 
     cout << "Reverse Assignment" << endl;
-    while(count_changes > number_of_points/30){
+    while(count_changes > number_of_points/500){
         r = mean_centroid_distance()/2;
         count_changes = 0;
         while(r < 60000){
-            //cout << "r: " << r << endl;
             // Add similar points to the same cluster using range search
             for(int i = 0; i < K; i++)
             {
                 vector<unsigned char> center = clusters[i].get_center();
-                
-                PQ pq_hash(center,2, hash_tables); // NA TO TSEKARW
-                //pq_hash.range_search(35000,hash_tables,center);
-                vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
-                //cout << "range search size: " << range_search.size() << endl;
+                vector<vector<unsigned char>> range_search = lsh_images_in_range(r,hash_tables,center);
+//                cout << "range search size: " << range_search.size()<<endl;
 
                 for(int j = 0; j < range_search.size(); j++)
                 {
                     int pos = get_image_pos(range_search[j]) - 1;
                     int current_cluster = all_points[pos].get_cluster();
                     //cout << "current_cluster: " << current_cluster  << " Image:" << pos << endl;
-                    if(current_cluster != -1 && current_cluster != i) // This point is already in a cluster
+                    if(current_cluster != i) // This point is on another cluster
                     {
                         
                         //cout << all_points[pos].get_cluster() << endl;
@@ -483,26 +481,14 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
                             count_changes++;
                         }
                     }
-                    else if(current_cluster == -1)
-                    {
-                        all_points[pos].set_cluster(i);
-                        clusters[i].add_image(all_points[pos]);
-                        count_changes++;
-                        // cout << "Image: "<< pos  << " added to: " << i << endl;
-                        // cout << "New cluster: " << all_points[pos].get_cluster() << endl;
-                    }
-                    
                 }
             }
             r = r*2;
         }
 
         for(int i = 0; i < K; i++)
-        {
             clusters[i].calculate_center(dimensions);
-//            cout << "CLUSTER-" << i+1 << "{ size: " << clusters[i].get_size() << " }" << endl;
-            //clusters[i].display_images();
-        }
+//        cout<<"Mphka ki ekana "<<count_changes<<" allages me orio to "<<number_of_points/30<<endl;
     }
     for(int i = 0; i < K; i++)
     {
@@ -517,8 +503,6 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
             out<<endl;
         }
         out << "}"<<endl;;
-        //clusters[i].display_images();
-
     }
 
 
@@ -541,11 +525,9 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
         {
             vector<unsigned char> center = clusters[i].get_center();
             
-            PQ pq_cube(center,2,cube, M, probes, k); // NA TO TSEKARW
-            //pq_hash.range_search(35000,hash_tables,center);
-//            vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
+//            PQ pq_cube(center,2,cube, M, probes, k); // NA TO TSEKARW
 
-            vector<vector<unsigned char>> range_search = pq_cube.cube_images_in_range(r, cube, center, probes, k, M);
+            vector<vector<unsigned char>> range_search = cube_images_in_range(r, cube, center, probes, k, M);
             //cout << "range search size: " << range_search.size() << endl;
 
             for(int j = 0; j < range_search.size(); j++)
@@ -587,8 +569,10 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
 
 
 
-    cout << "Reverse Assignment" << endl;
-    while(count_changes > number_of_points/30){
+//    cout << "Reverse Assignment" << endl;
+    while(count_changes > number_of_points/500){
+        cout << "Reverse Assignment" << endl;
+
         r = mean_centroid_distance()/2;
         while(r < 60000){
             //cout << "r: " << r << endl;
@@ -598,11 +582,9 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
             {
                 vector<unsigned char> center = clusters[i].get_center();
                 
-                PQ pq_cube(center,2,cube, M, probes, k); // NA TO TSEKARW
-                //pq_hash.range_search(35000,hash_tables,center);
-    //            vector<vector<unsigned char>> range_search = pq_hash.lsh_images_in_range(r,hash_tables,center);
+//                PQ pq_cube(center,2,cube, M, probes, k); // NA TO TSEKARW
 
-                vector<vector<unsigned char>> range_search = pq_cube.cube_images_in_range(r, cube, center, probes, k, M);
+                vector<vector<unsigned char>> range_search = cube_images_in_range(r, cube, center, probes, k, M);
                 //cout << "range search size: " << range_search.size() << endl;
 
                 for(int j = 0; j < range_search.size(); j++)
@@ -719,7 +701,7 @@ vector<Point> Cluster::get_images(){
 void KMeans::silhouette(ofstream & out)
 {
     int number_of_images, meandist_nearest, meandist_second, second_cluster;
-    int samples, j, count=0;
+    int j, count=0;
     vector<Point> images;
     vector<unsigned char> image;
 

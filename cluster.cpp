@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
                 all_points.push_back(temp);
 
             }
-            cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
+//            cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
 
             if(strcmp(method,"classic") == 0)
             {

@@ -111,22 +111,24 @@ class PQ{
 
 
     public:
-        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables);
+        PQ(vector<unsigned char> query, int N,vector<Hash> hash_tables, vector<unsigned long int> query_keys,vector<unsigned long int> query_labels);
         PQ(vector<vector<unsigned char> > imgs, vector<unsigned char> query, int N);
-        //PQ(vector<unsigned char> query,vector<Hash> hash_tables,int r);
-        PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k);
+        PQ(vector<unsigned char> query, int N, Cube hypercube, int M, int probes, int k, int key);
         void displayN();
         image getNN(); //gurnaei th prwth thesi tou pq
         image get_k_NN(); //gurnaei th thesi k
         priority_queue<image> get_pq();
         void range_search(int r, vector<Hash> hash_tables, vector<unsigned char> query);
-        vector<vector<unsigned char> > lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query);
+//        vector<vector<unsigned char> > lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query);
         void cube_range_search(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
-        vector<vector<unsigned char> > cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
+//        vector<vector<unsigned char> > cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
         void displayRange(ofstream & out);
 
 };
 
 void display_prqueues(PQ pq_lsh, PQ pq_exhaust, string type, ofstream& out);
+vector<vector<unsigned char> > lsh_images_in_range(int r, vector<Hash> hash_tables, vector<unsigned char> query);
+vector<vector<unsigned char> > cube_images_in_range(int r, Cube hypercube, vector<unsigned char> query, int probes, int k, int M);
+
 
 #endif

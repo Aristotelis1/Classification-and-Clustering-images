@@ -15,7 +15,7 @@ using namespace std::chrono;
 int main(int argc, char* argv[]) 
 { 
     srand(time(NULL));
-    int i,y,z, k=-1, M=-1, N=-1, probes=-1, samples=100;
+    int i,y, k=-1, M=-1, N=-1, probes=-1, samples=100;
     float R=-1.0;
     char input_file[128], query_file[128], output_file[128];
     bool finished=false;
@@ -130,10 +130,8 @@ int main(int argc, char* argv[])
 
         //declare vector of images
         vector<vector<unsigned char>> images(number_of_images);
-        int sum=0;
         unsigned char byte1, byte2, byte3;
         for(i = 0; i < number_of_images; ++i){
-            sum=0;
             images[i].resize(dimension);
             for(y=0; y<dimension; ++y){
                 file.read((char*)&temp,sizeof(temp));
@@ -208,9 +206,10 @@ int main(int argc, char* argv[])
 
                         // pr.displayN();
                         // cout<<"Going to display lsh..."<<endl;
+                        int query_key = hypercube.calculate_vector_key(query);
 
                         auto start1 = high_resolution_clock::now();
-                        PQ pq_cube(query, N, hypercube, M, probes, k);
+                        PQ pq_cube(query, N, hypercube, M, probes, k, query_key);
                         auto end1 = high_resolution_clock::now();  
                         duration<double> elapsed_seconds1 = (end1-start1);
                         
