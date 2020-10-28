@@ -4,8 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include "image.h"
-#include "functions.h"
+#include "helping_functions.h"
 #include "hash_functions.h"
 
 using namespace std;

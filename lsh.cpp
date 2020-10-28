@@ -110,11 +110,15 @@ int main(int argc, char* argv[])
         columns= change_endianess(columns);
         dimension=rows*columns;
 
-        number_of_images=10000;       //uncomment this to read less images
+        //number_of_images=10000;       //uncomment this to read less images
+        if(samples > number_of_images)
+        {
+            samples = number_of_images;
+        }
 
 
         //declare vector of images
-        vector<vector<unsigned char>> images(number_of_images);
+        vector<vector<unsigned char> > images(number_of_images);
         unsigned char byte1, byte2, byte3;
         for(i = 0; i < number_of_images; ++i){
             images[i].resize(dimension);

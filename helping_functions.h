@@ -1,8 +1,9 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#ifndef HELPING_FUNCTIONS_H
+#define HELPING_FUNCTIONS_H
 
-#include "image.h"
 #include <vector>
+
+using namespace std;
 
 int manhattan_dist(vector<unsigned char> image1, vector<unsigned char> image2 ,int dimension);
 

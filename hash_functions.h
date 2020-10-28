@@ -8,7 +8,7 @@
 #include <ctime>
 #include <math.h>
 
-#include "functions.h"
+#include "helping_functions.h"
 
 #define MAX 255
 

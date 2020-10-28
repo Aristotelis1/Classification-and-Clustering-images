@@ -4,7 +4,7 @@
 #include <iostream>
 #include <queue>
 
-#include "functions.h"
+#include "helping_functions.h"
 
 using namespace std;
 

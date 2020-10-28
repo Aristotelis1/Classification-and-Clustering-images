@@ -1,20 +1,20 @@
-OBJS1	= functions.o image.o man.o structs.o hash_functions.o
-SOURCE1	= functions.cpp image.cpp man.cpp structs.cpp hash_functions.cpp
-HEADER1	= functions.h image.h structs.h hash_functions.h
+OBJS1	= helping_functions.o lsh.o structs.o hash_functions.o
+SOURCE1	= helping_functions.cpp lsh.cpp structs.cpp hash_functions.cpp
+HEADER1	= helping_functions.h structs.h hash_functions.h
 OUT1	= lsh
 
-OBJS2	= functions.o image.o structs.o hash_functions.o cube.o
-SOURCE2	= functions.cpp image.cpp structs.cpp hash_functions.cpp cube.cpp
-HEADER2	= functions.h image.h structs.h hash_functions.h
+OBJS2	= helping_functions.o structs.o hash_functions.o cube.o
+SOURCE2	= helping_functions.cpp structs.cpp hash_functions.cpp cube.cpp
+HEADER2	= helping_functions.h structs.h hash_functions.h
 OUT2	= cube
 
-OBJS3	= functions.o image.o structs.o hash_functions.o cluster.o structs_cluster.o
-SOURCE3	= functions.cpp image.cpp structs.cpp hash_functions.cpp cluster.cpp structs_cluster.cpp
-HEADER3	= functions.h image.h structs.h hash_functions.h structs_cluster.h
+OBJS3	= helping_functions.o structs.o hash_functions.o cluster.o structs_cluster.o
+SOURCE3	= helping_functions.cpp structs.cpp hash_functions.cpp cluster.cpp structs_cluster.cpp
+HEADER3	= helping_functions.h structs.h hash_functions.h structs_cluster.h
 OUT3	= cluster
 
 CC		= g++ --std=c++11
-FLAGS	=  -c -Wall 
+FLAGS	= -c
 LFLAGS	=
 
 all: lsh cube cluster

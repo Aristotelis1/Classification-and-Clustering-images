@@ -7,7 +7,7 @@
 #include <limits>
 
 
-#include "functions.h"
+#include "helping_functions.h"
 #include "structs.h"
 #include "structs_cluster.h"
 
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 {
     //srand(time(NULL));
 
-    int k=-1;
+    int k=-1,samples=100;
     char input_file[128], config_file[128], output_file[128], method[15], complete[10];
     for (int i=1; i<argc ; i+=2)
     {
@@ -34,6 +34,8 @@ int main(int argc, char* argv[])
             strcpy(output_file,argv[i+1]);
         }else if(strcmp(argv[i],"-complete")==0){
             strcpy(complete,argv[i+1]);
+        }else if (strcmp(argv[i],"-t")==0){       // optional parameter for samples to get mean nearest-neighboor range
+            samples=atoi(argv[i+1]);
         }else {
             cout << "Wrong arguments, please try again..." <<endl;
             return 0;
@@ -55,8 +57,8 @@ int main(int argc, char* argv[])
         cin >> output_file;
         cout <<endl;
     }
-    while (strcmp(method, "classic")!=0 && strcmp(method, "lsh")!=0 && strcmp(method, "hypercube")!=0){
-        cout <<"Give me valid method (classic, lsh, hypercube): ";
+    while (strcmp(method, "Classic")!=0 && strcmp(method, "LSH")!=0 && strcmp(method, "Hypercube")!=0){
+        cout <<"Give me valid method (Classic, LSH, Hypercube): ";
         cin >> method;
         cout <<endl;
     }
@@ -132,7 +134,11 @@ int main(int argc, char* argv[])
             columns= change_endianess(columns);
             dimension=rows*columns;
 
-            number_of_images = 1000;
+            //number_of_images = 100;
+            if(samples > number_of_images)
+            {
+                samples = number_of_images;
+            }
 
             //declare vector of images
             vector<Point> all_points;
@@ -157,7 +163,7 @@ int main(int argc, char* argv[])
             }
 //            cout << "Read binary file, with number_of_images = " << number_of_images << " and dimension = " << dimension << endl;
 
-            if(strcmp(method,"classic") == 0)
+            if(strcmp(method,"Classic") == 0)
             {
                 cout << "We gonna do classic clustering" << endl;
                 out<< "Algorithm: Lloyds" << endl;
@@ -170,15 +176,15 @@ int main(int argc, char* argv[])
                 out << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
                 kmeans.silhouette(out);
 
-                if(strcmp(complete,"yes") == 0)
+                if(strcmp(complete,"yes") == 0 || strcmp(complete,"YES") == 0)
                 {
                     kmeans.display(out);
                 }
             }
-            else if(strcmp(method,"lsh") == 0)
+            else if(strcmp(method,"LSH") == 0)
             {
                 out<< "Algorithm: Range Search LSH" << endl;
-                int samples = 100;
+                //int samples = 100;
 
                 // cout << "Give the number(L) of Hash Tables:" << endl;
                 // cin >> L;
@@ -217,15 +223,15 @@ int main(int argc, char* argv[])
                 kmeans.silhouette(out);
 
 
-                if(strcmp(complete,"yes") == 0)
+                if(strcmp(complete,"yes") == 0 || strcmp(complete,"YES") == 0)
                 {
                     kmeans.display(out);
                 }
             }        
-            else if(strcmp(method,"hypercube") == 0)
+            else if(strcmp(method,"Hypercube") == 0)
             {
                 out<< "Algorithm: Range Search Hypercube" << endl;
-                int samples=100;
+                //int samples=100;
                 int w=get_mean_range(samples, images);
 
                 //create a vector for s (normally distributed L*k*d doubles in range [0,w])
@@ -258,7 +264,7 @@ int main(int argc, char* argv[])
                 out << "Clustering time: " << elapsed_seconds.count() << " seconds" << endl;
                 kmeans.silhouette(out);
 
-                if(strcmp(complete,"yes") == 0)
+                if(strcmp(complete,"yes") == 0 || strcmp(complete,"YES") == 0)
                 {
                     kmeans.display(out);
                 }

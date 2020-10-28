@@ -6,8 +6,7 @@
 #include <array>
 #include <queue>
 #include <fstream>
-#include "image.h"
-#include "functions.h"
+#include "helping_functions.h"
 #include "hash_functions.h"
 
 using namespace std;
