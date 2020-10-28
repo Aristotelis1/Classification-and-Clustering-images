@@ -188,6 +188,7 @@ int main(int argc, char* argv[])
                 // cin >> L;
 
                 int w=get_w(get_mean_range(samples, images));
+                w=w*2;
 
                 vector<double>s(L*k_lsh*dimension);
                 double s_range = (double) w / (double) (L * k_lsh * dimension);
