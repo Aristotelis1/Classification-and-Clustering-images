@@ -67,7 +67,7 @@ double get_mean_range(int samples, vector<vector<unsigned char>> images){
 }
 
 int get_w(int r){
-    return r*4;
+    return r*3;
 
 //    return 80000;
 
