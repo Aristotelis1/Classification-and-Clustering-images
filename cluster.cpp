@@ -18,7 +18,6 @@ using namespace std::chrono;
 
 int main(int argc, char* argv[])
 {
-    //srand(time(NULL));
 
     int k=-1,samples=100;
     char input_file[128], config_file[128], output_file[128], method[15], complete[10];
@@ -106,7 +105,6 @@ int main(int argc, char* argv[])
     }
 
 //    cout<< probes << k_hypercube << k_lsh << M_hypercube << k << L <<endl;
-//    sleep(10);
     while (k<1){
         cout <<"Give me k > 1 : ";
         cin >> k;
@@ -231,7 +229,6 @@ int main(int argc, char* argv[])
             else if(strcmp(method,"Hypercube") == 0)
             {
                 out<< "Algorithm: Range Search Hypercube" << endl;
-                //int samples=100;
                 int w=get_mean_range(samples, images);
 
                 //create a vector for s (normally distributed L*k*d doubles in range [0,w])
@@ -257,7 +254,6 @@ int main(int argc, char* argv[])
                 kmeans.hypercube(all_points, hypercube, M_hypercube, probes, k_hypercube, out);
                 //kmeans.run_lsh(all_points);
 
-                //MAYBE ABOVE IMPLEMENTATION IS INCORRECT
 
                 auto end = high_resolution_clock::now();
                 duration<double> elapsed_seconds = (end-start);

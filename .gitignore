@@ -16,3 +16,7 @@ cluster.dSYM/Contents/Info.plist
 output.txt
 .DS_Store
 README.docx
+cluster.o
+helping_functions.o
+lsh.o
+structs_cluster.o

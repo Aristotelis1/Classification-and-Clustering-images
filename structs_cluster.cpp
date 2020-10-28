@@ -286,7 +286,7 @@ void KMeans::run(vector<Point>& all_points, ofstream & out)
     cout << "Executing Lloyds " << endl;
     // Add all points to a cluster
     int count_changes = number_of_points;
-    while(count_changes > number_of_points/500)
+    while(count_changes > number_of_points/100)
     {
         count_changes = 0;
         for(int i = 0; i < number_of_points; i++)
@@ -318,7 +318,6 @@ void KMeans::run(vector<Point>& all_points, ofstream & out)
         {
             clusters[i].calculate_center(dimensions);
         }
-//        cout<<"Mphka ki ekana "<<count_changes<<" allages me orio to "<<number_of_points/500<<endl;
 
     }
 
@@ -405,8 +404,6 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
         {
             vector<unsigned char> center = clusters[i].get_center();
             
-//            PQ pq_hash(center,2, hash_tables); // NA TO TSEKARW
-            //pq_hash.range_search(35000,hash_tables,center);
             vector<vector<unsigned char>> range_search = lsh_images_in_range(r,hash_tables,center);
             //cout << "range search size: " << range_search.size() << endl;
 
@@ -450,7 +447,7 @@ void KMeans::lsh(vector<Point>& all_points,vector<Hash> hash_tables, ofstream & 
     
 
     cout << "Reverse Assignment" << endl;
-    while(count_changes > number_of_points/500){
+    while(count_changes > number_of_points/100){
         r = mean_centroid_distance()/2;
         count_changes = 0;
         while(r < 60000){
@@ -570,7 +567,7 @@ void KMeans::hypercube(vector<Point>& all_points, Cube cube, int M, int probes, 
 
 
 //    cout << "Reverse Assignment" << endl;
-    while(count_changes > number_of_points/500){
+    while(count_changes > number_of_points/100){
         cout << "Reverse Assignment" << endl;
 
         r = mean_centroid_distance()/2;

@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
             R=atoi(argv[i+1]);
         }else if (strcmp(argv[i],"-t")==0){       // optional parameter for samples to get mean nearest-neighboor range
             samples=atoi(argv[i+1]);
+            samples = abs(samples);
         }else if (strcmp(argv[i],"-probes")==0){
             probes=atoi(argv[i+1]);
         }else {
@@ -190,7 +191,7 @@ int main(int argc, char* argv[])
                     dimension=rows*columns;
 
                     vector<int> nb = get_route(k);
-                    number_of_queries=10;                       //uncomment this to read less queries
+                    //number_of_queries=10;                       //uncomment this to read less queries
                     for (i=1; i<=number_of_queries ; i++){   
                         for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
                             q_file.read((char*)&temp,sizeof(temp));

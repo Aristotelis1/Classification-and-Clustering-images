@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
                     dimension=rows*columns;
 
 
-                    number_of_queries=10;                       //uncomment this to read less queries
+                    //number_of_queries=10;                       //uncomment this to read less queries
                     for (i=1; i<=number_of_queries ; i++){     
                         // cout<<endl;
                         for(y=0; y<dimension; ++y){         //read "query-image" on query (vector)
